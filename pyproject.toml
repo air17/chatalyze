@@ -19,6 +19,7 @@ exclude = '''
 DJANGO_SETTINGS_MODULE = "core.settings"
 django_debug_mode = true
 python_files = ["test*.py"]
+pythonpath = "chatalyze"
 log_cli = 1
 
 [tool.isort]
