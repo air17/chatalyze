@@ -1,0 +1,154 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+      <div class="d-block mb-4 mb-md-0">
+          <h2 class="h4">Chat analysis results</h2>
+          <p class="mb-0">Your chat analysis results. You can update existing or add a new chat.</p>
+      </div>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+        New Chatalyzis
+      </button>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Upload your chat files</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="/analyze" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+              {% csrf_token %}
+              <div class="mb-3">
+                  <label for="chatFile" class="form-label">Telegram or WhatsApp exported chat file</label>
+                  <input class="form-control" type="file" id="chatFile" name="chatfile" required>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </div>
+          </form>
+        </div>
+      </div>
+  </div>
+
+  <div class="card border-0 shadow">
+      <div class="card-body">
+          <div class="table-responsive">
+              <table class="table table-centered table-nowrap table-hover mb-0 rounded" id="results-table">
+                  <thead class="thead-light">
+                      <tr>
+                          <th class="border-0 rounded-start">Chat name</th>
+                          <th class="border-0">Chat service</th>
+                          <th class="border-0">Messages</th>
+                          <th class="border-0">Date created</th>
+                          <th class="border-0">Date updated</th>
+                          <th class="border-0 rounded-end">Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+
+                  {% if results %}
+                  {% for result in results %}
+                      <tr>
+                          <td class="border-0">
+                              <a href="/result/{{ result.id }}" class="d-flex align-items-center">
+                                  <div><span class="h6">{{ result.chat_name }}</span></div>
+                              </a>
+                          </td>
+                          <td class="border-0 fw-bold">{{ result.chat_platform }}</td>
+                          <td class="border-0 fw-bold">{{ result.messages_count }}</td>
+                          <td class="border-0">{{ result.created|date:"d.m.Y" }}</td>
+                          <td class="border-0">{{ result.updated|date:"d.m.Y" }}</td>
+                          <td class="border-0
+                          {% if result.status == "READY" %}
+                              text-success
+                          {% elif result.status == "PROCESSING" %}
+                              text-warning
+                          {% elif result.status == "ERROR" %}
+                              text-danger
+                          {% endif %}
+                          ">{{ result.get_status_display }}</td>
+                      </tr>
+                  {% endfor %}
+                  {% else %}
+                      <tr>
+                          <td colspan="6" class="text-center">
+                              You don't have any chat analyses yet.
+                          </td>
+                      </tr>
+                  {% endif %}
+
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+    <script>
+        const table = document.getElementById("results-table")
+        const processingElements = table.getElementsByClassName("text-warning")
+        if (processingElements){
+            setTimeout(()=>{
+                updateStatus()
+                window.interval = setInterval(updateStatus, 10000)
+            }, 3000)
+        }
+        function updateStatus() {
+            for (const el of processingElements) {
+                const row = el.parentElement
+                const name = row.children[0].children[0].children[0].children[0]
+                const chatService = row.children[1]
+                const msgCount = row.children[2]
+                const lastUpdate = row.children[4]
+                const status = el
+                const link = row.children[0].children[0].href + '/check'
+                fetch(link)
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json()
+                        } else {
+                            if (response.status === 404){
+                                status.className = "border-0 text-success"
+                                status.innerText = "Updating"
+                            }
+                        }
+                    })
+                    .then((responseJSON) => {
+                        if (responseJSON) {
+                            if (responseJSON.status !== "PROCESSING") {
+                                if (responseJSON.status === "ERROR") {
+                                    status.className = "border-0 text-danger"
+                                    status.innerText = "Error"
+                                } else if (responseJSON.status === "READY") {
+                                    status.className = "border-0 text-success"
+                                    status.innerText = "Ready"
+                                }
+                            }
+                            name.innerText = responseJSON.chat_name
+                            chatService.innerText = responseJSON.chat_platform
+                            msgCount.innerText = responseJSON.messages_count
+                            lastUpdate.innerText = responseJSON.updated
+                        }
+                    }).catch((e) => {console.log(e)});
+            }
+            if (!processingElements){
+                clearInterval(window.interval)
+            }
+        }
+    </script>
+{% endblock javascripts %}

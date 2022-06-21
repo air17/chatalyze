@@ -1,0 +1,17 @@
+Django==4.0.5
+psycopg2-binary==2.9.3
+Pillow==9.1.1
+python-decouple==3.6
+uuid==1.30
+django-axes==5.35.0
+django-http-referrer-policy==1.1.1
+django_stubs_ext==0.5
+django-split-settings==1.1
+django-cleanup==6
+pytest-django==4.5.2
+gunicorn==20.1.0
+dj-database-url==0.5.0
+celery==5.2.7
+django-celery-results==2.3.1
+wordcloud==1.8.1
+pymorphy2==0.9.1

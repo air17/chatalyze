@@ -1,0 +1,2 @@
+TELEGRAM = "Telegram"
+WHATSAPP = "WhatsApp"
