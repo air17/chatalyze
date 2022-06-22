@@ -45,7 +45,6 @@ def analyze_tg(analysis):
             analysis_old = ChatAnalysis.objects.filter(telegram_id=chat_id).first()
             if analysis_old:
                 analysis.delete()
-                del analysis
                 analysis = analysis_old
                 analysis.messages_count = len(msg_list)
                 analysis.status = analysis.AnalysisStatus.PROCESSING
@@ -171,7 +170,7 @@ def get_msg_text_list(msg_list: list) -> list:
     messages = []
     for msg in msg_list:
         msg_text = msg.get("text")
-        if msg_text and type(msg_text) == str:
+        if msg_text and type(msg_text) is str:
             messages.append(msg_text)
     return messages
 
@@ -238,7 +237,6 @@ def get_normalized_words(msg_list_txt: list) -> list:
             "блэд",
             "лол",
             "кек",
-            "русня",
             "всмысле",
             "дела",
             "инфа",
@@ -247,9 +245,13 @@ def get_normalized_words(msg_list_txt: list) -> list:
             normal_words.append(word)
         else:
             word_analysis = morph.parse(word)[0]
-            if word_analysis.tag.POS == "NOUN" and word not in stopwords:
-                if word_analysis.normal_form not in stopwords and len(word_analysis.normal_form) > 2:
-                    normal_words.append(word_analysis.normal_form)
+            if (
+                word_analysis.tag.POS == "NOUN"
+                and word not in stopwords
+                and word_analysis.normal_form not in stopwords
+                and len(word_analysis.normal_form) > 2
+            ):
+                normal_words.append(word_analysis.normal_form)
     normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
     return normal_words
 
@@ -257,13 +259,13 @@ def get_normalized_words(msg_list_txt: list) -> list:
 def get_word_count(word_list: list) -> dict:
     word_count = {}
     for word in word_list:
-        if word not in word_count.keys():
+        if word not in word_count:
             word_count[word] = word_list.count(word)
     word_count_sorted = dict(sorted(word_count.items(), key=lambda item: item[1], reverse=True))
     return word_count_sorted
 
 
-def get_colors_by_size(word, font_size, position, orientation, font_path, random_state) -> tuple:
+def get_colors_by_size(word, font_size, position, orientation, font_path, random_state) -> tuple:  # skipcq: PYL-W0613
     if font_size > 315:
         color = (200, 0, 255)  # violet
     elif font_size > 150:
