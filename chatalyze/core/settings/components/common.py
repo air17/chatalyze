@@ -64,8 +64,6 @@ MIDDLEWARE: Tuple[str, ...] = (
     "axes.middleware.AxesMiddleware",
     # Django HTTP Referrer Policy:
     "django_http_referrer_policy.middleware.ReferrerPolicyMiddleware",
-    # WhiteNoise:
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 )
 
 ROOT_URLCONF = "core.urls"
@@ -106,20 +104,21 @@ USE_TZ = True
 
 
 # Assets Management
-ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
+ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/staticfiles/assets")
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/static/"
+STATIC_URL = "/staticfiles/"
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # Templates
 # https://docs.djangoproject.com/en/4.0/ref/templates/api
@@ -200,6 +199,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
 # Celery settings
-CELERY_BROKER_URL = "pyamqp://guest:guest@localhost:5672/"
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "default"

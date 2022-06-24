@@ -36,10 +36,8 @@ $RECYCLE.BIN/
 .Python
 env/
 develop-eggs/
-dist/
 downloads/
 eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -225,3 +223,4 @@ artifacts/
 
 # Project
 usersfiles/
+staticfiles/

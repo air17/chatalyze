@@ -30,7 +30,7 @@ _COLLECTSTATIC_DRYRUN = config(
     default=False,
 )
 # Adding STATIC_ROOT to collect static files via 'collectstatic':
-STATIC_ROOT = ".static" if _COLLECTSTATIC_DRYRUN else "static"
+STATIC_ROOT = ".staticfiles" if _COLLECTSTATIC_DRYRUN else "staticfiles"
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
@@ -50,19 +50,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Security
 # https://docs.djangoproject.com/en/4.0/topics/security/
 
-SECURE_HSTS_SECONDS = 31536000  # the same as Caddy has
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+# SECURE_HSTS_SECONDS = 31536000  # the same as Caddy has
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
 
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
-SECURE_REDIRECT_EXEMPT = [
-    # This is required for healthcheck to work:
-    "^health/",
-]
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# SECURE_SSL_REDIRECT = True
+# SECURE_REDIRECT_EXEMPT = [
+#     # This is required for healthcheck to work:
+#     "^health/",
+# ]
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+
+USE_X_FORWARDED_PORT = True
 
 LOGGING = {
     "version": 1,
@@ -79,17 +81,18 @@ LOGGING = {
         "simple": {"format": "%(levelname)s %(message)s"},
     },
     "handlers": {
-        "null": {
-            "level": "DEBUG",
-            "class": "logging.NullHandler",
+        "logfile": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs", "server.log"),  # noqa: F821
+            "formatter": "simple",
         },
-        "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"},
     },
     "loggers": {
-        "testlogger": {
-            "handlers": ["console"],
+        "django": {
+            "handlers": ["logfile"],
             "level": "INFO",
-        }
+            "propagare": True,
+        },
     },
 }
 
