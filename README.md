@@ -2,7 +2,17 @@
 
 Analyze your chats!
 
-## Installation for development
+## Install
+
+### Run in Docker
+
+1. `git clone https://github.com/air17/chatalyze.git`
+2. `cd chatalyze`
+3. Fill `.env` file with your domain name and Django secret key
+4. Run `docker compose up -d`
+5. Optional: create admin user with a command `docker exec -it django_web python manage.py createsuperuser`
+
+### Installation for development
 
 0. Install `python3`
 1. Install dependencies: `pip install -r requirements-dev.txt`
