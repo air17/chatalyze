@@ -7,6 +7,7 @@ python manage.py collectstatic --noinput
 # Make database migrations
 echo "Make database migrations"
 python manage.py makemigrations
+python manage.py makemigrations dashboard
 
 # Apply database migrations
 echo "Apply database migrations"

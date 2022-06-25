@@ -14,7 +14,7 @@ services:
     build: .
     restart: unless-stopped
     container_name: django_web
-    command: bash -c /code/docker-entry-point.sh
+    command: bash -c "chmod +x /code/docker-entry-point.sh && /code/docker-entry-point.sh"
     volumes:
       - ./data/usersfiles:/code/usersfiles
       - ./data/media:/code/media
