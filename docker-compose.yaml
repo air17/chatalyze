@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
   web:
     build: .
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
       - DJANGO_DATABASE_PORT=5432
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq3:5672/
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
@@ -64,7 +64,7 @@ services:
       - DJANGO_DATABASE_PORT=5432
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq3:5672/
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
