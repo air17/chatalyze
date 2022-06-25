@@ -2,6 +2,8 @@
 
 Analyze your chats!
 
+Live demo: https://chatalyze.161e.tk
+
 ## Install
 
 ### Run in Docker
