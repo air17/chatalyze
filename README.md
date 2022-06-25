@@ -7,10 +7,11 @@ Analyze your chats!
 ### Run in Docker
 
 1. `git clone https://github.com/air17/chatalyze.git`
-2. `cd chatalyze`
-3. Fill `.env` file with your domain name and Django secret key
+2. Set current directory `chatalyze`
+3. Rename `.env.template` file to `.env` and fill it with your domain name and Django secret key.
 4. Run `docker compose up -d`
 5. Optional: create admin user with a command `docker exec -it django_web python manage.py createsuperuser`
+6. Go to http://localhost:8000
 
 ### Installation for development
 
