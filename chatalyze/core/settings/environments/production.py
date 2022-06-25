@@ -50,19 +50,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Security
 # https://docs.djangoproject.com/en/4.0/topics/security/
 
-# SECURE_HSTS_SECONDS = 31536000  # the same as Caddy has
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 31536000  # the same as Caddy has
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-# SECURE_SSL_REDIRECT = True
-# SECURE_REDIRECT_EXEMPT = [
-#     # This is required for healthcheck to work:
-#     "^health/",
-# ]
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = (
+    "https://" + config("DOMAIN_NAME"),
+    "http://" + config("DOMAIN_NAME"),
+    "http://localhost:8000",
+)
 
 USE_X_FORWARDED_PORT = True
 
