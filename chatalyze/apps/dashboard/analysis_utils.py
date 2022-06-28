@@ -1,5 +1,6 @@
 import json
 import re
+from collections import Counter
 from io import BytesIO
 
 from PIL.Image import Image
@@ -257,12 +258,10 @@ def get_normalized_words_ru(words: list) -> list:
 
 
 def get_word_count(word_list: list) -> dict:
-    word_count = {}
+    word_count = Counter()
     for word in word_list:
-        if word not in word_count:
-            word_count[word] = word_list.count(word)
-    word_count_sorted = dict(sorted(word_count.items(), key=lambda item: item[1], reverse=True))
-    return word_count_sorted
+        word_count[word] += 1
+    return dict(word_count.most_common())
 
 
 def get_colors_by_size(word, font_size, position, orientation, font_path, random_state) -> tuple:  # skipcq: PYL-W0613
