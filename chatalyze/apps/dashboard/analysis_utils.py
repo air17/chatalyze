@@ -10,6 +10,7 @@ from pymorphy2 import MorphAnalyzer
 
 from .const import TELEGRAM, WHATSAPP
 from .models import ChatAnalysis
+from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en
 
 morph = MorphAnalyzer()
 
@@ -95,28 +96,59 @@ def analyze_wa(analysis):
 def make_wordcloud(raw_messages, analysis):
     if analysis.chat_platform == TELEGRAM:
         msg_list_direct = remove_forwarded(raw_messages)
-        msg_list_txt = get_msg_text_list(msg_list_direct)
+        msg_list_txt = get_msg_text_list_tg(msg_list_direct)
     else:
         msg_list_txt = raw_messages
 
     try:
         filtered_msg_list_txt = filter_big_messages(msg_list_txt)
-        normal_words = get_normalized_words(filtered_msg_list_txt)
-        counted_words = get_word_count(normal_words)
-        wordcloud_pic = get_wordcloud_pic(counted_words)
+
+        words_list = get_words(filtered_msg_list_txt)
+
+        if analysis.language == analysis.AnalysisLanguage.RUSSIAN:
+            normal_words = get_normalized_words_ru(words_list)
+
+            # change the normal form of the word with a more common form
+            normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
+
+            counted_words = get_word_count(normal_words)
+            wordcloud_pic = get_pic_from_frequencies(counted_words)
+        elif analysis.language == analysis.AnalysisLanguage.ENGLISH:
+            wc = WordCloud(
+                max_words=200,
+                width=1920,
+                height=1080,
+                color_func=get_colors_by_size,
+                stopwords=stopwords_en,
+                collocation_threshold=3,
+                min_word_length=3,
+            )
+            word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
+            wordcloud_pic = word_cloud.to_image()
+        else:
+            raise ValueError("Wrong language")
+
     except Exception as e:
         explain_error(analysis, e, "Couldn't build a wordcloud of your chat.")
     else:
-        output = BytesIO()
-        wordcloud_pic.save(output, format="PNG")
-        img_object = ImageFile(output, name="wc.png")
-        analysis.word_cloud_pic = img_object
+        analysis.word_cloud_pic = pic_to_imgfile(wordcloud_pic, "wc.png")
         analysis.status = analysis.AnalysisStatus.READY
         analysis.updated = timezone.now()
         analysis.save()
 
 
-def get_chat_name(filename: str) -> str:
+def pic_to_imgfile(pic: Image, name="output.png", ext=None) -> ImageFile:
+    """Saves PIL image to Django ImageFile which can be assigned to ImageField."""
+    if not ext:
+        name_split = name.split(".")
+        ext = name_split[-1].upper() if len(name_split) > 1 else "PNG"
+    output = BytesIO()
+    pic.save(output, format=ext)
+    return ImageFile(output, name=name)
+
+
+def get_chat_name_wa(filename: str) -> str:
+    """Extracts chat name from WhatsApp exported file name. Returns chat name or empty string on failure."""
     name_regex_ru = re.search(r"Чат WhatsApp с (.*)\.txt$", filename)
     name_regex_en = re.search(r"WhatsApp Chat with (.*)\.txt$", filename)
     if name_regex_ru:
@@ -140,20 +172,12 @@ def get_msg_text_list_wa(text: str) -> list:
     )
 
     for msg in msg_list:
-        if not (
-            "Без медиафайлов" in msg
-            or "Media omitted" in msg
-            or "ропущенный звонок" in msg
-            or "Missed voice call" in msg
-            or "защищены сквозным шифрованием" in msg
-            or "No one outside of this chat, not even WhatsApp" in msg
-            or "Messages to this chat and calls are now secured" in msg
-            or "Данное сообщение удалено" in msg
-            or "Вы удалили данное сообщение" in msg
-            or "deleted this message" in msg
-            or "Your security code with" in msg
-        ) and not link_regex.search(msg):
-            msg_list_clean.append(msg.strip())
+        for phrase in whatsapp_stoplist:
+            if phrase in msg:
+                break
+        else:
+            if not link_regex.search(msg):
+                msg_list_clean.append(msg.strip())
 
     return msg_list_clean
 
@@ -166,7 +190,7 @@ def remove_forwarded(msg_list: list) -> list:
     return filtered_msg_list
 
 
-def get_msg_text_list(msg_list: list) -> list:
+def get_msg_text_list_tg(msg_list: list) -> list:
     messages = []
     for msg in msg_list:
         msg_text = msg.get("text")
@@ -207,52 +231,28 @@ def remove_emojis(text: str) -> str:
     return re.sub(emojis, "", text)
 
 
-def get_normalized_words(msg_list_txt: list) -> list:
+def get_words(msg_list_txt: list) -> list:
     all_messages_text = " ".join(msg_list_txt)
     punct = '!"#$%&()*+,-./:;<=>?@[]^_`{|}~„“«»†*—/-‘’1234567890'
-    stopwords = (
-        "раз",
-        "час",
-        "день",
-        "неделя",
-        "месяц",
-        "год",
-        "человек",
-        "изз",
-        "типа",
-        "норм",
-        "чет",
-        "чёт",
-        "ахах",
-    )
 
     clean_text = "".join(char for char in all_messages_text if char not in punct)
     clean_text = remove_emojis(clean_text)
 
-    words = clean_text.lower().split()
+    return clean_text.lower().split()
 
+
+def get_normalized_words_ru(words: list) -> list:
     normal_words = []
     for word in words:
-        if word in (
-            "блэд",
-            "лол",
-            "кек",
-            "всмысле",
-            "дела",
-            "инфа",
-            "изи",
+        word_analysis = morph.parse(word)[0]
+        if (
+            word_analysis.tag.POS == "NOUN"
+            and word not in stopwords_ru
+            and word_analysis.normal_form not in stopwords_ru
+            and len(word_analysis.normal_form) > 2
         ):
-            normal_words.append(word)
-        else:
-            word_analysis = morph.parse(word)[0]
-            if (
-                word_analysis.tag.POS == "NOUN"
-                and word not in stopwords
-                and word_analysis.normal_form not in stopwords
-                and len(word_analysis.normal_form) > 2
-            ):
-                normal_words.append(word_analysis.normal_form)
-    normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
+            normal_words.append(word_analysis.normal_form)
+
     return normal_words
 
 
@@ -283,12 +283,13 @@ def get_colors_by_size(word, font_size, position, orientation, font_path, random
     return color
 
 
-def get_wordcloud_pic(counted_words: dict) -> Image:
-    word_cloud = WordCloud(
+def get_pic_from_frequencies(counted_words: dict) -> Image:
+    wc = WordCloud(
         max_words=200,
         width=1920,
         height=1080,
         collocations=False,
         color_func=get_colors_by_size,
     )
-    return word_cloud.generate_from_frequencies(counted_words).to_image()
+    word_cloud = wc.generate_from_frequencies(counted_words)
+    return word_cloud.to_image()

@@ -41,6 +41,9 @@
         </span>
     </div>
     <div class="col col-lg-auto">
+      <p class="text-center">Language: {{ result.get_language_display }}</p>
+    </div>
+    <div class="col col-lg-auto">
       <p class="fw-light text-center">{{ result.messages_count }} messages</p>
     </div>
     {% if result.get_status_display != "Ready" %}

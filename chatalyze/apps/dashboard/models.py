@@ -12,9 +12,15 @@ class ChatAnalysis(models.Model):
     class AnalysisStatus(models.TextChoices):
         """Enumerated string choices."""
 
-        READY = "READY", "Ready"
-        PROCESSING = "PROCESSING", "Processing"
-        ERROR = "ERROR", "Error"
+        READY = "READY"
+        PROCESSING = "PROCESSING"
+        ERROR = "ERROR"
+
+    class AnalysisLanguage(models.TextChoices):
+        """Enumerated string choices."""
+
+        ENGLISH = "ENG"
+        RUSSIAN = "RUS"
 
     author = models.ForeignKey(
         get_user_model(),
@@ -32,6 +38,11 @@ class ChatAnalysis(models.Model):
     chat_platform = models.CharField(
         max_length=255,
         default="-",
+    )
+    language = models.CharField(
+        max_length=3,
+        choices=AnalysisLanguage.choices,
+        default=AnalysisLanguage.RUSSIAN,
     )
     messages_count = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
@@ -60,7 +71,22 @@ class ChatAnalysis(models.Model):
         constraints = (
             models.CheckConstraint(
                 name="%(app_label)s_%(class)s_status_valid",
-                check=models.Q(status__in=["READY", "PROCESSING", "ERROR"]),
+                check=models.Q(
+                    status__in=(
+                        "READY",
+                        "PROCESSING",
+                        "ERROR",
+                    )
+                ),
+            ),
+            models.CheckConstraint(
+                name="%(app_label)s_%(class)s_language_valid",
+                check=models.Q(
+                    language__in=(
+                        "ENG",
+                        "RUS",
+                    )
+                ),
             ),
         )
 

@@ -12,7 +12,7 @@ from django.urls import reverse
 from django_celery_results.models import TaskResult
 
 from . import models, tasks
-from .analysis_utils import get_chat_name
+from .analysis_utils import get_chat_name_wa
 from .const import TELEGRAM, WHATSAPP
 
 
@@ -52,12 +52,16 @@ def pages(request):
 @login_required(login_url="/login/")
 def analyze(request):
     file = request.FILES["chatfile"]
+    lang = request.POST.get("lang")
     if file and file.name.endswith((".txt", ".json")):
-        chat_name = get_chat_name(file.name) or "noname"
+        if lang not in models.ChatAnalysis.AnalysisLanguage.values:
+            return HttpResponseBadRequest("Choose chat language")
+        chat_name = get_chat_name_wa(file.name) or "noname"
         analysis = models.ChatAnalysis.objects.create(
             author=request.user,
             chat_name=chat_name,
             chat_file=file,
+            language=lang,
         )
         task = tasks.analyze_chat_file.delay(analysis_id=analysis.id)
         analysis.task_id = task.id
@@ -89,6 +93,8 @@ def analysis_update(request, pk):
     task = tasks.update_chat_analysis.delay(analysis_id=analysis.id)
     analysis.task_id = task.id
     analysis.save()
+
+    sleep(1)
     return redirect("dashboard:result", pk=pk)
 
 
