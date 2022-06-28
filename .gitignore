@@ -68,9 +68,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-**/migrations
-
 # Sphinx documentation
 docs/_build/
 
