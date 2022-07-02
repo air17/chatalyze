@@ -24,8 +24,6 @@
                                 <p>
                                     {% if msg %}
                                         {{ msg | safe }}
-                                    {% else %}
-                                        Add your credentials
                                     {% endif %}
                                 </p>
                             </div>
@@ -114,7 +112,7 @@
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     Already have an account?
-                                    <a href="{% url 'login' %}" class="fw-bold">Sign IN</a>
+                                    <a href="{% url 'login' %}" class="fw-bold">Sign in</a>
                                 </span>
                             </div>
                         </div>

@@ -101,7 +101,7 @@ def analysis_update(request, pk):
 @login_required(login_url="/login/")
 def results(request):
     analysis = models.ChatAnalysis.objects.filter(author=request.user)
-    context = {"results": analysis}
+    context = {"results": analysis, "segment": "results"}
     html_template = loader.get_template("home/results.html")
     return HttpResponse(html_template.render(context, request))
 
