@@ -15,10 +15,7 @@ from core.settings.components.common import DATABASES, INSTALLED_APPS, MIDDLEWAR
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    config("DOMAIN_NAME"),
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
+    "*",
 ]
 
 
