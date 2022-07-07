@@ -68,7 +68,7 @@ def analyze_tg(analysis):
             analysis.results = json.dumps(results)
             analysis.save()
 
-        make_wordcloud(msg_list, analysis)
+            make_wordcloud(msg_list, analysis)
 
 
 def update_tg(analysis):

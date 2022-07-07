@@ -158,13 +158,15 @@
     {% elif result.status == "PROCESSING" %}
   <div class="row"><p class="text-center fst-italic">The analysis is not ready yet.</p></div>
     {% endif %}
+    {% if result.word_cloud_pic %}
   <div class="row shadow-lg my-2 py-3 mb-5 rounded" style="background-color:black;">
-      {% if result.word_cloud_pic %}
         <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" alt="word cloud">
-      {% elif result.status == "PROCESSING" and stats %}
-          <p class="text-center text-warning">The wordcloud is not ready yet.</p>
-      {% endif %}
   </div>
+    {% elif result.status == "PROCESSING" and stats %}
+        <div class="row my-2">
+            <p class="text-center text-warning">The wordcloud is not ready yet.</p>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock content %}
