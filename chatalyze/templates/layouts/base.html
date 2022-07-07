@@ -45,15 +45,19 @@
 
     {% include 'includes/sidebar.html' %}
 
-    <main class="content mb-4">
+    <div class="d-flex flex-column min-vh-100">
 
-      {% include 'includes/navigation.html' %}
+        <main class="content mb-4">
 
-      {% block content %}{% endblock content %}
+          {% include 'includes/navigation.html' %}
 
-    </main>
+          {% block content %}{% endblock content %}
 
-    {% include 'includes/footer.html' %}
+        </main>
+
+        {% include 'includes/footer.html' %}
+
+    </div>
 
   {% include 'includes/scripts.html' %}
 
