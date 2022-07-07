@@ -52,6 +52,15 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="wordcloudModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" tabindex="-1" aria-labelledby="wordcloudModal">
+  <div class="modal-dialog modal-xl" data-bs-toggle="modal" data-bs-target="#wordcloudModal" onclick="unzoomWordcloud()">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="{% if result.word_cloud_pic %}{{ result.word_cloud_pic.url }}{% endif %}" class="img-fluid" alt="word cloud">
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="container-fluid">
   <div class="row justify-content-center my-2">
@@ -159,8 +168,8 @@
   <div class="row"><p class="text-center fst-italic">The analysis is not ready yet.</p></div>
     {% endif %}
     {% if result.word_cloud_pic %}
-  <div class="row shadow-lg my-2 py-3 mb-5 rounded" style="background-color:black;">
-        <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" alt="word cloud">
+  <div class="row shadow-lg my-2 py-3 mb-5 rounded" role="button" style="background-color:black;" data-bs-toggle="modal" data-bs-target="#wordcloudModal">
+        <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" id="wordcloud-img" alt="word cloud">
   </div>
     {% elif result.status == "PROCESSING" and stats %}
         <div class="row my-2">
@@ -175,6 +184,9 @@
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1/dist/chartjs-plugin-zoom.min.js"></script>
+
     <script>
     const msgAmountYearCanvas = document.getElementById('msgAmountYear').getContext('2d');
     const msgAmountHourCanvas = document.getElementById('msgAmountPerHour').getContext('2d');
@@ -206,6 +218,22 @@
             plugins: {
                 legend: {
                     display: false,
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                            speed: 0.07,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x',
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    }
                 },
             },
         },
@@ -419,7 +447,7 @@
         document.getElementById("chat-name-input").focus()
         document.getElementById("send-name").addEventListener("click", setNewName);
         document.getElementById("cancel-name-edit").addEventListener("click", backToName);
-    };
+    }
     async function setNewName() {
         const newName = document.getElementById("chat-name-input").value;
         let url = document.location.href;
@@ -469,9 +497,22 @@
             }
         })
     }
+    const zoomWordcloud = () => {
+      const url = document.getElementById("wordcloud-img").src;
+      if (window.screen.height > window.screen.width) {
+          document.body.requestFullscreen()
+          screen.orientation.lock('landscape')
+      }
+    }
+    const unzoomWordcloud = () => {
+        screen.orientation.unlock()
+        document.exitFullscreen()
+    }
 
     document.getElementById("chat-name-edit").addEventListener("click", editName);
     document.getElementById("delete-button").addEventListener("click", deleteResult);
-    document.getElementById("discard-error").addEventListener("click", discardError);
+    try {document.getElementById("discard-error").addEventListener("click", discardError)} catch {}
+    document.getElementById("wordcloud-img").addEventListener("click", zoomWordcloud);
+
     </script>
 {% endblock javascripts %}
