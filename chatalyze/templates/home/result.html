@@ -1,12 +1,12 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Analysis result {% endblock %}
+{% block title %} Chat analysis with {{ result.chat_name }} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateChat" tabindex="-1" aria-labelledby="updateChat" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -29,9 +29,32 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="deleteChat" tabindex="-1" aria-labelledby="deleteChat" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete analysis</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you really want to delete this analysis?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gray-700" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-outline-danger" id="delete-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+            </svg>
+            Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="container-fluid">
-  <div class="row justify-content-md-center my-2">
+  <div class="row justify-content-center my-2">
     <div class="col col-lg-auto">
         <span id="chat-name" class="fw-bolder text-center">{{ result.chat_name }}</span> &nbsp;
         <span id="chat-name-edit" role="button">
@@ -43,16 +66,13 @@
     <div class="col col-lg-auto">
       <p class="text-center">Language: {{ result.get_language_display }}</p>
     </div>
-    <div class="col col-lg-auto">
-      <p class="fw-light text-center">{{ result.messages_count }} messages</p>
-    </div>
     {% if result.get_status_display != "Ready" %}
     <div id="status-info" class="col col-lg-auto">
       <p class="text-info text-center">Status: {{ result.get_status_display }}</p>
     </div>
     {% endif %}
     <div class="col">
-        <button type="button" class="btn btn-sm float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-sm float-end" data-bs-toggle="modal" data-bs-target="#updateChat">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                 <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
                 <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"></path>
@@ -61,12 +81,11 @@
         </button>
     </div>
     <div class="col col-lg-auto">
-        <button type="button" class="btn btn-sm btn-outline-danger float-end" id="delete-button">
+        <button type="button" class="btn btn-sm btn-outline-danger float-end" data-bs-toggle="modal" data-bs-target="#deleteChat">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
               <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
             </svg>
-            Delete
         </button>
     </div>
   {% if result.status == "ERROR" and result.error_text %}
@@ -78,17 +97,302 @@
     </div>
   {% endif %}
   </div>
-  {% if result.word_cloud_pic %}
-    <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" alt="word cloud">
-  {% elif result.status == "PROCESSING" %}
-      <p class="text-center fst-italic">The analysis is not ready yet.</p>
-  {% endif %}
+    {% if stats %}
+  <div class="row my-2">
+    <div class="col bg-gray-50 mx-1 rounded">
+      <canvas id="mediaPercent" height="30"></canvas>
+    </div>
+  </div>
+  <div class="row my-2">
+      <div class="col bg-gray-50 text-center mx-1 py-2 rounded">
+          <p class="fw-bolder my-0 h3">{{ stats.top_day }}</p>
+          <p class="fw-light my-0">The most active day</p>
+      </div>
+      <div class="col bg-gray-50 text-center mx-1 py-2 rounded">
+          <p class="fw-bolder my-0 h3">{{ stats.top_weekday }}</p>
+          <p class="fw-light my-0">The most active weekday</p>
+      </div>
+      <div class="col bg-gray-50 text-center mx-1 py-2 rounded">
+          <p class="fw-bolder my-0 h3">{{ result.messages_count }}</p>
+          <p class="fw-light my-0">Total messages</p>
+      </div>
+  </div>
+  <div class="row my-2">
+    <div class="col bg-white py-2 mx-1 rounded">
+        <div class="text-center fw-bold h5">Daily messages for the last year</div>
+        <canvas id="msgAmountYear"></canvas>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col bg-white mx-1 rounded">
+        <canvas id="msgAmountPerHour"></canvas>
+    </div>
+    <div class="col bg-white mx-1 rounded">
+        <div class="bg-gray-50 text-center mx-1 py-2 my-3 rounded">
+          <p class="fw-bolder my-0 h3">{{ stats.response_time_hour.start }}:00 - {{ stats.response_time_hour.end }}:00</p>
+          <p class="fw-light my-0">The fastest response time</p>
+        </div>
+        <div class="bg-gray-50 text-center mx-1 py-2 my-3 rounded">
+          <p class="fw-bolder my-0 h3">{{ stats.response_time.labels.0 }}</p>
+          <p class="fw-light my-0">usually responds faster</p>
+        </div>
+        <div class="py-2">
+            <canvas id="averageAnswerTime"></canvas>
+        </div>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col bg-white mx-1 rounded">
+        <div class="text-center fw-bold h5 pt-2">Messages per user</div>
+        <canvas id="msgPercent"></canvas>
+    </div>
+    <div class="col mx-1 p-0">
+        <div class="bg-white text-center py-2 my-2 rounded">
+            <canvas id="wordAvg"></canvas>
+        </div>
+        <div class="bg-white text-center py-2 my-2 rounded">
+            <canvas id="msgAverage"></canvas>
+        </div>
+    </div>
+  </div>
+    {% elif result.status == "PROCESSING" %}
+  <div class="row"><p class="text-center fst-italic">The analysis is not ready yet.</p></div>
+    {% endif %}
+  <div class="row shadow-lg my-2 py-3 mb-5 rounded" style="background-color:black;">
+      {% if result.word_cloud_pic %}
+        <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" alt="word cloud">
+      {% elif result.status == "PROCESSING" and stats %}
+          <p class="text-center text-warning">The wordcloud is not ready yet.</p>
+      {% endif %}
+  </div>
 </div>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script>
+    const msgAmountYearCanvas = document.getElementById('msgAmountYear').getContext('2d');
+    const msgAmountHourCanvas = document.getElementById('msgAmountPerHour').getContext('2d');
+    const msgPercentCanvas = document.getElementById('msgPercent').getContext('2d');
+    const wordAvgCanvas = document.getElementById('wordAvg').getContext('2d');
+    const msgAverageCanvas = document.getElementById('msgAverage').getContext('2d');
+    const mediaPercentCanvas = document.getElementById('mediaPercent').getContext('2d');
+    const averageAnswerTimeCanvas = document.getElementById('averageAnswerTime').getContext('2d');
+
+    const hours = []
+    for (let i = 0; i < 24 ; i++) {
+        hours.push(i+":00")
+    }
+
+    const msgAmountYearChart = new Chart(msgAmountYearCanvas, {
+        type: 'line',
+        data: {
+            labels: {{ stats.daily_year_msg.dates|safe }},
+            datasets: [{
+                data: {{ stats.daily_year_msg.values|safe }},
+                borderColor: 'rgb(82,164,218)',
+                borderWidth: 1.5,
+                pointRadius: 0.8,
+                lineTension: 0.5,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+            },
+        },
+    });
+    const msgAmountHourChart = new Chart(msgAmountHourCanvas, {
+        type: 'radar',
+        data: {
+            labels: hours,
+            datasets: [{
+                data: {{ stats.hourly_messages|safe }},
+                borderColor: 'rgb(255,189,71)',
+                lineTension: 0.1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'The most active hours'
+                },
+            },
+        },
+    });
+    const msgPercentChart = new Chart(msgPercentCanvas, {
+        type: 'pie',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: {{ stats.msg_per_user.labels|safe }},
+            datasets: [{
+                data: {{ stats.msg_per_user.data|safe }},
+                backgroundColor: [
+                    'rgb(255,189,71)',
+                    'rgb(95,189,252)',
+                    'rgb(140,255,122)',
+                    'rgb(115,229,215)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                datalabels: {
+                    color: '#4d4d4d',
+                    font: {
+                        weight: "bold"
+                    },
+                    formatter: function(value, context) {
+                        return `${context.chart.data.labels[context.dataIndex]}: ${value}`;
+                    },
+                },
+            },
+        },
+    });
+    const wordAvgChart = new Chart(wordAvgCanvas, {
+        type: 'bar',
+        data: {
+            labels: {{ stats.words_per_message.labels|safe }},
+            datasets: [{
+                data: {{ stats.words_per_message.data|safe }},
+                backgroundColor: 'rgb(167,203,157)',
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Average words per message'
+                }
+            },
+        },
+    });
+    const msgAverageChart = new Chart(msgAverageCanvas, {
+        type: 'bar',
+        data: {
+            labels: {{ stats.msg_per_day.labels|safe }},
+            datasets: [{
+                data: {{ stats.msg_per_day.data|safe }},
+                backgroundColor: 'rgb(121,172,217)',
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Messages per day (average)'
+                }
+            },
+        },
+    });
+    const mediaPercentChart = new Chart(mediaPercentCanvas, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {
+          labels: [""],
+          datasets: [
+            {
+              label: 'Messages',
+              data: [{{ stats.media_text_share.text }}],
+              backgroundColor: 'rgb(87,190,255)',
+            },
+            {
+              label: 'Media',
+              data: [{{ stats.media_text_share.media }}],
+              backgroundColor: 'rgb(154,255,137)',
+            },
+          ]
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        scales: {
+          x: {
+            stacked: true,
+            display: false,
+          },
+          y: {
+            stacked: true,
+            display: false,
+          },
+        },
+        plugins: {
+            legend: {
+                display: false,
+            },
+            datalabels: {
+                color: '#4d4d4d',
+                font: {
+                    weight: "bold"
+                },
+                formatter: function(value, context) {
+                    return `${context.dataset.label}`;
+                },
+            },
+        },
+      }
+    });
+    const averageAnswerTimeChart = new Chart(averageAnswerTimeCanvas, {
+      type: 'bar',
+        data: {
+            labels: {{ stats.response_time.labels|safe }},
+            datasets: [{
+                data: {{ stats.response_time.data|safe }},
+                backgroundColor: [
+                    'rgb(250,83,48)',
+                    'rgb(255,189,71)',
+                    'rgb(0,156,255)',
+                    'rgb(89,189,255)',
+                    'rgb(150,195,239)',
+                ],
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Average response speed (seconds)'
+                }
+            },
+        },
+    });
+    </script>
+
     <script>
     const chatName = document.getElementById("chat-name");
     let currentName = chatName.innerText;
@@ -99,6 +403,7 @@
             `<input class="form-control form-control-sm"
                     type="text" placeholder="Chat name"
                     id="chat-name-input"
+                    onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
                     value="${currentName}" size="7">`;
         chatName.insertAdjacentHTML('afterend',
             `<div class="col text-center my-1">
@@ -109,6 +414,7 @@
                     </svg>
                 </span>
             </div>`);
+        document.getElementById("chat-name-input").focus()
         document.getElementById("send-name").addEventListener("click", setNewName);
         document.getElementById("cancel-name-edit").addEventListener("click", backToName);
     };

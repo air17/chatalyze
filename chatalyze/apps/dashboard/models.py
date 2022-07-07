@@ -62,6 +62,10 @@ class ChatAnalysis(models.Model):
         blank=True,
         null=True,
     )
+    results = models.JSONField(
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.author} - {self.chat_name}"

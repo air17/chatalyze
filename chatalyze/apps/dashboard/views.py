@@ -12,7 +12,7 @@ from django.urls import reverse
 from django_celery_results.models import TaskResult
 
 from . import models, tasks
-from .analysis_utils import get_chat_name_wa
+from .analysis_utils import get_chat_name_wa, generate_dates
 from .const import TELEGRAM, WHATSAPP
 
 
@@ -113,7 +113,31 @@ def analysis_result(request, pk):
     if analysis.author != request.user:
         raise PermissionDenied()
 
-    context = {"result": analysis}
+    chat_statistics = None
+    if analysis.results:
+        chat_statistics = json.loads(analysis.results)
+        chat_statistics["daily_year_msg"]["dates"] = generate_dates(
+            end_date=chat_statistics["daily_year_msg"]["end_date"],
+            n=len(chat_statistics["daily_year_msg"]["values"]),
+        )
+        chat_statistics["msg_per_user"] = {
+            "labels": list(chat_statistics["msg_per_user"].keys()),
+            "data": list(chat_statistics["msg_per_user"].values()),
+        }
+        chat_statistics["words_per_message"] = {
+            "labels": list(chat_statistics["words_per_message"].keys()),
+            "data": list(chat_statistics["words_per_message"].values()),
+        }
+        chat_statistics["msg_per_day"] = {
+            "labels": list(chat_statistics["msg_per_day"].keys()),
+            "data": list(chat_statistics["msg_per_day"].values()),
+        }
+        chat_statistics["response_time"] = {
+            "labels": list(chat_statistics["response_time"].keys()),
+            "data": list(chat_statistics["response_time"].values()),
+        }
+
+    context = {"result": analysis, "stats": chat_statistics}
     html_template = loader.get_template("home/result.html")
 
     return HttpResponse(html_template.render(context, request))
