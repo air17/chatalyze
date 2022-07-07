@@ -381,7 +381,12 @@ def get_daily_msg_amount(df: pd.DataFrame, days: int = 365):
     # msgAmountYear; график: количество сообщений(y) от дня(x) (за всю ситорию чата)
     daily_msg = df[["timestamp", "id"]].set_index("timestamp").resample("D").count().reset_index()
     end_date = daily_msg.iloc[-1:].timestamp.dt.to_pydatetime()[0].timestamp()
-    return {"values": daily_msg.iloc[-days:]["id"].to_list(), "end_date": end_date}
+    average_msg_amount = statistics.mean(daily_msg["id"].to_list())
+    return {
+        "values": daily_msg.iloc[-days:]["id"].to_list(),
+        "end_date": end_date,
+        "average": average_msg_amount,
+    }
 
 
 def generate_dates(end_date: float, n: int, step_days: int = 1) -> list:
