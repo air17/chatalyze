@@ -18,8 +18,8 @@ Live demo: https://chatalyze.161e.tk
 ### Install for development
 
 0. Install `python3`
-1. Install dependencies: `pip install -r requirements-dev.txt`
-2. Run `pre-commit install` and `pre-commit install --hook-type pre-push`
+1. Install dependencies: `pip install -r requirements.txt` and `pip install -r requirements-dev.txt`
+2. Run `pre-commit install` and `pre-commit install --hook-type pre-push` to set up Git hooks
 3. Setup PostgreSQL Database
 4. Rename `.env.template` to `.env` in `config` directory and fill it
 5. Run `python manage.py makemigrations`
