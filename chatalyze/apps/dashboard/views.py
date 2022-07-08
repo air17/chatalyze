@@ -106,6 +106,31 @@ def results(request):
     return HttpResponse(html_template.render(context, request))
 
 
+def get_chat_statistics(results_json):
+    chat_statistics = json.loads(results_json)
+    chat_statistics["daily_year_msg"]["dates"] = generate_dates(
+        end_date=chat_statistics["daily_year_msg"]["end_date"],
+        n=len(chat_statistics["daily_year_msg"]["values"]),
+    )
+    chat_statistics["msg_per_user"] = {
+        "labels": list(chat_statistics["msg_per_user"].keys()),
+        "data": list(chat_statistics["msg_per_user"].values()),
+    }
+    chat_statistics["words_per_message"] = {
+        "labels": list(chat_statistics["words_per_message"].keys()),
+        "data": list(chat_statistics["words_per_message"].values()),
+    }
+    chat_statistics["msg_per_day"] = {
+        "labels": list(chat_statistics["msg_per_day"].keys()),
+        "data": list(chat_statistics["msg_per_day"].values()),
+    }
+    chat_statistics["response_time"] = {
+        "labels": list(chat_statistics["response_time"].keys()),
+        "data": list(chat_statistics["response_time"].values()),
+    }
+    return chat_statistics
+
+
 @login_required(login_url="/login/")
 def analysis_result(request, pk):
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
@@ -115,27 +140,7 @@ def analysis_result(request, pk):
 
     chat_statistics = None
     if analysis.results:
-        chat_statistics = json.loads(analysis.results)
-        chat_statistics["daily_year_msg"]["dates"] = generate_dates(
-            end_date=chat_statistics["daily_year_msg"]["end_date"],
-            n=len(chat_statistics["daily_year_msg"]["values"]),
-        )
-        chat_statistics["msg_per_user"] = {
-            "labels": list(chat_statistics["msg_per_user"].keys()),
-            "data": list(chat_statistics["msg_per_user"].values()),
-        }
-        chat_statistics["words_per_message"] = {
-            "labels": list(chat_statistics["words_per_message"].keys()),
-            "data": list(chat_statistics["words_per_message"].values()),
-        }
-        chat_statistics["msg_per_day"] = {
-            "labels": list(chat_statistics["msg_per_day"].keys()),
-            "data": list(chat_statistics["msg_per_day"].values()),
-        }
-        chat_statistics["response_time"] = {
-            "labels": list(chat_statistics["response_time"].keys()),
-            "data": list(chat_statistics["response_time"].values()),
-        }
+        chat_statistics = get_chat_statistics(analysis.results)
 
     context = {"result": analysis, "stats": chat_statistics}
     html_template = loader.get_template("home/result.html")
@@ -229,3 +234,48 @@ def rename_analysis(request, pk):
             return HttpResponseBadRequest()
     else:
         return HttpResponseForbidden()
+
+
+def shared_link(request, pk):
+    link = get_object_or_404(models.ShareLink, id=pk)
+    analysis = link.analysis
+
+    chat_statistics = None
+    if analysis.results:
+        chat_statistics = get_chat_statistics(analysis.results)
+
+    context = {"result": analysis, "stats": chat_statistics}
+    html_template = loader.get_template("home/share.html")
+
+    return HttpResponse(html_template.render(context, request))
+
+
+@login_required(login_url="/login/")
+def share_analysis(request, pk):
+    if request.method.lower() not in ("post", "get"):
+        return HttpResponse("ok")
+
+    analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
+
+    if not analysis.author == request.user:
+        return HttpResponseForbidden()
+
+    if request.method.lower() == "get":
+        new_link = request.GET.get("new_link")
+    else:
+        new_link = json.loads(request.body).get("new_link")
+
+    try:
+        share_link = analysis.sharelink
+    except models.ShareLink.DoesNotExist:
+        models.ShareLink.objects.create(analysis=analysis)
+        share_link = analysis.sharelink
+    else:
+        if new_link:
+            share_link.delete()
+            models.ShareLink.objects.create(analysis=analysis)
+            share_link = analysis.sharelink
+
+    link = reverse("dashboard:shared_result", args=[share_link.pk])
+
+    return JsonResponse({"link": link})

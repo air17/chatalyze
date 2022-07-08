@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from model_utils.fields import UrlsafeTokenField
 
 from apps.utils import RandomFileName
 from core import settings
@@ -98,3 +99,18 @@ class ChatAnalysis(models.Model):
 @receiver(pre_delete, sender=ChatAnalysis)
 def my_handler(instance, **__):
     app.control.revoke(instance.task_id, terminate=True)
+
+
+class ShareLink(models.Model):
+    id = UrlsafeTokenField(
+        editable=False,
+        max_length=128,
+        primary_key=True,
+    )
+    analysis = models.OneToOneField(
+        to=ChatAnalysis,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return "link - " + str(self.analysis)

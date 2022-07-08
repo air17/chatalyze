@@ -1,0 +1,281 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1/dist/chartjs-plugin-zoom.min.js"></script>
+
+<script>
+    const msgAmountYearCanvas = document.getElementById('msgAmountYear').getContext('2d');
+    const msgAmountHourCanvas = document.getElementById('msgAmountPerHour').getContext('2d');
+    const msgPercentCanvas = document.getElementById('msgPercent').getContext('2d');
+    const wordAvgCanvas = document.getElementById('wordAvg').getContext('2d');
+    const msgAverageCanvas = document.getElementById('msgAverage').getContext('2d');
+    const averageAnswerTimeCanvas = document.getElementById('averageAnswerTime').getContext('2d');
+    const mediaPercentElement = document.getElementById('mediaPercent');
+    const mediaPercentCanvas = mediaPercentElement.getContext('2d');
+
+    const hours = []
+    for (let i = 0; i < 24 ; i++) {
+        hours.push(i+":00")
+    }
+
+    const yearData = {{ stats.daily_year_msg.values|safe }};
+    let avgLine = Array(yearData.length).fill(0);
+    try {avgLine = Array(yearData.length).fill({{ stats.daily_year_msg.average }})} catch {}
+
+    const msgAmountYearChart = new Chart(msgAmountYearCanvas, {
+        type: 'line',
+        data: {
+            labels: {{ stats.daily_year_msg.dates|safe }},
+            datasets: [
+                {
+                    data: yearData,
+                    borderColor: 'rgb(82,164,218)',
+                    borderWidth: 1.75,
+                    pointRadius: 1.2,
+                    lineTension: 0.5,
+                },
+                {
+                    data: avgLine,
+                    label: "mean",
+                    borderColor: 'rgba(0,255,125,0.3)',
+                    pointRadius: 0.5,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                            speed: 0.07,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x',
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    }
+                },
+            },
+        },
+    });
+    const msgAmountHourChart = new Chart(msgAmountHourCanvas, {
+        type: 'radar',
+        data: {
+            labels: hours,
+            datasets: [{
+                data: {{ stats.hourly_messages|safe }},
+                borderColor: 'rgb(255,189,71)',
+                lineTension: 0.1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'The most active hours'
+                },
+            },
+        },
+    });
+    const msgPercentChart = new Chart(msgPercentCanvas, {
+        type: 'pie',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: {{ stats.msg_per_user.labels|safe }},
+            datasets: [{
+                data: {{ stats.msg_per_user.data|safe }},
+                backgroundColor: [
+                    'rgb(255,189,71)',
+                    'rgb(95,189,252)',
+                    'rgb(140,255,122)',
+                    'rgb(115,229,215)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                datalabels: {
+                    color: '#4d4d4d',
+                    font: {
+                        weight: "bold"
+                    },
+                    formatter: function(value, context) {
+                        return `${context.chart.data.labels[context.dataIndex]}: ${value}`;
+                    },
+                },
+            },
+        },
+    });
+    const wordAvgChart = new Chart(wordAvgCanvas, {
+        type: 'bar',
+        data: {
+            labels: {{ stats.words_per_message.labels|safe }},
+            datasets: [{
+                data: {{ stats.words_per_message.data|safe }},
+                backgroundColor: 'rgb(167,203,157)',
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Average words per message'
+                }
+            },
+        },
+    });
+    const msgAverageChart = new Chart(msgAverageCanvas, {
+        type: 'bar',
+        data: {
+            labels: {{ stats.msg_per_day.labels|safe }},
+            datasets: [{
+                data: {{ stats.msg_per_day.data|safe }},
+                backgroundColor: 'rgb(121,172,217)',
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Messages per day (average)'
+                }
+            },
+        },
+    });
+    const averageAnswerTimeChart = new Chart(averageAnswerTimeCanvas, {
+      type: 'bar',
+        data: {
+            labels: {{ stats.response_time.labels|safe }},
+            datasets: [{
+                data: {{ stats.response_time.data|safe }},
+                backgroundColor: [
+                    'rgb(250,83,48)',
+                    'rgb(255,189,71)',
+                    'rgb(0,156,255)',
+                    'rgb(89,189,255)',
+                    'rgb(150,195,239)',
+                ],
+                rotation: 90,
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: "y",
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Average response speed (seconds)'
+                }
+            },
+        },
+    });
+    if (eval("{{ stats.media_text_share.media }}") < 5){
+        mediaPercentElement.parentElement.remove()
+    } else {
+        mediaPercentElement.parentElement.hidden = false;
+        new Chart(mediaPercentCanvas, {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: [""],
+                datasets: [
+                    {
+                        label: 'Messages',
+                        data: [{{ stats.media_text_share.text }}],
+                        backgroundColor: 'rgb(87,190,255)',
+                    },
+                    {
+                        label: 'Media',
+                        data: [{{ stats.media_text_share.media }}],
+                        backgroundColor: 'rgb(154,255,137)',
+                    },
+                ]
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                        display: false,
+                    },
+                    y: {
+                        stacked: true,
+                        display: false,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    datalabels: {
+                        color: '#4d4d4d',
+                        font: {
+                            weight: "bold"
+                        },
+                        formatter: function (value, context) {
+                            return `${context.dataset.label}`;
+                        },
+                    },
+                },
+            }
+        });
+    }
+
+    const yearZoomIn = () => {
+        msgAmountYearChart.zoom(1.25)
+    }
+    const yearZoomOut = () => {
+        msgAmountYearChart.zoom(0.5)
+    }
+    document.getElementById("year-zoom-in").addEventListener("click", yearZoomIn);
+    document.getElementById("year-zoom-out").addEventListener("click", yearZoomOut);
+
+    const zoomWordcloud = () => {
+      const url = document.getElementById("wordcloud-img").src;
+      if (window.screen.height > window.screen.width) {
+          document.body.requestFullscreen()
+          screen.orientation.lock('landscape')
+      }
+    }
+    const unzoomWordcloud = () => {
+        screen.orientation.unlock()
+        document.exitFullscreen()
+    }
+    document.getElementById("wordcloud-img").addEventListener("click", zoomWordcloud);
+
+</script>

@@ -1,6 +1,6 @@
 {% extends "layouts/base-fullscreen.html" %}
 
-{% block title %} Sign UP {% endblock %}
+{% block title %} Sign up {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -10,9 +10,6 @@
     <main>
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
-                <p class="text-center">
-                    Chatalyze
-                </p>
                 <div class="row justify-content-center form-bg-image" data-background-lg="{{ ASSETS_ROOT }}/img/illustrations/signin.svg">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
@@ -21,11 +18,11 @@
                                     Chatalyze - Sign up
                                 </h1>
                                 <br />
-                                <p>
+                                <div>
                                     {% if msg %}
                                         {{ msg | safe }}
                                     {% endif %}
-                                </p>
+                                </div>
                             </div>
                             <form method="post" action="" class="mt-4">
 
@@ -83,7 +80,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" value="" id="remember">
                                             <label class="form-check-label fw-normal mb-0" for="remember">
-                                                I agree to the <a href="#" class="fw-bold">terms and conditions</a>
+                                                I agree to the <a href="https://github.com/air17/chatalyze/blob/dev/LICENSE.txt" target="_blank" class="fw-bold">terms and conditions</a>
                                             </label>
                                         </div>
                                     </div>
