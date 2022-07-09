@@ -467,6 +467,9 @@ def get_words_per_message(df) -> dict:
     total = df_without_media[["from", "word"]].groupby("from").count().to_dict()["word"]
 
     for user in list(user_word_count):
+        if total[user] == 0:
+            user_word_count[user] = 0
+            continue
         user_word_count[user] = round(user_word_count[user] / total[user], 2)
     sorted_user_word_count = dict(sorted(user_word_count.items(), key=lambda item: item[1], reverse=True))
     if len(sorted_user_word_count) > 5:
