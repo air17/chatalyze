@@ -52,8 +52,8 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="wordcloudModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" tabindex="-1" aria-labelledby="wordcloudModal">
-  <div class="modal-dialog modal-xl" data-bs-toggle="modal" data-bs-target="#wordcloudModal" onclick="unzoomWordcloud()">
+<div class="modal fade" id="wordcloudModal" aria-hidden="true" tabindex="-1" aria-labelledby="wordcloudModal">
+  <div class="modal-dialog modal-xl" data-bs-toggle="modal" data-bs-target="#wordcloudModal" onclick="zoomWordcloud()">
     <div class="modal-content">
       <div class="modal-body">
         <img src="{% if result.word_cloud_pic %}{{ result.word_cloud_pic.url }}{% endif %}" class="img-fluid" alt="word cloud">

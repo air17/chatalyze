@@ -267,14 +267,9 @@
 
     const zoomWordcloud = () => {
       const url = document.getElementById("wordcloud-img").src;
-      if (window.screen.height > window.screen.width) {
-          document.body.requestFullscreen()
-          screen.orientation.lock('landscape')
+      if (window.screen.height > window.screen.width || location.href.includes("share")) {
+          window.open(url, '_blank').focus();
       }
-    }
-    const unzoomWordcloud = () => {
-        screen.orientation.unlock()
-        document.exitFullscreen()
     }
     document.getElementById("wordcloud-img").addEventListener("click", zoomWordcloud);
 

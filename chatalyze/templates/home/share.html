@@ -7,25 +7,11 @@
 
 {% block content %}
     <main class="px-md-5">
-        <div class="modal fade" id="wordcloudModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" tabindex="-1" aria-labelledby="wordcloudModal">
-          <div class="modal-dialog modal-xl" data-bs-toggle="modal" data-bs-target="#wordcloudModal" onclick="unzoomWordcloud()">
-            <div class="modal-content">
-              <div class="modal-body">
-                <img src="{% if result.word_cloud_pic %}{{ result.word_cloud_pic.url }}{% endif %}" class="img-fluid" alt="word cloud">
-              </div>
-            </div>
-          </div>
-        </div>
     <div class="container-fluid">
       <div class="row justify-content-center my-4">
         <div class="col col-lg-auto text-center">
             <span id="chat-name" class="fw-bolder h5">Chat name: {{ result.chat_name }}</span>
         </div>
-        {% if result.get_status_display != "Ready" %}
-        <div id="status-info" class="col col-lg-auto text-center">
-          <p class="text-info text-center">Status: {{ result.get_status_display }}</p>
-        </div>
-        {% endif %}
       </div>
       {% include "home/dashboard.html" %}
     </div>
