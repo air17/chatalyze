@@ -83,9 +83,10 @@ def analysis_update(request, pk):
     if analysis.author != request.user:
         raise PermissionDenied()
 
-    if not (analysis.chat_platform == TELEGRAM and file.name.endswith(".json")):
-        if not (analysis.chat_platform == WHATSAPP and file.name.endswith(".txt")):
-            return HttpResponseBadRequest("The uploaded file doesn't match this chat's messenger")
+    if not (analysis.chat_platform == TELEGRAM and file.name.endswith(".json")) and not (
+        analysis.chat_platform == WHATSAPP and file.name.endswith(".txt")
+    ):
+        return HttpResponseBadRequest("The uploaded file doesn't match this chat's messenger")
 
     analysis.chat_file = file
     analysis.save()

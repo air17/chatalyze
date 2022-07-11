@@ -349,7 +349,7 @@ def df_from_tg(msg_list):
     df["date"] = df.timestamp.dt.date
     df["from"] = df["from"].fillna("Deleted user")
     df["from"] = df["from"].astype("category")
-    df["word"] = df["text"].apply(lambda text: len(text.split()) if type(text) == str else 0)
+    df["word"] = df["text"].apply(lambda text: len(text.split()) if type(text) is str else 0)
     df["weekday"] = df["timestamp"].dt.day_name()
     df["diff"] = np.insert(np.diff(df["timestamp"]), 0, 0)
     df["seq"] = get_seq(df["from"])
@@ -501,15 +501,15 @@ def get_response_hours(df) -> dict:
             continue
         for prev_hour in hot_hours:
             if prev_hour == 23:
-                if hour == 0 or hour == 22:
+                if hour in (22, 0):
                     hot_hours.append(hour)
                     break
             elif prev_hour == 0:
-                if hour == 23 or hour == 1:
+                if hour in (23, 1):
                     hot_hours.append(hour)
                     break
             else:
-                if prev_hour - 1 == hour or prev_hour + 1 == hour:
+                if hour in (prev_hour - 1, prev_hour + 1):
                     hot_hours.append(hour)
                     break
         else:
@@ -519,8 +519,8 @@ def get_response_hours(df) -> dict:
     hot_hours = sorted(hot_hours)
 
     if 0 in hot_hours and 23 in hot_hours:
-        lower = filter(lambda x: x >= 12, hot_hours)
-        higher = filter(lambda x: x < 12, hot_hours)
+        lower = filter(lambda h: h >= 12, hot_hours)
+        higher = filter(lambda h: h < 12, hot_hours)
         hot_hours = [*lower, *higher]
 
     return {"start": hot_hours[0], "end": hot_hours[-1] + 1}

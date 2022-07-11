@@ -7,7 +7,6 @@ SECURITY WARNING: don't run with debug turned on in production!
 import logging
 from typing import List
 
-from core.settings.components import config
 from core.settings.components.common import DATABASES, INSTALLED_APPS, MIDDLEWARE
 
 # Setting the development status:
