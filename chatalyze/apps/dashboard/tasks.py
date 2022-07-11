@@ -7,6 +7,7 @@ from .models import ChatAnalysis
 
 @shared_task
 def analyze_chat_file(analysis_id):
+    """Starts chat analysis"""
     analysis = ChatAnalysis.objects.get(pk=analysis_id)
     if analysis.chat_file.name.endswith(".json"):
         analyze_tg(analysis)
@@ -20,6 +21,7 @@ def analyze_chat_file(analysis_id):
 
 @shared_task
 def update_chat_analysis(analysis_id):
+    """Starts updated chat analysis"""
     analysis = ChatAnalysis.objects.get(pk=analysis_id)
     if analysis.chat_platform == TELEGRAM:
         update_tg(analysis)

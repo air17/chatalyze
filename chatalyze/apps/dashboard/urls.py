@@ -14,7 +14,5 @@ urlpatterns = [
     path("result/<int:pk>/update", views.analysis_update, name="analysis_update"),
     path("result/<int:pk>/discard-error", views.discard_error, name="discard_error"),
     path("result/<int:pk>/share-chat", views.share_analysis, name="share_analysis"),
-    path("share/<str:pk>", views.shared_link, name="shared_result"),
-    # Matches any html file
-    re_path(r"^.*\.html", views.pages, name="pages"),
+    path("share/<str:pk>", views.shared_result, name="shared_result"),
 ]

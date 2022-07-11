@@ -4,6 +4,7 @@ from .forms import LoginForm, SignUpForm
 
 
 def login_view(request):
+    """Custom login view"""
     form = LoginForm(request.POST or None)
 
     msg = None
@@ -26,6 +27,7 @@ def login_view(request):
 
 
 def register_user(request):
+    """Custom registration view"""
     msg = None
     success = False
 

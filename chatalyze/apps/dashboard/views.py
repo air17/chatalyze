@@ -2,10 +2,9 @@ import json
 from time import sleep
 
 from celery.states import FAILURE, REVOKED, RETRY
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
@@ -17,40 +16,14 @@ from .const import TELEGRAM, WHATSAPP
 
 
 def index(request):
-    context = {"segment": "index"}
-
+    """Displays main page"""
     html_template = loader.get_template("home/index.html")
-    return HttpResponse(html_template.render(context, request))
-
-
-@login_required(login_url="/login/")
-def pages(request):
-    context = {}
-    # All resource paths end in .html.
-    # Pick out the html file name from the url. And load that template.
-    try:
-
-        load_template = request.path.split("/")[-1]
-
-        if load_template == "admin":
-            return HttpResponseRedirect(reverse("admin:index"))
-        context["segment"] = load_template
-
-        html_template = loader.get_template("home/" + load_template)
-        return HttpResponse(html_template.render(context, request))
-
-    except template.TemplateDoesNotExist:
-
-        html_template = loader.get_template("home/page-404.html")
-        return HttpResponse(html_template.render(context, request))
-
-    except Exception:
-        html_template = loader.get_template("home/page-500.html")
-        return HttpResponse(html_template.render(context, request))
+    return HttpResponse(html_template.render({}, request))
 
 
 @login_required(login_url="/login/")
 def analyze(request):
+    """Stores received file and starts its analysis"""
     file = request.FILES["chatfile"]
     lang = request.POST.get("lang")
     if file and file.name.endswith((".txt", ".json")):
@@ -75,6 +48,7 @@ def analyze(request):
 
 @login_required(login_url="/login/")
 def analysis_update(request, pk):
+    """Stores the file and starts its analysis if it is compatible with specified chat_platform"""
     file = request.FILES.get("chatfile")
     if not file and not file.name.endswith((".txt", ".json")):
         return HttpResponseBadRequest("You've uploaded a wrong file")
@@ -101,13 +75,15 @@ def analysis_update(request, pk):
 
 @login_required(login_url="/login/")
 def results(request):
+    """Displays a list of analysis"""
     analysis = models.ChatAnalysis.objects.filter(author=request.user)
     context = {"results": analysis, "segment": "results"}
     html_template = loader.get_template("home/results.html")
     return HttpResponse(html_template.render(context, request))
 
 
-def get_chat_statistics(results_json):
+def get_chat_statistics(results_json: str) -> dict:
+    """Loads json data to dict and adapts it for ChartJS"""
     chat_statistics = json.loads(results_json)
     chat_statistics["daily_year_msg"]["dates"] = generate_dates(
         end_date=chat_statistics["daily_year_msg"]["end_date"],
@@ -134,6 +110,7 @@ def get_chat_statistics(results_json):
 
 @login_required(login_url="/login/")
 def analysis_result(request, pk):
+    """Displays chat analysis result"""
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
 
     if analysis.author != request.user:
@@ -141,7 +118,7 @@ def analysis_result(request, pk):
 
     chat_statistics = None
     if analysis.results:
-        chat_statistics = get_chat_statistics(analysis.results)
+        chat_statistics = get_chat_statistics(analysis.results)  # noqa
 
     context = {"result": analysis, "stats": chat_statistics}
     html_template = loader.get_template("home/result.html")
@@ -150,22 +127,16 @@ def analysis_result(request, pk):
 
 
 def is_task_failure(analysis):
+    """Checks if analysis failed to finish"""
     task = TaskResult.objects.get_task(analysis.task_id)
-
     if task.status in (FAILURE, RETRY, REVOKED):
-        status = models.ChatAnalysis.AnalysisStatus.ERROR
-        if analysis.status != status:
-            error_text = "Server error. Try again later."
-            models.ChatAnalysis.objects.filter(pk=analysis.pk).update(
-                status=status,
-                error_text=error_text,
-            )
         return True
     return False
 
 
 @login_required(login_url="/login/")
 def discard_error(request, pk):
+    """Removes the analysis' error status and text."""
     if request.method.lower() != "get":
         return HttpResponse("ok")
 
@@ -184,6 +155,7 @@ def discard_error(request, pk):
 
 @login_required(login_url="/login/")
 def check_status(request, pk):
+    """Returns a JSON response containing updated analysis info"""
     if request.method.lower() != "get":
         return HttpResponse("ok")
 
@@ -193,6 +165,13 @@ def check_status(request, pk):
         raise PermissionDenied()
 
     if is_task_failure(analysis):
+        status_error = models.ChatAnalysis.AnalysisStatus.ERROR
+        if analysis.status != status_error:
+            error_text = "Server error. Try again later."
+            models.ChatAnalysis.objects.filter(pk=analysis.pk).update(
+                status=status_error,
+                error_text=error_text,
+            )
         analysis.refresh_from_db()
 
     data = {
@@ -208,6 +187,7 @@ def check_status(request, pk):
 
 @login_required(login_url="/login/")
 def delete_analysis(request, pk):
+    """Deletes the analysis and redirects to the results list"""
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
     if analysis.author == request.user:
         analysis.delete()
@@ -218,6 +198,7 @@ def delete_analysis(request, pk):
 
 @login_required(login_url="/login/")
 def rename_analysis(request, pk):
+    """Changes the analysis chat name to the name received in request"""
     if request.method.lower() not in ("post", "get"):
         return HttpResponse("ok")
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
@@ -237,13 +218,14 @@ def rename_analysis(request, pk):
         return HttpResponseForbidden()
 
 
-def shared_link(request, pk):
+def shared_result(request, pk):
+    """Displays an analysis result by a shared link"""
     link = get_object_or_404(models.ShareLink, id=pk)
     analysis = link.analysis
 
     chat_statistics = None
     if analysis.results:
-        chat_statistics = get_chat_statistics(analysis.results)
+        chat_statistics = get_chat_statistics(analysis.results)  # noqa
 
     context = {"result": analysis, "stats": chat_statistics}
     html_template = loader.get_template("home/share.html")
@@ -253,6 +235,7 @@ def shared_link(request, pk):
 
 @login_required(login_url="/login/")
 def share_analysis(request, pk):
+    """Creates a shared link for the analysis and returns it"""
     if request.method.lower() not in ("post", "get"):
         return HttpResponse("ok")
 

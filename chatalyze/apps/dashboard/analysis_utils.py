@@ -4,6 +4,8 @@ import re
 import statistics
 from collections import Counter
 from io import BytesIO
+from typing import Optional, Union
+
 import pandas as pd
 import numpy as np
 
@@ -20,7 +22,13 @@ from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en
 morph = MorphAnalyzer()
 
 
-def explain_error(analysis, e=None, message=None):
+def explain_error(analysis: ChatAnalysis, e: Optional[BaseException] = None, message: Optional[str] = None) -> None:
+    """Saves error message and raises exception
+    Args:
+        analysis: analysis info model
+        e: Exception
+        message: error message to display for a user
+    """
     analysis.refresh_from_db()
     analysis.status = analysis.AnalysisStatus.ERROR
     analysis.error_text = message if message else "Couldn't process your file"
@@ -31,14 +39,14 @@ def explain_error(analysis, e=None, message=None):
         raise Exception(message)
 
 
-def read_tg_file(path):
-    with open(path, "r", encoding="UTF8") as f:
-        return json.load(f)
-
-
-def analyze_tg(analysis):
+def analyze_tg(analysis: ChatAnalysis) -> None:
+    """Performs Telegram chat analysis and saves the results
+    Args:
+        analysis: analysis info model
+    """
     try:
-        chat_history = read_tg_file(analysis.chat_file.path)
+        with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
+            chat_history = json.load(f)
 
         chat_id = str(chat_history["id"])
         chat_name = chat_history["name"]
@@ -60,20 +68,17 @@ def analyze_tg(analysis):
 
         analysis.save()
 
-        try:
-            results = make_general_analysis(msg_list)
-        except Exception as e:
-            explain_error(analysis, e, "Couldn't make analysis. Some error.")
-        else:
-            analysis.results = json.dumps(results)
-            analysis.save()
-
-            make_wordcloud(msg_list, analysis)
+        run_analyses(analysis, msg_list)
 
 
-def update_tg(analysis):
+def update_tg(analysis: ChatAnalysis) -> None:
+    """Performs Telegram chat analysis and updates the results
+    Args:
+        analysis: analysis info model
+    """
     try:
-        chat_history = read_tg_file(analysis.chat_file.path)
+        with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
+            chat_history = json.load(f)
 
         if str(chat_history["id"]) != analysis.telegram_id:
             raise ValueError("Chat id doesn't match")
@@ -88,14 +93,14 @@ def update_tg(analysis):
         analysis.status = analysis.AnalysisStatus.PROCESSING
         analysis.save()
 
-        results = make_general_analysis(msg_list)
-        analysis.results = json.dumps(results)
-        analysis.save()
-
-        make_wordcloud(msg_list, analysis)
+        run_analyses(analysis, msg_list)
 
 
-def analyze_wa(analysis):
+def analyze_wa(analysis: ChatAnalysis) -> None:
+    """Performs Telegram chat analysis and saves the results
+    Args:
+        analysis: analysis info model
+    """
     try:
         with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
             text = f.read()
@@ -107,46 +112,30 @@ def analyze_wa(analysis):
     else:
         analysis.messages_count = len(msg_list)
         analysis.chat_platform = WHATSAPP
+        analysis.status = analysis.AnalysisStatus.PROCESSING
         analysis.save()
 
-        make_wordcloud(msg_list, analysis)
+        run_analyses(analysis, msg_list)
 
 
-def make_wordcloud(raw_messages, analysis):
-    if analysis.chat_platform == TELEGRAM:
-        msg_list_direct = remove_forwarded(raw_messages)
-        msg_list_txt = get_msg_text_list_tg(msg_list_direct)
-    else:
-        msg_list_txt = raw_messages
+def run_analyses(analysis: ChatAnalysis, msg_list: list) -> None:
+    """Starts analyses for provided messages and saves results to analysis object
+    Args:
+        analysis: analysis info model
+        msg_list: list of messages in a format of message service
+    """
+
+    if analysis.chat_platform != WHATSAPP:  # Temporarily unsupported messenger
+        try:
+            results = make_general_analysis(msg_list, analysis.chat_platform)
+        except Exception as e:
+            explain_error(analysis, e, "Couldn't make analysis. Some error.")
+        else:
+            analysis.results = json.dumps(results)
+            analysis.save()
 
     try:
-        filtered_msg_list_txt = filter_big_messages(msg_list_txt)
-
-        words_list = get_words(filtered_msg_list_txt)
-
-        if analysis.language == analysis.AnalysisLanguage.RUSSIAN:
-            normal_words = get_normalized_words_ru(words_list)
-
-            # change the normal form of the word with a more common form
-            normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
-
-            counted_words = get_word_count(normal_words)
-            wordcloud_pic = get_pic_from_frequencies(counted_words)
-        elif analysis.language == analysis.AnalysisLanguage.ENGLISH:
-            wc = WordCloud(
-                max_words=200,
-                width=1920,
-                height=1080,
-                color_func=get_colors_by_size,
-                stopwords=stopwords_en,
-                collocation_threshold=3,
-                min_word_length=3,
-            )
-            word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
-            wordcloud_pic = word_cloud.to_image()
-        else:
-            raise ValueError("Wrong language")
-
+        wordcloud_pic = make_wordcloud(msg_list, analysis.chat_platform, analysis.language)
     except Exception as e:
         explain_error(analysis, e, "Couldn't build a wordcloud of your chat.")
     else:
@@ -156,8 +145,60 @@ def make_wordcloud(raw_messages, analysis):
         analysis.save()
 
 
-def pic_to_imgfile(pic: Image, name="output.png", ext=None) -> ImageFile:
-    """Saves PIL image to Django ImageFile which can be assigned to ImageField."""
+def make_wordcloud(raw_messages: list, chat_platform: str, language: str) -> Image:
+    """Produces wordcloud for provided messages
+    Args:
+        raw_messages: list of messages in a format of message service
+        chat_platform: Name of chat platform
+        language: Language of messages
+    Returns a WordCloud in a PIL Image format
+    """
+    if chat_platform == TELEGRAM:
+        msg_list_direct = remove_forwarded(raw_messages)
+        msg_list_txt = get_msg_text_list_tg(msg_list_direct)
+    elif chat_platform == WHATSAPP:
+        msg_list_txt = filter_whatsapp_messages(raw_messages)
+    else:
+        raise ValueError("Wrong chat platform")
+
+    filtered_msg_list_txt = filter_big_messages(msg_list_txt)
+
+    words_list = get_words(filtered_msg_list_txt)
+
+    if language == ChatAnalysis.AnalysisLanguage.RUSSIAN:
+        normal_words = get_normalized_words_ru(words_list)
+
+        # change the normal form of the word with a more common form
+        normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
+
+        counted_words = get_word_count(normal_words)
+        wordcloud_pic = get_pic_from_frequencies(counted_words)
+    elif language == ChatAnalysis.AnalysisLanguage.ENGLISH:
+        wc = WordCloud(
+            max_words=200,
+            width=1920,
+            height=1080,
+            color_func=get_colors_by_size,
+            stopwords=stopwords_en,
+            collocation_threshold=3,
+            min_word_length=3,
+        )
+        word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
+        wordcloud_pic = word_cloud.to_image()
+    else:
+        raise ValueError("Wrong language")
+
+    return wordcloud_pic
+
+
+def pic_to_imgfile(pic: Image, name: str = "output.png", ext: Optional[str] = None) -> ImageFile:
+    """Turns PIL image to Django ImageFile which can be assigned to ImageField
+    Args:
+        pic: PIL Image
+        name: picture name
+        ext: picture extension supported by PIL
+    Returns Django ImageFile
+    """
     if not ext:
         name_split = name.split(".")
         ext = name_split[-1].upper() if len(name_split) > 1 else "PNG"
@@ -166,28 +207,45 @@ def pic_to_imgfile(pic: Image, name="output.png", ext=None) -> ImageFile:
     return ImageFile(output, name=name)
 
 
-def get_chat_name_wa(filename: str) -> str:
-    """Extracts chat name from WhatsApp exported file name. Returns chat name or empty string on failure."""
+def get_chat_name_wa(filename: str) -> Optional[str]:
+    """Extracts chat name from WhatsApp exported file name.
+    Args:
+        filename: name of WhatsApp chat export file
+    Returns chat name or None on failure
+    """
     name_regex_ru = re.search(r"Чат WhatsApp с (.*)\.txt$", filename)
     name_regex_en = re.search(r"WhatsApp Chat with (.*)\.txt$", filename)
     if name_regex_ru:
         return name_regex_ru.group(1)
     elif name_regex_en:
         return name_regex_en.group(1)
-    else:
-        return ""
 
 
-def get_msg_text_list_wa(text: str) -> list:
+def get_msg_text_list_wa(text: str) -> list[str]:
+    """Parses WhatsApp export file
+    Args:
+        text: WhatsApp export file text
+    Returns list of messages
+    """
     msg_list1 = re.split(r"\n*\d+/\d+/\d+, \d+:\d+ - \S+: ", text)
     msg_list2 = re.split(r"\n*\d+.\d+.\d+, \d+:\d+ - [^:]*: ", text)
     msg_list = msg_list1 if len(msg_list1) > len(msg_list2) else msg_list2
     if len(msg_list) < 3:
         raise ValueError("msg_list is too short")
 
+    return msg_list
+
+
+def filter_whatsapp_messages(msg_list: list[str]) -> list[str]:
+    """Filters out bare links and WhatsApp service messages from the list of messages
+    Args:
+        msg_list: List of messages
+    Returns filtered list of messages
+    """
     msg_list_clean = []
+
     link_regex = re.compile(
-        r"https?://(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*"
+        r"https?://(www\.)?[-a-zA-Z\d@:%._+~#=]{1,256}\.[a-zA-Z\d()]{1,6}\b[-a-zA-Z\d()@:%_+.~#?&/=]*"
     )
 
     for msg in msg_list:
@@ -201,7 +259,12 @@ def get_msg_text_list_wa(text: str) -> list:
     return msg_list_clean
 
 
-def remove_forwarded(msg_list: list) -> list:
+def remove_forwarded(msg_list: list[dict]) -> list[dict]:
+    """Filters out forwarded messages
+    Args:
+        msg_list: List of Telegram messages
+    Returns filtered list of messages
+    """
     filtered_msg_list = []
     for msg in msg_list:
         if not msg.get("forwarded_from"):
@@ -209,7 +272,12 @@ def remove_forwarded(msg_list: list) -> list:
     return filtered_msg_list
 
 
-def get_msg_text_list_tg(msg_list: list) -> list:
+def get_msg_text_list_tg(msg_list: list[dict]) -> list[str]:
+    """Parses messages text from the list of message dictionaries
+    Args:
+        msg_list: List of Telegram messages
+    Returns list of text messages
+    """
     messages = []
     for msg in msg_list:
         msg_text = msg.get("text")
@@ -218,12 +286,17 @@ def get_msg_text_list_tg(msg_list: list) -> list:
     return messages
 
 
-def filter_big_messages(msg_list: list) -> list:
-    # filtering messages with more than 55 words
+def filter_big_messages(msg_list: list[str]) -> list[str]:
+    """Filters messages with more than 55 words
+    Args:
+        msg_list: List of text messages
+    Returns list of text messages
+    """
     return list(filter(lambda msg: len(msg.split()) < 56, msg_list))
 
 
 def remove_emojis(text: str) -> str:
+    """Removes emojis from a string"""
     emojis = re.compile(
         "["
         "\U0001F600-\U0001F64F"  # emoticons
@@ -250,17 +323,26 @@ def remove_emojis(text: str) -> str:
     return re.sub(emojis, "", text)
 
 
-def get_words(msg_list_txt: list) -> list:
+def get_words(msg_list_txt: list[str]) -> list[str]:
+    """Extracts all the words from a list of strings removing signs and emojis
+    Args:
+        msg_list_txt: list of strings
+    Returns list of words
+    """
     all_messages_text = " ".join(msg_list_txt)
-    punct = '!"#$%&()*+,-./:;<=>?@[]^_`{|}~„“«»†*—/-‘’1234567890'
+    punctuation = '!"#$%&()*+,-./:;<=>?@[]^_`{|}~„“«»†*—/-‘’1234567890'
 
-    clean_text = "".join(char for char in all_messages_text if char not in punct)
+    clean_text = "".join(char for char in all_messages_text if char not in punctuation)
     clean_text = remove_emojis(clean_text)
 
     return clean_text.lower().split()
 
 
-def get_normalized_words_ru(words: list) -> list:
+def get_normalized_words_ru(words: list[str]) -> list[str]:
+    """Returns only nouns in russian in a normal form, filtering words in a stop-list
+    Args:
+        words: list of words in russian
+    """
     normal_words = []
     for word in words:
         word_analysis = morph.parse(word)[0]
@@ -275,14 +357,21 @@ def get_normalized_words_ru(words: list) -> list:
     return normal_words
 
 
-def get_word_count(word_list: list) -> dict:
+def get_word_count(word_list: list[str]) -> dict[str:int]:
+    """Returns dict of words and associated frequency
+    Args:
+        word_list: list of words
+    """
     word_count = Counter()
     for word in word_list:
         word_count[word] += 1
     return dict(word_count.most_common())
 
 
-def get_colors_by_size(word, font_size, position, orientation, font_path, random_state) -> tuple:  # skipcq: PYL-W0613
+def get_colors_by_size(
+    word, font_size, position, orientation, font_path, random_state
+) -> Union[tuple, str]:  # skipcq: PYL-W0613 # noqa
+    """Returns a color depending on a font size for a WordCloud generating"""
     if font_size > 315:
         color = (200, 0, 255)  # violet
     elif font_size > 150:
@@ -300,7 +389,12 @@ def get_colors_by_size(word, font_size, position, orientation, font_path, random
     return color
 
 
-def get_pic_from_frequencies(counted_words: dict) -> Image:
+def get_pic_from_frequencies(counted_words: dict[str:int]) -> Image:
+    """Generates a word cloud picture from words and frequencies
+    Args:
+        counted_words: dict of words and associated frequency
+    Returns a word cloud in a PIL Image format
+    """
     wc = WordCloud(
         max_words=200,
         width=1920,
@@ -312,55 +406,36 @@ def get_pic_from_frequencies(counted_words: dict) -> Image:
     return word_cloud.to_image()
 
 
-def df_from_tg(msg_list):
-    def get_seq(series):  # get chat sequences.
-        seq = np.zeros(len(series)).astype(int)
-        _count = 1
-        sender = series[0]
-        seq[0] = _count
-
-        for i in range(1, len(series)):
-            if series[i] != sender:
-                _count += 1
-                sender = series[i]
-            seq[i] = _count
-        return seq
-
-    def get_seq_difference(seq, diff, delta_max="1 day"):
-        prev_seq = None
-        seq_diff = []
-        for row in zip(seq, diff):
-            if prev_seq is None:
-                prev_seq = row[0]
-            if row[0] == prev_seq:
-                seq_diff.append(pd.NA)
-            else:
-                prev_seq = row[0]
-                if row[1] < pd.Timedelta(delta_max):
-                    seq_diff.append(row[1].seconds)
-                else:
-                    seq_diff.append(pd.NA)
-        return pd.Series(seq_diff)
+def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
+    """Makes DataFrame of Telegram messages adding needed info and filtering out service messages
+    Args:
+        msg_list: List of Telegram messages
+    Returns Pandas Dataframe with messages
+    """
 
     df = pd.DataFrame(msg_list)
     df = df[df.type == "message"].drop("type", axis=1).reset_index(drop=True)
     df["timestamp"] = pd.to_datetime(df.date)
-    df["hour"] = df["timestamp"].dt.hour
-    df["date"] = df.timestamp.dt.date
     df["from"] = df["from"].fillna("Deleted user")
-    df["from"] = df["from"].astype("category")
-    df["word"] = df["text"].apply(lambda text: len(text.split()) if type(text) is str else 0)
-    df["weekday"] = df["timestamp"].dt.day_name()
-    df["diff"] = np.insert(np.diff(df["timestamp"]), 0, 0)
-    df["seq"] = get_seq(df["from"])
-    df["seq_diff"] = get_seq_difference(df["seq"], df["diff"], "5 hours")
     return df
 
 
-def make_general_analysis(msg_list):
-    df = df_from_tg(msg_list)
+def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
+    """Returns dict of analyses values
+    Args:
+        msg_list: List of Telegram messages
+        chat_platform: The chat platform name
+    """
+    if chat_platform == TELEGRAM:
+        df = df_from_tg(msg_list)
+    else:
+        raise ValueError("Unsupported chat platform")
+    df = generate_more_data(df)
     df_unique_seq = df.drop_duplicates(subset=["seq"]).reset_index(drop=True)
-    df_no_forwarded = df[pd.isna(df["forwarded_from"])].drop("forwarded_from", axis=1).reset_index(drop=True)
+    if chat_platform == TELEGRAM:
+        df_no_forwarded = df[pd.isna(df["forwarded_from"])].drop("forwarded_from", axis=1).reset_index(drop=True)
+    else:
+        df_no_forwarded = df
 
     results = {
         "daily_year_msg": get_daily_msg_amount(df, 365),
@@ -377,8 +452,61 @@ def make_general_analysis(msg_list):
     return results
 
 
-def get_daily_msg_amount(df: pd.DataFrame, days: int = 365):
-    # msgAmountYear; график: количество сообщений(y) от дня(x) (за всю ситорию чата)
+def generate_more_data(df: pd.DataFrame) -> pd.DataFrame:
+    def get_seq(series: pd.Series) -> np.ndarray:
+        """Returns count of consequential items that are different from previous"""
+        seq = np.zeros(len(series)).astype(int)
+        _count = 1
+        sender = series[0]
+        seq[0] = _count
+
+        for i in range(1, len(series)):
+            if series[i] != sender:
+                _count += 1
+                sender = series[i]
+            seq[i] = _count
+        return seq
+
+    def get_seq_difference(seq: pd.Series, diff: pd.Series, delta_max: str = "1 day") -> pd.Series:
+        """Returns time between different sequences or
+        NA if they are the same or time between them is more than delta_max"""
+        prev_seq = None
+        seq_diff = []
+        for row in zip(seq, diff):
+            if prev_seq is None:
+                prev_seq = row[0]
+            if row[0] == prev_seq:
+                seq_diff.append(pd.NA)
+            else:
+                prev_seq = row[0]
+                if row[1] < pd.Timedelta(delta_max):
+                    seq_diff.append(row[1].seconds)
+                else:
+                    seq_diff.append(pd.NA)
+        return pd.Series(seq_diff)
+
+    df["hour"] = df["timestamp"].dt.hour
+    df["date"] = df.timestamp.dt.date
+    df["from"] = df["from"].astype("category")
+    df["word"] = df["text"].apply(lambda text: len(text.split()) if type(text) is str else 0)
+    df["weekday"] = df["timestamp"].dt.day_name()
+    df["diff"] = np.insert(np.diff(df["timestamp"]), 0, 0)
+    df["seq"] = get_seq(df["from"])
+    df["seq_diff"] = get_seq_difference(df["seq"], df["diff"], "5 hours")
+
+    return df
+
+
+def get_daily_msg_amount(df: pd.DataFrame, days: int = 365) -> dict:
+    """Generates data for daily amount of messages chart
+    Args:
+        df: DataFrame to analyze
+        days: amount of days until the final message date
+    Returns a dict, where
+        values: list[int]: daily number of messages list
+        end_date: float: the last day in the unix timestamp format
+        average: float: average message amount for all days from the first to the last message in the chat
+    """
     daily_msg = df[["timestamp", "id"]].set_index("timestamp").resample("D").count().reset_index()
     end_date = daily_msg.iloc[-1:].timestamp.dt.to_pydatetime()[0].timestamp()
     average_msg_amount = statistics.mean(daily_msg["id"].to_list())
@@ -389,9 +517,14 @@ def get_daily_msg_amount(df: pd.DataFrame, days: int = 365):
     }
 
 
-def generate_dates(end_date: float, n: int, step_days: int = 1) -> list:
-    # generate n days till end date
-    # n = len(msg_amount)
+def generate_dates(end_date: float, n: int, step_days: int = 1) -> list[str]:
+    """Generates dates with specified parameters
+    Args:
+        end_date: the last day in the unix timestamp format for the generated dates list
+        n: number of generated dates
+        step_days: step between generated dates in days
+    Returns list of dates in the format of dd.mm.yyyy
+    """
     dt = datetime.datetime.fromtimestamp(end_date)
     step = datetime.timedelta(days=step_days)
     result = []
@@ -404,25 +537,29 @@ def generate_dates(end_date: float, n: int, step_days: int = 1) -> list:
 
 
 def get_top_day(df: pd.DataFrame) -> str:
+    """Returns date of the highest amount of messages in the format of dd.mm.yyyy"""
     amount_by_date = df[["id", "date", "seq"]].groupby("date").count()
     sorted_dates = amount_by_date.sort_values("id", ascending=False).reset_index()
     return sorted_dates.date[0].strftime("%d.%m.%Y")
 
 
-def get_top_weekday(df):
+def get_top_weekday(df: pd.DataFrame) -> str:
+    """Returns name of the weekday with the highest average amount of messages"""
     weekdays = df[["id", "weekday", "seq"]].groupby("weekday").count()
     sorted_weekdays = weekdays.sort_values("id", ascending=False).reset_index()
     return sorted_weekdays.weekday[0]
 
 
-def get_days_duration(df):
+def get_days_duration(df: pd.DataFrame) -> int:
+    """Returns duration of the chat in days"""
     date_start = df[["timestamp"]].iloc[0]
     date_end = df[["timestamp"]].iloc[-1]
     days = int((date_end - date_start).dt.days) + 1
     return days
 
 
-def get_avg_for_each_hour(df):
+def get_avg_for_each_hour(df: pd.DataFrame) -> list[float]:
+    """Returns list of average amount of messages for each hour from 0 to 23"""
     days = get_days_duration(df)
     hourly_msg_avg = df[["id", "hour", "seq"]].groupby("hour").count()["id"].to_list()
     hourly_msg_avg = [*map(lambda x: round(x / days, 2), hourly_msg_avg)]
@@ -430,6 +567,7 @@ def get_avg_for_each_hour(df):
 
 
 def get_msg_count_per_user(df: pd.DataFrame) -> dict:
+    """Returns dict containing amount of messages for top 4 users and sum for others"""
     total = len(df)
     users = df["from"].cat.categories.to_list()
     user_msg_count = df[["id", "from"]].groupby("from").count().sort_values("id", ascending=False)
@@ -442,6 +580,7 @@ def get_msg_count_per_user(df: pd.DataFrame) -> dict:
 
 
 def get_user_msg_per_day(df: pd.DataFrame) -> dict:
+    """Returns dict containing average amount of messages per day for top-5 users"""
     users = df["from"].cat.categories.to_list()
     average_msg = {}
     for user in users:
@@ -458,8 +597,8 @@ def get_user_msg_per_day(df: pd.DataFrame) -> dict:
     return average_msg
 
 
-def get_words_per_message(df) -> dict:
-    # average word per message
+def get_words_per_message(df: pd.DataFrame) -> dict:
+    """Returns dict containing average amount of words per message for top-5 users"""
     df_without_media = df[df.media_type.isna()].reset_index()
     user_word_count = df_without_media[["from", "word"]].groupby("from").sum("word")
     user_word_count = user_word_count.to_dict()["word"]
@@ -478,18 +617,21 @@ def get_words_per_message(df) -> dict:
     return sorted_user_word_count
 
 
-def get_media_share(df) -> dict:
+def get_media_share(df: pd.DataFrame) -> dict:
+    """Returns dict containing the share of text messages and the share of other messages in percents"""
     text_perc = round(100 * df.media_type.isna().sum() / len(df), 2)
     media_perc = round(100 - text_perc, 2)
     return {"text": text_perc, "media": media_perc}
 
 
-def get_response_time(df) -> dict:
+def get_response_time(df: pd.DataFrame) -> dict:
+    """Returns dict containing average time (in seconds) between messages from different users for top-5 users"""
     answer_time = df[["from", "seq_diff"]].groupby("from").seq_diff.apply(np.mean)
     return answer_time.sort_values()[:5].to_dict()
 
 
-def get_response_hours(df) -> dict:
+def get_response_hours(df: pd.DataFrame) -> dict[str:int]:
+    """Returns dict containing start and end hours for the fastest response time."""
     answer_time = df[["hour", "seq_diff"]].groupby("hour").seq_diff.apply(np.mean)
     answer_time = answer_time.sort_values()
     hour_list = answer_time.index

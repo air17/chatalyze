@@ -10,6 +10,26 @@ from core.celery import app
 
 
 class ChatAnalysis(models.Model):
+    """Stores analysis results and chat information
+
+    Attributes:
+        author: Related User model
+        chat_file: File containing chat messages
+        chat_name: Chat title
+        telegram_id: Chat id for Telegram chats
+        chat_platform: Chat platform name
+        language: Chat language
+        messages_count: Number of the messages in the chat
+        created: Date and time the first analysis started
+        updated: Date and time the last analysis finished
+        status: Analysis status
+        error_text: Text of error to display
+        word_cloud_pic: WordCloud picture file
+        task_id: Last Celery task id for the analysis
+        results: Analysis data
+
+    """
+
     class AnalysisStatus(models.TextChoices):
         """Enumerated string choices."""
 
@@ -98,10 +118,18 @@ class ChatAnalysis(models.Model):
 
 @receiver(pre_delete, sender=ChatAnalysis)
 def my_handler(instance, **__):
+    """Stops a task associated with the deleted analysis"""
     app.control.revoke(instance.task_id, terminate=True)
 
 
 class ShareLink(models.Model):
+    """Stores public id for a shared analysis
+
+    Attributes:
+        id: id for the shared analysis link
+        analysis: Related ChatAnalysis model
+    """
+
     id = UrlsafeTokenField(
         editable=False,
         max_length=128,
