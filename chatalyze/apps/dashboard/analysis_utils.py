@@ -17,7 +17,7 @@ from pymorphy2 import MorphAnalyzer
 
 from .const import TELEGRAM, WHATSAPP
 from .models import ChatAnalysis
-from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en
+from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en, whatsapp_stoplist_no_media
 
 morph = MorphAnalyzer()
 
@@ -104,7 +104,7 @@ def analyze_wa(analysis: ChatAnalysis) -> None:
     try:
         with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
             text = f.read()
-        msg_list = get_msg_text_list_wa(text)
+        msg_list = get_msg_dict_wa(text)
     except ValueError as e:
         explain_error(analysis, e, "File format is wrong or this WhatsApp localization is not supported yet.")
     except Exception as e:
@@ -125,14 +125,13 @@ def run_analyses(analysis: ChatAnalysis, msg_list: list) -> None:
         msg_list: list of messages in a format of message service
     """
 
-    if analysis.chat_platform != WHATSAPP:  # Temporarily unsupported messenger
-        try:
-            results = make_general_analysis(msg_list, analysis.chat_platform)
-        except Exception as e:
-            explain_error(analysis, e, "Couldn't make analysis. Some error.")
-        else:
-            analysis.results = json.dumps(results)
-            analysis.save()
+    try:
+        results = make_general_analysis(msg_list, analysis.chat_platform)
+    except Exception as e:
+        explain_error(analysis, e, "Couldn't make analysis. Some error.")
+    else:
+        analysis.results = json.dumps(results)
+        analysis.save()
 
     try:
         wordcloud_pic = make_wordcloud(msg_list, analysis.chat_platform, analysis.language)
@@ -155,9 +154,10 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str) -> Ima
     """
     if chat_platform == TELEGRAM:
         msg_list_direct = remove_forwarded(raw_messages)
-        msg_list_txt = get_msg_text_list_tg(msg_list_direct)
+        msg_list_txt = get_msg_text_list_tg_wa(msg_list_direct)
     elif chat_platform == WHATSAPP:
-        msg_list_txt = filter_whatsapp_messages(raw_messages)
+        msg_list_txt = get_msg_text_list_tg_wa(raw_messages)
+        msg_list_txt = filter_whatsapp_messages(msg_list_txt)
     else:
         raise ValueError("Wrong chat platform")
 
@@ -221,21 +221,6 @@ def get_chat_name_wa(filename: str) -> Optional[str]:
         return name_regex_en.group(1)
 
 
-def get_msg_text_list_wa(text: str) -> list[str]:
-    """Parses WhatsApp export file
-    Args:
-        text: WhatsApp export file text
-    Returns list of messages
-    """
-    msg_list1 = re.split(r"\n*\d+/\d+/\d+, \d+:\d+ - \S+: ", text)
-    msg_list2 = re.split(r"\n*\d+.\d+.\d+, \d+:\d+ - [^:]*: ", text)
-    msg_list = msg_list1 if len(msg_list1) > len(msg_list2) else msg_list2
-    if len(msg_list) < 3:
-        raise ValueError("msg_list is too short")
-
-    return msg_list
-
-
 def filter_whatsapp_messages(msg_list: list[str]) -> list[str]:
     """Filters out bare links and WhatsApp service messages from the list of messages
     Args:
@@ -244,17 +229,12 @@ def filter_whatsapp_messages(msg_list: list[str]) -> list[str]:
     """
     msg_list_clean = []
 
-    link_regex = re.compile(
-        r"https?://(www\.)?[-a-zA-Z\d@:%._+~#=]{1,256}\.[a-zA-Z\d()]{1,6}\b[-a-zA-Z\d()@:%_+.~#?&/=]*"
-    )
-
     for msg in msg_list:
         for phrase in whatsapp_stoplist:
             if phrase in msg:
                 break
         else:
-            if not link_regex.search(msg):
-                msg_list_clean.append(msg.strip())
+            msg_list_clean.append(msg.strip())
 
     return msg_list_clean
 
@@ -272,7 +252,7 @@ def remove_forwarded(msg_list: list[dict]) -> list[dict]:
     return filtered_msg_list
 
 
-def get_msg_text_list_tg(msg_list: list[dict]) -> list[str]:
+def get_msg_text_list_tg_wa(msg_list: list[dict]) -> list[str]:
     """Parses messages text from the list of message dictionaries
     Args:
         msg_list: List of Telegram messages
@@ -406,6 +386,50 @@ def get_pic_from_frequencies(counted_words: dict[str:int]) -> Image:
     return word_cloud.to_image()
 
 
+def get_msg_dict_wa(text: str) -> list[dict]:
+    """Parses WhatsApp export file
+    Args:
+        text: WhatsApp export file text
+    Returns list of messages
+    """
+    link_regex = re.compile(
+        r"""(?i)\b(?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,6}/)(?:[^\s()<>]+|\((?:[^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’])"""
+    )
+
+    msg_pattern = re.compile(
+        r"(?P<datetime>\d{1,2}[\/|\.]\d{1,2}[\/|\.]\d{2,4},?\s\d{2}[:|\.]\d{2}(?:[:|\.]\d{2})?(?:\s[APap][Mm])?)\s-\s(?P<sender>\S+|[^:]*):\s(?P<text>.*)"
+    )
+
+    msg_list = []
+
+    for line_text in text.splitlines():
+        for phrase in whatsapp_stoplist_no_media:
+            if phrase in line_text:
+                break
+        else:
+            message = msg_pattern.search(line_text)
+            if message:
+                msg = {
+                    "from": message.group("sender") or "You",
+                    "date": message.group("datetime"),
+                    "text": message.group("text"),
+                    "media_type": None,
+                }
+                if link_regex.search(line_text):
+                    msg["media_type"] = "url"
+                    msg["text"] = ""
+                elif "Без медиафайлов" in msg["text"] or "Media omitted" in msg["text"]:
+                    msg["media_type"] = "media"
+                    msg["text"] = ""
+                msg_list.append(msg)
+            else:
+                if msg_list:
+                    msg_list[-1]["text"] += "\n" + line_text
+    if len(msg_list) < 3:
+        raise ValueError("msg_list is too short")
+    return msg_list
+
+
 def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     """Makes DataFrame of Telegram messages adding needed info and filtering out service messages
     Args:
@@ -420,6 +444,19 @@ def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     return df
 
 
+def df_from_wa(msg_list: list[dict]) -> pd.DataFrame:
+    """Makes DataFrame of WhatsApp messages adding needed info
+    Args:
+        msg_list: List of WhatsApp messages
+    Returns Pandas Dataframe with messages
+    """
+
+    df = pd.DataFrame(msg_list)
+    df["timestamp"] = pd.to_datetime(df["date"], dayfirst=True)
+    df.insert(0, "id", np.array(range(0, len(df))))
+    return df
+
+
 def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
     """Returns dict of analyses values
     Args:
@@ -428,12 +465,16 @@ def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
     """
     if chat_platform == TELEGRAM:
         df = df_from_tg(msg_list)
+    elif chat_platform == WHATSAPP:
+        df = df_from_wa(msg_list)
     else:
         raise ValueError("Unsupported chat platform")
     df = generate_more_data(df)
     df_unique_seq = df.drop_duplicates(subset=["seq"]).reset_index(drop=True)
     if chat_platform == TELEGRAM:
         df_no_forwarded = df[pd.isna(df["forwarded_from"])].drop("forwarded_from", axis=1).reset_index(drop=True)
+    elif chat_platform == WHATSAPP:
+        df_no_forwarded = df.query("`text`.str.len() < 230")
     else:
         df_no_forwarded = df
 

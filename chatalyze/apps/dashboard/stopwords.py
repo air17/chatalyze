@@ -1,6 +1,4 @@
-whatsapp_stoplist = (
-    "Без медиафайлов",
-    "Media omitted",
+whatsapp_stoplist_no_media = (
     "Пропущенный аудиозвонок",
     "Пропущенный видеозвонок",
     "Missed voice call",
@@ -14,6 +12,11 @@ whatsapp_stoplist = (
     "was deleted",
     "Your security code with",
 )
+
+whatsapp_stoplist = (
+    "Без медиафайлов",
+    "Media omitted",
+) + whatsapp_stoplist_no_media
 
 stopwords_ru = (
     "c",
