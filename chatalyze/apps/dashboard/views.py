@@ -67,6 +67,7 @@ def analysis_update(request, pk):
 
     task = tasks.update_chat_analysis.delay(analysis_id=analysis.id)
     analysis.task_id = task.id
+    analysis.status = analysis.AnalysisStatus.PROCESSING
     analysis.save()
 
     sleep(1)

@@ -90,7 +90,6 @@ def update_tg(analysis: ChatAnalysis) -> None:
         explain_error(analysis, e, "File format is wrong.")
     else:
         analysis.messages_count = len(msg_list)
-        analysis.status = analysis.AnalysisStatus.PROCESSING
         analysis.save()
 
         run_analyses(analysis, msg_list)
@@ -112,7 +111,6 @@ def analyze_wa(analysis: ChatAnalysis) -> None:
     else:
         analysis.messages_count = len(msg_list)
         analysis.chat_platform = WHATSAPP
-        analysis.status = analysis.AnalysisStatus.PROCESSING
         analysis.save()
 
         run_analyses(analysis, msg_list)
