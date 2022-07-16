@@ -4,7 +4,7 @@ import re
 import statistics
 from collections import Counter
 from io import BytesIO
-from typing import Optional, Union
+from typing import Optional, Union, Iterable
 
 import pandas as pd
 import numpy as np
@@ -15,7 +15,7 @@ from django.utils import timezone
 from wordcloud import WordCloud
 from pymorphy2 import MorphAnalyzer
 
-from .const import TELEGRAM, WHATSAPP
+from .const import TELEGRAM, WHATSAPP, DATETIME_FORMATS
 from .models import ChatAnalysis
 from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en, whatsapp_stoplist_no_media
 
@@ -397,7 +397,7 @@ def get_msg_dict_wa(text: str) -> list[dict]:
     )
 
     msg_pattern = re.compile(
-        r"(?P<datetime>\d{1,2}[\/|\.]\d{1,2}[\/|\.]\d{2,4},?\s\d{2}[:|\.]\d{2}(?:[:|\.]\d{2})?(?:\s[APap][Mm])?)\s-\s(?P<sender>\S+|[^:]*):\s(?P<text>.*)"
+        r"(?P<datetime>\d{1,2}[\/|\.]\d{1,2}[\/|\.]\d{2,4},?\s\d{2}[:|\.]\d{2}(?:[:|\.]\d{2})?(?:\s?[APap][Mm])?)\s-\s(?P<sender>\S+|[^:]*):\s(?P<text>.*)"
     )
 
     msg_list = []
@@ -444,6 +444,34 @@ def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     return df
 
 
+def detect_datetime_format(date_list: Iterable[str]) -> Optional[str]:
+    """Guesses datetime format suitable for all dates
+    Args:
+        date_list: dates list of any iterable type
+    Returns datetime format that is common for all dates in the list. If fails to guess format returns None.
+    """
+    detected_formats: list[set] = []
+    for date in date_list:
+        possible_formats = set()
+        for dt_format in DATETIME_FORMATS:
+            try:
+                dt = datetime.datetime.strptime(date, dt_format)
+            except ValueError:
+                pass
+            else:
+                if dt < datetime.datetime.now() and dt.year >= 2009:  # WhatsApp was released in 2009
+                    possible_formats.add(dt_format)
+        if not possible_formats:
+            return
+        detected_formats.append(possible_formats)
+    last_format = detected_formats.pop()
+    result = last_format.intersection(*detected_formats)
+    if len(result) == 1:
+        return result.pop()
+    else:
+        return
+
+
 def df_from_wa(msg_list: list[dict]) -> pd.DataFrame:
     """Makes DataFrame of WhatsApp messages adding needed info
     Args:
@@ -452,7 +480,7 @@ def df_from_wa(msg_list: list[dict]) -> pd.DataFrame:
     """
 
     df = pd.DataFrame(msg_list)
-    df["timestamp"] = pd.to_datetime(df["date"], dayfirst=True)
+    df["timestamp"] = pd.to_datetime(df["date"], format=detect_datetime_format(df.date))
     df.insert(0, "id", np.array(range(0, len(df))))
     return df
 
