@@ -27,6 +27,8 @@ def analyze(request):
     file = request.FILES["chatfile"]
     lang = request.POST.get("lang")
     if file and file.name.endswith((".txt", ".json")):
+        if file.size > 1e8:
+            return HttpResponseBadRequest("File is too big")
         if lang not in models.ChatAnalysis.AnalysisLanguage.values:
             return HttpResponseBadRequest("Choose chat language")
         chat_name = get_chat_name_wa(file.name) or "noname"
@@ -52,6 +54,8 @@ def analysis_update(request, pk):
     file = request.FILES.get("chatfile")
     if not file and not file.name.endswith((".txt", ".json")):
         return HttpResponseBadRequest("You've uploaded a wrong file")
+    if file.size > 1e8:
+        return HttpResponseBadRequest("File is too big")
 
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
     if analysis.author != request.user:

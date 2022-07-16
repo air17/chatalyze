@@ -346,9 +346,8 @@ def get_word_count(word_list: list[str]) -> dict[str:int]:
     return dict(word_count.most_common())
 
 
-def get_colors_by_size(
-    word, font_size, position, orientation, font_path, random_state  # skipcq: PYL-W0613 # noqa
-) -> Union[tuple, str]:
+# skipcq: PYL-W0613
+def get_colors_by_size(word, font_size, position, orientation, font_path, random_state) -> Union[tuple, str]:  # noqa
     """Returns a color depending on a font size for a WordCloud generating"""
     if font_size > 315:
         color = (200, 0, 255)  # violet

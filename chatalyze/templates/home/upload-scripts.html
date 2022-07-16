@@ -1,0 +1,25 @@
+<script>
+    function fileSizeCheck() {
+        const chatFile = document.getElementById("chatFile")
+        if (chatFile.files.length > 0) {
+            const fileSize = chatFile.files.item(0).size;
+            if (fileSize >= 1e+8) {
+                chatFile.value = "";
+                chatFile.insertAdjacentHTML("afterend",
+                    `<div class="text-danger small my-2 text-center" id="fileSizeError">
+                       Max. size of the uploaded file should be less than 100MB
+                     </div>`)
+            } else {
+                document.getElementById("fileSizeError").remove()
+            }
+        }
+    }
+    function fileUploadHandler() {
+        const button = document.getElementById("uploadBtn");
+        button.hidden = true;
+        button.insertAdjacentHTML("afterend",
+            `<div class="spinner-border text-primary mx-4" role="status">
+               <span class="visually-hidden">Loading...</span>
+             </div>`)
+    }
+</script>

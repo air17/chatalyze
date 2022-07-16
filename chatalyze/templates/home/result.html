@@ -13,17 +13,17 @@
         <h5 class="modal-title" id="exampleModalLabel">Upload updated chat file</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="{{ request.path }}/update" method="post" enctype="multipart/form-data">
+      <form action="{{ request.path }}/update" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
       <div class="modal-body">
           {% csrf_token %}
           <div class="mb-3">
               <label for="chatFile" class="form-label">{{ result.chat_platform }} exported chat file</label>
-              <input class="form-control" type="file" id="chatFile" name="chatfile" required>
+              <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
           </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
       </div>
       </form>
     </div>
@@ -150,6 +150,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
     {% include "home/chart-scripts.html" %}
+    {% include "home/upload-scripts.html" %}
 
     <script>
         const chatName = document.getElementById("chat-name");
