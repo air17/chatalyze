@@ -52,7 +52,7 @@ def analyze(request):
 def analysis_update(request, pk):
     """Stores the file and starts its analysis if it is compatible with specified chat_platform"""
     file = request.FILES.get("chatfile")
-    if not file and not file.name.endswith((".txt", ".json")):
+    if not file or not file.name.endswith((".txt", ".json")):
         return HttpResponseBadRequest("You've uploaded a wrong file")
     if file.size > 1e8:
         return HttpResponseBadRequest("File is too big")
@@ -130,6 +130,8 @@ def discard_error(request, pk):
             analysis.status = analysis.AnalysisStatus.READY
             analysis.save()
         return HttpResponse("ok")
+    else:
+        return HttpResponseBadRequest()
 
 
 @login_required(login_url="/login/")

@@ -85,7 +85,12 @@ NPLUSONE_WHITELIST = [
 # https://github.com/wemake-services/django-test-migrations
 
 # Set of badly named migrations to ignore:
-DTM_IGNORED_MIGRATIONS = frozenset((("axes", "*"),))
+DTM_IGNORED_MIGRATIONS = frozenset(
+    (
+        ("axes", "*"),
+        ("django_celery_results", "*"),
+    )
+)
 
 
 # django-extra-checks
