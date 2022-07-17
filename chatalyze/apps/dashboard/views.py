@@ -11,7 +11,7 @@ from django.urls import reverse
 from django_celery_results.models import TaskResult
 
 from . import models, tasks
-from .analysis_utils import get_chat_name_wa, generate_dates
+from .analysis_utils import get_chat_name_wa
 from .const import TELEGRAM, WHATSAPP
 
 
@@ -87,32 +87,6 @@ def results(request):
     return HttpResponse(html_template.render(context, request))
 
 
-def get_chat_statistics(results_json: str) -> dict:
-    """Loads json data to dict and adapts it for ChartJS"""
-    chat_statistics = json.loads(results_json)
-    chat_statistics["daily_year_msg"]["dates"] = generate_dates(
-        end_date=chat_statistics["daily_year_msg"]["end_date"],
-        n=len(chat_statistics["daily_year_msg"]["values"]),
-    )
-    chat_statistics["msg_per_user"] = {
-        "labels": list(chat_statistics["msg_per_user"].keys()),
-        "data": list(chat_statistics["msg_per_user"].values()),
-    }
-    chat_statistics["words_per_message"] = {
-        "labels": list(chat_statistics["words_per_message"].keys()),
-        "data": list(chat_statistics["words_per_message"].values()),
-    }
-    chat_statistics["msg_per_day"] = {
-        "labels": list(chat_statistics["msg_per_day"].keys()),
-        "data": list(chat_statistics["msg_per_day"].values()),
-    }
-    chat_statistics["response_time"] = {
-        "labels": list(chat_statistics["response_time"].keys()),
-        "data": list(chat_statistics["response_time"].values()),
-    }
-    return chat_statistics
-
-
 @login_required(login_url="/login/")
 def analysis_result(request, pk):
     """Displays chat analysis result"""
@@ -131,9 +105,9 @@ def analysis_result(request, pk):
     return HttpResponse(html_template.render(context, request))
 
 
-def is_task_failure(analysis):
+def is_task_failure(task_id):
     """Checks if analysis failed to finish"""
-    task = TaskResult.objects.get_task(analysis.task_id)
+    task = TaskResult.objects.get_task(task_id)
     if task.status in (FAILURE, RETRY, REVOKED):
         return True
     return False
@@ -169,7 +143,7 @@ def check_status(request, pk):
     if analysis.author != request.user:
         raise PermissionDenied()
 
-    if is_task_failure(analysis):
+    if is_task_failure(analysis.task_id):
         status_error = models.ChatAnalysis.AnalysisStatus.ERROR
         if analysis.status != status_error:
             error_text = "Server error. Try again later."
@@ -207,20 +181,20 @@ def rename_analysis(request, pk):
     if request.method.lower() not in ("post", "get"):
         return HttpResponse("ok")
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
-    if analysis.author == request.user:
-        if request.method.lower() == "get":
-            name = request.GET.get("name")
-        else:
-            name = json.loads(request.body).get("name")
-        if name and len(name) < 50:
-            analysis.chat_name = name
-            analysis.save()
-            data = {"success": True, "new_name": analysis.chat_name}
-            return JsonResponse(data)
-        else:
-            return HttpResponseBadRequest()
-    else:
+    if not analysis.author == request.user:
         return HttpResponseForbidden()
+
+    if request.method.lower() == "get":
+        name = request.GET.get("name")
+    else:
+        name = json.loads(request.body).get("name")
+    if name and 0 < len(name) < 50:
+        analysis.chat_name = name
+        analysis.save()
+        data = {"success": True, "new_name": analysis.chat_name}
+        return JsonResponse(data)
+    else:
+        return HttpResponseBadRequest()
 
 
 def shared_result(request, pk):

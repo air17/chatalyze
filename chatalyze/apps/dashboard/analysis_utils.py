@@ -482,6 +482,32 @@ def df_from_wa(msg_list: list[dict]) -> pd.DataFrame:
     return df
 
 
+def get_chat_statistics(results_json: str) -> dict:
+    """Loads json data to dict and adapts it for ChartJS"""
+    chat_statistics = json.loads(results_json)
+    chat_statistics["daily_year_msg"]["dates"] = generate_dates(
+        end_date=chat_statistics["daily_year_msg"]["end_date"],
+        n=len(chat_statistics["daily_year_msg"]["values"]),
+    )
+    chat_statistics["msg_per_user"] = {
+        "labels": list(chat_statistics["msg_per_user"].keys()),
+        "data": list(chat_statistics["msg_per_user"].values()),
+    }
+    chat_statistics["words_per_message"] = {
+        "labels": list(chat_statistics["words_per_message"].keys()),
+        "data": list(chat_statistics["words_per_message"].values()),
+    }
+    chat_statistics["msg_per_day"] = {
+        "labels": list(chat_statistics["msg_per_day"].keys()),
+        "data": list(chat_statistics["msg_per_day"].values()),
+    }
+    chat_statistics["response_time"] = {
+        "labels": list(chat_statistics["response_time"].keys()),
+        "data": list(chat_statistics["response_time"].values()),
+    }
+    return chat_statistics
+
+
 def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
     """Returns dict of analyses values
     Args:
