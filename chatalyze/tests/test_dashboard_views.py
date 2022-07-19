@@ -1,3 +1,4 @@
+import json
 import pytest
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -92,7 +93,28 @@ def test_rename_analysis(admin_client, admin_user):
     analysis = ChatAnalysis.objects.create(author=admin_user, chat_name="Name")
     response = admin_client.get("/result/" + str(analysis.pk) + "/rename")
     assert response.status_code == 400
-    response = admin_client.get("/result/" + str(analysis.pk) + "/rename?name=New name")
-    assert response.status_code == 200
+    response1 = admin_client.get("/result/" + str(analysis.pk) + "/rename?name=New name")
+    assert response1.status_code == 200
     analysis.refresh_from_db()
     assert analysis.chat_name == "New name"
+
+
+def test_shared_result(admin_client, admin_user, client):
+    analysis = ChatAnalysis.objects.create(author=admin_user)
+    response = admin_client.get("/result/" + str(analysis.pk) + "/share-chat")
+    link = json.loads(response.getvalue().decode())["link"]
+    response_result = client.get(link)
+    assert response_result.status_code == 200
+    assertTemplateUsed(response_result, "home/share.html")
+    assert isinstance(response_result.context["result"], ChatAnalysis)
+
+
+def test_share_analysis(admin_client, admin_user):
+    analysis = ChatAnalysis.objects.create(author=admin_user)
+    response = admin_client.get("/result/" + str(analysis.pk) + "/share-chat")
+    assert response.status_code == 200
+    link = json.loads(response.getvalue().decode())["link"]
+    new_response = admin_client.get("/result/" + str(analysis.pk) + "/share-chat?new_link=true")
+    new_link = json.loads(new_response.getvalue().decode())["link"]
+    assert response.status_code == 200
+    assert link != new_link

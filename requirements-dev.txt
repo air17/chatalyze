@@ -9,4 +9,5 @@ black==22.6.0
 isort==5.10.1
 pre-commit==2.19
 pytest==7.1.2
+pytest-datafiles==2.0.1
 pymorphy2==0.9.1
