@@ -1,10 +1,9 @@
 import json
 import os
-
 from PIL import Image
 import pytest
 from apps.dashboard.analysis_utils import get_msg_dict_wa, make_general_analysis, get_chat_statistics, make_wordcloud
-from apps.dashboard.const import TELEGRAM, WHATSAPP
+from apps.dashboard.const import WHATSAPP
 from apps.dashboard.models import ChatAnalysis
 
 _dir = os.path.dirname(os.path.realpath(__file__))
@@ -50,7 +49,7 @@ def test_get_chat_statistics(datafiles):
     results = make_general_analysis(msg_list, WHATSAPP)
     results_json = json.dumps(results)
     chat_statistics = get_chat_statistics(results_json)
-    assert type(chat_statistics) == dict
+    assert type(chat_statistics) is dict
 
 
 @WHATSAPP_DATA
@@ -60,4 +59,4 @@ def test_make_wordcloud(datafiles):
         text = f.read()
     msg_list = get_msg_dict_wa(text)
     result = make_wordcloud(msg_list, WHATSAPP, ChatAnalysis.AnalysisLanguage.ENGLISH)
-    assert type(result) == Image.Image
+    assert type(result) is Image.Image

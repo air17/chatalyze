@@ -27,7 +27,7 @@ _base_settings = (
     "components/caches.py",
     "components/storages.py",
     # Select the right env:
-    "environments/{0}.py".format(_ENV),
+    f"environments/{_ENV}.py",
     # Optionally override some settings:
     optional("environments/local.py"),
 )

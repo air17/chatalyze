@@ -11,7 +11,7 @@ from django.urls import reverse
 from django_celery_results.models import TaskResult
 
 from . import models, tasks
-from .analysis_utils import get_chat_name_wa
+from .analysis_utils import get_chat_name_wa, get_chat_statistics
 from .const import TELEGRAM, WHATSAPP
 
 
@@ -97,7 +97,7 @@ def analysis_result(request, pk):
 
     chat_statistics = None
     if analysis.results:
-        chat_statistics = get_chat_statistics(analysis.results)  # noqa
+        chat_statistics = get_chat_statistics(analysis.results)
 
     context = {"result": analysis, "stats": chat_statistics}
     html_template = loader.get_template("home/result.html")

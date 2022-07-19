@@ -40,10 +40,10 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 _PASS = "django.contrib.auth.password_validation"  # noqa: S105
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "{0}.UserAttributeSimilarityValidator".format(_PASS)},
-    {"NAME": "{0}.MinimumLengthValidator".format(_PASS)},
-    {"NAME": "{0}.CommonPasswordValidator".format(_PASS)},
-    {"NAME": "{0}.NumericPasswordValidator".format(_PASS)},
+    {"NAME": f"{_PASS}.UserAttributeSimilarityValidator"},
+    {"NAME": f"{_PASS}.MinimumLengthValidator"},
+    {"NAME": f"{_PASS}.CommonPasswordValidator"},
+    {"NAME": f"{_PASS}.NumericPasswordValidator"},
 ]
 
 
