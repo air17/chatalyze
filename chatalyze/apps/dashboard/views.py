@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django_celery_results.models import TaskResult
 
 from . import models, tasks
@@ -96,10 +97,19 @@ def analysis_result(request, pk):
         raise PermissionDenied()
 
     chat_statistics = None
+    available_stoplist = set()
     if analysis.results:
         chat_statistics = get_chat_statistics(analysis.results)
+        available_stoplist = set(
+            chat_statistics["msg_per_user"]["labels"]
+            + chat_statistics["msg_per_day"]["labels"]
+            + chat_statistics["words_per_message"]["labels"]
+            + chat_statistics["response_time"]["labels"]
+        )
+        available_stoplist.discard("others")
+        available_stoplist.difference_update(analysis.custom_stoplist)
 
-    context = {"result": analysis, "stats": chat_statistics}
+    context = {"result": analysis, "stats": chat_statistics, "available_stoplist": available_stoplist}
     html_template = loader.get_template("home/result.html")
 
     return HttpResponse(html_template.render(context, request))
@@ -244,3 +254,27 @@ def share_analysis(request, pk):
     link = reverse("dashboard:shared_result", args=[share_link.pk])
 
     return JsonResponse({"link": link})
+
+
+@login_required(login_url="/login/")
+def set_stoplist(request, pk):
+    """Creates a stop list for the analysis"""
+    if request.method.lower() not in ("post", "get"):
+        return HttpResponse("ok")
+
+    analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
+
+    if not analysis.author == request.user:
+        return HttpResponseForbidden()
+
+    new_stoplist = request.POST.getlist("stoplist")
+
+    if new_stoplist != analysis.custom_stoplist:
+        analysis.custom_stoplist = new_stoplist
+        analysis.save()
+        task = tasks.update_chat_analysis.delay(analysis_id=analysis.id)
+        analysis.task_id = task.id
+        analysis.status = analysis.AnalysisStatus.PROCESSING
+        analysis.save()
+
+    return redirect("dashboard:result", pk=pk)

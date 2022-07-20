@@ -14,17 +14,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ request.path }}/update" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
-      <div class="modal-body">
-          {% csrf_token %}
-          <div class="mb-3">
-              <label for="chatFile" class="form-label">{{ result.chat_platform }} exported chat file</label>
-              <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
+          <div class="modal-body">
+              {% csrf_token %}
+              <div class="mb-3">
+                  <label for="chatFile" class="form-label">{{ result.chat_platform }} exported chat file</label>
+                  <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
+              </div>
           </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
-      </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
+          </div>
       </form>
     </div>
   </div>
@@ -79,14 +79,43 @@
                   <span class="visually-hidden">Share</span>
               </button>
               <button type="button" class="btn btn-outline-gray-800" id="update-share-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-                  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
-              </svg>
-              <span class="visually-hidden">Update link</span>
-          </button>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+                      <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
+                  </svg>
+                  <span class="visually-hidden">Update link</span>
+              </button>
           </div>
       </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="chatSettings" tabindex="-1" aria-labelledby="chatSettings" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chat settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ request.path }}/stoplist" method="post">
+          <div class="modal-body">
+          {% csrf_token %}
+          <div><label for="link-input">Remove users from result:</label></div>
+            {% for name in result.custom_stoplist %}
+            <div class="form-check">
+              <input id="stop-name-{{ forloop.counter }}" type="checkbox" class="form-check-input" name="stoplist" value="{{ name }}" checked>
+              <label for="stop-name-{{ forloop.counter }}" class="fw-light px-1">{{ name }}</label>
+            </div>
+            {% endfor %}
+            {% for name in available_stoplist %}
+            <div class="form-check">
+              <input id="stop-name-new-{{ forloop.counter }}" type="checkbox" class="form-check-input" name="stoplist" value="{{ name }}">
+              <label for="stop-name-new-{{ forloop.counter }}" class="fw-light px-1">{{ name }}</label>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer"><input type="submit" class="btn btn-primary" id="save-link-btn" value="Save"></div>
+      </form>
     </div>
   </div>
 </div>
@@ -118,15 +147,22 @@
             Update
         </button>
     </div>
-    <div class="col col-lg-auto">
+    <div class="col col-auto">
         <button type="button" class="btn btn-sm btn-outline-gray-800" data-bs-toggle="modal" data-bs-target="#shareChat" id="share-modal-btn">
             <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor" class="bi">
                 <path d="M568.9 143.5l-150.9-138.2C404.8-6.773 384 3.039 384 21.84V96C241.2 97.63 128 126.1 128 260.6c0 54.3 35.2 108.1 74.08 136.2c12.14 8.781 29.42-2.238 24.94-16.46C186.7 252.2 256 224 384 223.1v74.2c0 18.82 20.84 28.59 34.02 16.51l150.9-138.2C578.4 167.8 578.4 152.2 568.9 143.5zM416 384c-17.67 0-32 14.33-32 32v31.1l-320-.0013V128h32c17.67 0 32-14.32 32-32S113.7 64 96 64H64C28.65 64 0 92.65 0 128v319.1c0 35.34 28.65 64 64 64l320-.0013c35.35 0 64-28.66 64-64V416C448 398.3 433.7 384 416 384z"></path>
             </svg>
             <span class="visually-hidden">Share</span>
         </button>
-        &nbsp;
-        <button type="button" class="btn btn-sm btn-outline-danger float-end" data-bs-toggle="modal" data-bs-target="#deleteChat">
+        {% if result.get_status_display == "Ready" %}
+        <button type="button" class="btn btn-sm btn-outline-gray-800" data-bs-toggle="modal" data-bs-target="#chatSettings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+              <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"></path>
+              <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"></path>
+            </svg>
+        </button>
+        {% endif %}
+        <button type="button" class="btn btn-sm btn-outline-danger mx-3" data-bs-toggle="modal" data-bs-target="#deleteChat">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
               <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>

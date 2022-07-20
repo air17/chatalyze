@@ -84,6 +84,12 @@ def update_tg(analysis: ChatAnalysis) -> None:
             raise ValueError("Chat id doesn't match")
 
         msg_list = chat_history["messages"]
+        if stop_users := analysis.custom_stoplist:
+            msg_list = list(
+                filter(
+                    lambda msg: msg.get("from") not in stop_users and msg.get("from_id") not in stop_users, msg_list
+                )
+            )
     except ValueError as e:
         explain_error(analysis, e, "You've uploaded a different chat history.")
     except Exception as e:
@@ -104,6 +110,8 @@ def analyze_wa(analysis: ChatAnalysis) -> None:
         with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
             text = f.read()
         msg_list = get_msg_dict_wa(text)
+        if stop_users := analysis.custom_stoplist:
+            msg_list = list(filter(lambda msg: msg.get("from") not in stop_users, msg_list))
     except ValueError as e:
         explain_error(analysis, e, "File format is wrong or this WhatsApp localization is not supported yet.")
     except Exception as e:
@@ -438,6 +446,8 @@ def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     df = df[df.type == "message"].drop("type", axis=1).reset_index(drop=True)
     df["timestamp"] = pd.to_datetime(df.date)
     df["from"] = df["from"].fillna(df["from_id"])
+    if "media_type" not in df:
+        df.insert(-1, "media_type", np.nan)
     return df
 
 
@@ -522,7 +532,7 @@ def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
         raise ValueError("Unsupported chat platform")
     df = generate_more_data(df)
     df_unique_seq = df.drop_duplicates(subset=["seq"]).reset_index(drop=True)
-    if chat_platform == TELEGRAM:
+    if chat_platform == TELEGRAM and "forwarded_from" in df:
         df_no_forwarded = df[pd.isna(df["forwarded_from"])].drop("forwarded_from", axis=1).reset_index(drop=True)
     elif chat_platform == WHATSAPP:
         df_no_forwarded = df.query("`text`.str.len() < 230")
@@ -691,7 +701,7 @@ def get_user_msg_per_day(df: pd.DataFrame) -> dict:
 
 def get_words_per_message(df: pd.DataFrame) -> dict:
     """Returns dict containing average amount of words per message for top-5 users"""
-    df_without_media = df[df.media_type.isna()].reset_index()
+    df_without_media = df[df["media_type"].isna()].reset_index()
     user_word_count = df_without_media[["from", "word"]].groupby("from").sum("word")
     user_word_count = user_word_count.to_dict()["word"]
 
