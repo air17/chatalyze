@@ -437,7 +437,7 @@ def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     df = pd.DataFrame(msg_list)
     df = df[df.type == "message"].drop("type", axis=1).reset_index(drop=True)
     df["timestamp"] = pd.to_datetime(df.date)
-    df["from"] = df["from"].fillna("Deleted user")
+    df["from"] = df["from"].fillna(df["from_id"])
     return df
 
 
