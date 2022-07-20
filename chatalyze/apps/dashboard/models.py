@@ -87,6 +87,9 @@ class ChatAnalysis(models.Model):
         blank=True,
         null=True,
     )
+    custom_stoplist = models.JSONField(
+        default=list,
+    )
 
     def __str__(self):
         return f"{self.author} - {self.chat_name}"
