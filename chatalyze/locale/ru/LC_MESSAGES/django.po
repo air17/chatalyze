@@ -1,0 +1,408 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-22 23:36+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\templates\403.html:4 .\templates\404.html:4 .\templates\500.html:4
+msgid "Error"
+msgstr "Ошибка"
+
+#: .\templates\403.html:19
+msgid "Access denied"
+msgstr "Доступ запрещён"
+
+#: .\templates\403.html:22
+msgid "Please contact support or authenticate"
+msgstr "Пожалуйста свяжитесь с поддержкой или войдите"
+
+#: .\templates\403.html:25
+msgid "Log in"
+msgstr "Войти"
+
+#: .\templates\404.html:18
+msgid "Page not found"
+msgstr "Страница не найдена"
+
+#: .\templates\404.html:19
+msgid ""
+"Oops! Looks like you followed a bad link. If you think this is a problem "
+"with us, please tell us."
+msgstr ""
+"Упс! Кажется вы перешли по неверной ссылке. Если вы считаете, что проблема "
+"на нашей стороне, пожалуйста сообщите нам."
+
+#: .\templates\404.html:22 .\templates\500.html:20
+msgid "Back to homepage"
+msgstr "На главную"
+
+#: .\templates\500.html:16
+msgid "Something has gone seriously wrong"
+msgstr "Что-то пошло совсем не так"
+
+#: .\templates\500.html:17
+msgid ""
+"It's always time for a coffee break. We should be back by the time you "
+"finish your coffee."
+msgstr ""
+"Всегда есть время для перерыва на кофе. Мы должны вернуться к тому времени, "
+"как вы допьёте кофе."
+
+#: .\templates\accounts\login.html:4 .\templates\accounts\login.html:19
+#: .\templates\accounts\login.html:64 .\templates\accounts\register.html:115
+#: .\templates\home\index.html:70
+msgid "Sign in"
+msgstr "Войти"
+
+#: .\templates\accounts\login.html:28
+msgid "Add your credentials"
+msgstr "Введите ваши учётные данные"
+
+#: .\templates\accounts\login.html:38 .\templates\accounts\register.html:33
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: .\templates\accounts\login.html:50 .\templates\accounts\register.html:59
+msgid "Your Password"
+msgstr "Ваш пароль"
+
+#: .\templates\accounts\login.html:60
+msgid "Lost password?"
+msgstr "Забыли пароль?"
+
+#: .\templates\accounts\login.html:86
+msgid "Not registered?"
+msgstr "Не зарегистрированы?"
+
+#: .\templates\accounts\login.html:87
+msgid "Create account"
+msgstr "Создать аккаунт"
+
+#: .\templates\accounts\register.html:4 .\templates\accounts\register.html:19
+#: .\templates\accounts\register.html:92
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+#: .\templates\accounts\register.html:45
+msgid "Your Email"
+msgstr "Ваш e-mail"
+
+#: .\templates\accounts\register.html:69
+msgid "Password Confirmation"
+msgstr "Подтверждение пароля"
+
+#: .\templates\accounts\register.html:84
+#, python-format
+msgid "I agree to the %(link)s terms and conditions %(endlink)s"
+msgstr "Я согласен с %(link)s условиями и положениями %(endlink)s"
+
+#: .\templates\accounts\register.html:114
+msgid "Already have an account?"
+msgstr "Уже зарегистрированы?"
+
+#: .\templates\home\chart-scripts.html:40
+msgid "mean"
+msgstr "среднее значение"
+
+#: .\templates\home\chart-scripts.html:89
+msgid "The most active hours"
+msgstr "Самые активные часы"
+
+#: .\templates\home\chart-scripts.html:148
+msgid "Average words per message"
+msgstr "Среднее количество слов в сообщении"
+
+#: .\templates\home\chart-scripts.html:172
+msgid "Messages per day (average)"
+msgstr "Сообщений в день (в среднем)"
+
+#: .\templates\home\chart-scripts.html:202
+msgid "Average response speed (seconds)"
+msgstr "Средняя скорость ответа (секунд)"
+
+#: .\templates\home\chart-scripts.html:218 .\templates\home\results.html:61
+msgid "Messages"
+msgstr "Сообщения"
+
+#: .\templates\home\chart-scripts.html:223
+msgid "Media"
+msgstr "Медиа"
+
+#: .\templates\home\dashboard.html:11
+msgid "The most active day"
+msgstr "Самый активный день"
+
+#: .\templates\home\dashboard.html:15
+msgid "The most active weekday"
+msgstr "Самый активный день недели"
+
+#: .\templates\home\dashboard.html:19
+msgid "Total messages"
+msgstr "Всего сообщений"
+
+#: .\templates\home\dashboard.html:25
+msgid "Daily messages for the last year"
+msgstr "Ежедневное количество сообщений за год"
+
+#: .\templates\home\dashboard.html:34
+msgid "Zoom in"
+msgstr "Увеличить"
+
+#: .\templates\home\dashboard.html:42
+msgid "Zoom out"
+msgstr "Уменьшить"
+
+#: .\templates\home\dashboard.html:55
+msgid "The fastest response time"
+msgstr "Время самых быстрых ответов"
+
+#: .\templates\home\dashboard.html:59
+msgid "usually responds faster"
+msgstr "обычно отвечает быстрее"
+
+#: .\templates\home\dashboard.html:68
+msgid "Messages per user"
+msgstr "Сообщений на пользователя"
+
+#: .\templates\home\dashboard.html:81
+msgid "The analysis is not ready yet."
+msgstr "Анализ ещё не готов"
+
+#: .\templates\home\dashboard.html:89
+msgid "The wordcloud is not ready yet."
+msgstr "Облако слов ещё не готово"
+
+#: .\templates\home\index.html:59 .\templates\home\results.html:4
+#: .\templates\includes\sidebar.html:52
+msgid "Dashboard"
+msgstr "Панель управления"
+
+#: .\templates\home\index.html:63
+msgid "Admin"
+msgstr "Админка"
+
+#: .\templates\home\index.html:68
+msgid "Logout"
+msgstr "Выйти"
+
+#: .\templates\home\index.html:91
+msgid "Analyse yor chats in an easy way!"
+msgstr "Анализируйте свои чаты легко!"
+
+#: .\templates\home\index.html:97
+msgid "Open Dashboard"
+msgstr "Панель управления"
+
+#: .\templates\home\index.html:104 .\templates\includes\sidebar.html:25
+msgid "Admin panel"
+msgstr "Админ панель"
+
+#: .\templates\home\index.html:128
+msgid "Open source"
+msgstr "Открытый исходный код"
+
+#: .\templates\home\index.html:129
+msgid "Chatalyze is an open source project under the MIT License."
+msgstr "Chatalyze — проект с открытым исходным кодом под лицензией MIT."
+
+#: .\templates\home\index.html:132
+msgid "See on Github"
+msgstr "Посмотреть на Github"
+
+#: .\templates\home\index.html:144
+msgid "Available chat platforms:"
+msgstr "Доступные чат-платформы"
+
+#: .\templates\home\result.html:4 .\templates\home\share.html:4
+#, python-format
+msgid "Chat analysis with %(name)s"
+msgstr "Анализ чата с %(name)s"
+
+#: .\templates\home\result.html:14
+msgid "Upload updated chat file"
+msgstr "Загрузите новый файл чата"
+
+#: .\templates\home\result.html:21
+#, python-format
+msgid "%(service)s exported chat file"
+msgstr "Файл экспорта чата из %(service)s"
+
+#: .\templates\home\result.html:26 .\templates\home\results.html:45
+msgid "Close"
+msgstr "Закрыть"
+
+#: .\templates\home\result.html:27 .\templates\home\results.html:46
+msgid "Upload"
+msgstr "Загрузить"
+
+#: .\templates\home\result.html:37
+msgid "Delete analysis"
+msgstr "Удалить анализ"
+
+#: .\templates\home\result.html:41
+msgid "Do you really want to delete this analysis?"
+msgstr "Вы действительно хотите удалить этот анализ?"
+
+#: .\templates\home\result.html:44
+msgid "Cancel"
+msgstr "Отмена"
+
+#: .\templates\home\result.html:50
+msgid "Delete"
+msgstr "Удалить"
+
+#: .\templates\home\result.html:69
+msgid "Share link"
+msgstr "Поделиться ссылкой"
+
+#: .\templates\home\result.html:74
+msgid "Link"
+msgstr "Ссылка"
+
+#: .\templates\home\result.html:80 .\templates\home\result.html:156
+msgid "Share"
+msgstr "Поделиться"
+
+#: .\templates\home\result.html:87
+msgid "Update link"
+msgstr "Обновить ссылку"
+
+#: .\templates\home\result.html:98
+msgid "Chat settings"
+msgstr "Настройки чата"
+
+#: .\templates\home\result.html:104
+msgid "Remove users from result:"
+msgstr "Удалить пользователей из анализа"
+
+#: .\templates\home\result.html:118
+msgid "Save"
+msgstr "Сохранить"
+
+#: .\templates\home\result.html:135
+#, python-format
+msgid "Language: %(lang)s"
+msgstr "Язык: %(lang)s"
+
+#: .\templates\home\result.html:139
+#, python-format
+msgid "Status: %(status)s"
+msgstr "Статус: %(status)s"
+
+#: .\templates\home\result.html:148
+msgid "Update"
+msgstr "Обновить"
+
+#: .\templates\home\result.html:175
+msgid "Update error."
+msgstr "Ошибка обновления."
+
+#: .\templates\home\result.html:269
+msgid "Share this chat"
+msgstr "Поделиться чатом"
+
+#: .\templates\home\results.html:13
+msgid "Chat analysis results"
+msgstr "Результаты анализа чатов"
+
+#: .\templates\home\results.html:14
+msgid "Your chat analysis results. You can update existing or add a new chat."
+msgstr ""
+"Результаты анализа ваших чатов. Вы можете обновить существующие или добавить "
+"новые чаты."
+
+#: .\templates\home\results.html:18
+msgid "New Chatalyzis"
+msgstr "Новый анализ"
+
+#: .\templates\home\results.html:26
+msgid "Upload your chat files"
+msgstr "Загрузить файлы чата"
+
+#: .\templates\home\results.html:33
+msgid "Telegram or WhatsApp exported chat file"
+msgstr "Экспортируемый файл чата в Telegram или WhatsApp"
+
+#: .\templates\home\results.html:37
+msgid "Chat language"
+msgstr "Язык чата"
+
+#: .\templates\home\results.html:39
+msgid "Russian"
+msgstr "Русский"
+
+#: .\templates\home\results.html:40
+msgid "English"
+msgstr "Английский"
+
+#: .\templates\home\results.html:59
+msgid "Chat name"
+msgstr "Имя чата"
+
+#: .\templates\home\results.html:60
+msgid "Chat service"
+msgstr "Сервис"
+
+#: .\templates\home\results.html:62
+msgid "Date created"
+msgstr "Дата создания"
+
+#: .\templates\home\results.html:63
+msgid "Date updated"
+msgstr "Обновлено"
+
+#: .\templates\home\results.html:64
+msgid "Status"
+msgstr "Статус"
+
+#: .\templates\home\results.html:95
+msgid "You don't have any chat analyses yet."
+msgstr "У вас ещё нет анализов чатов."
+
+#: .\templates\home\share.html:14
+msgid "Chat name:"
+msgstr "Имя чата:"
+
+#: .\templates\home\upload-scripts.html:11
+msgid "Max. size of the uploaded file should be less than 100MB"
+msgstr "Макс. размер загружаемого файла должен быть менее 100 МБ"
+
+#: .\templates\home\upload-scripts.html:23
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: .\templates\includes\sidebar.html:18
+#, python-format
+msgid "Hi, %(username)s!"
+msgstr "Привет, %(username)s!"
+
+#: .\templates\includes\sidebar.html:21
+msgid "Sign Out"
+msgstr "Выйти"
+
+#: .\templates\includes\sidebar.html:60
+msgid "Settings"
+msgstr "Настройки"
+
+#: .\templates\includes\sidebar.html:70
+msgid "Chatalyze on Github"
+msgstr "Chatalyze на Github"
+
+#: .\templates\layouts\base-fullscreen.html:17 .\templates\layouts\base.html:17
+msgid "Analyse your chats with data science"
+msgstr "Анализируйте ваши чаты с помощью Data Science"

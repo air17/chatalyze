@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-22 23:36+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\apps\authentication\forms.py:10 .\apps\authentication\forms.py:17
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: .\apps\authentication\forms.py:11 .\apps\authentication\forms.py:19
+msgid "Password"
+msgstr "Пароль"
+
+#: .\apps\authentication\forms.py:18
+msgid "Email"
+msgstr "E-mail"
+
+#: .\apps\authentication\forms.py:21
+msgid "Password check"
+msgstr "Повтор пароля"
+
+#: .\apps\authentication\views.py:23
+msgid "Invalid credentials"
+msgstr "Недействительные учётные данные"
+
+#: .\apps\authentication\views.py:25
+msgid "Error validating the form"
+msgstr "Ошибка проверки формы"
+
+#: .\apps\authentication\views.py:46
+msgid "Form is not valid"
+msgstr "Форма недействительна"
