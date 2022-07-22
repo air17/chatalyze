@@ -7,6 +7,7 @@ from model_utils.fields import UrlsafeTokenField
 from apps.utils import RandomFileName
 from core import settings
 from core.celery import app
+from .const import WHATSAPP, TELEGRAM, FACEBOOK
 
 
 class ChatAnalysis(models.Model):
@@ -43,6 +44,14 @@ class ChatAnalysis(models.Model):
         ENGLISH = "ENG"
         RUSSIAN = "RUS"
 
+    class ChatPlatforms(models.TextChoices):
+        """Enumerated string choices."""
+
+        _ = "-"
+        TELEGRAM = TELEGRAM
+        WHATSAPP = WHATSAPP
+        FACEBOOK = FACEBOOK
+
     author = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -57,7 +66,8 @@ class ChatAnalysis(models.Model):
         max_length=40,
     )
     chat_platform = models.CharField(
-        max_length=255,
+        max_length=25,
+        choices=ChatPlatforms.choices,
         default="-",
     )
     language = models.CharField(
@@ -115,6 +125,10 @@ class ChatAnalysis(models.Model):
                         "RUS",
                     )
                 ),
+            ),
+            models.CheckConstraint(
+                name="%(app_label)s_%(class)s_chat_platform_valid",
+                check=models.Q(chat_platform__in=("-", "Telegram", "WhatsApp", "Facebook")),
             ),
         )
 
