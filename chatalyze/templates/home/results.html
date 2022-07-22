@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
+{% load i18n %}
 
-{% block title %} Tables {% endblock %}
+{% block title %} {% translate "Dashboard" %} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -9,12 +10,12 @@
 
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
       <div class="d-block mb-4 mb-md-0">
-          <h2 class="h4">Chat analysis results</h2>
-          <p class="mb-0">Your chat analysis results. You can update existing or add a new chat.</p>
+          <h2 class="h4">{% translate "Chat analysis results" %}</h2>
+          <p class="mb-0">{% translate "Your chat analysis results. You can update existing or add a new chat." %}</p>
       </div>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-        New Chatalyzis
+        {% translate "New Chatalyzis" %}
       </button>
   </div>
 
@@ -22,27 +23,27 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Upload your chat files</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{% translate "Upload your chat files" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form action="/analyze" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
           <div class="modal-body">
               {% csrf_token %}
               <div class="mb-3">
-                  <label for="chatFile" class="form-label">Telegram or WhatsApp exported chat file</label>
+                  <label for="chatFile" class="form-label">{% translate "Telegram or WhatsApp exported chat file" %}</label>
                   <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
               </div>
               <div class="mb-3">
-                  <label for="lang" class="form-label">Chat language</label>
+                  <label for="lang" class="form-label">{% translate "Chat language" %}</label>
                   <select class="form-select" id="lang" name="lang" required>
-                      <option value="RUS">Russian</option>
-                      <option selected value="ENG">English</option>
+                      <option value="RUS">{% translate "Russian" %}</option>
+                      <option selected value="ENG">{% translate "English" %}</option>
                   </select>
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+            <button type="submit" id="uploadBtn" class="btn btn-primary">{% translate "Upload" %}</button>
           </div>
           </form>
         </div>
@@ -55,12 +56,12 @@
               <table class="table table-centered table-nowrap table-hover mb-0 rounded" id="results-table">
                   <thead class="thead-light">
                       <tr>
-                          <th class="border-0 rounded-start">Chat name</th>
-                          <th class="border-0">Chat service</th>
-                          <th class="border-0">Messages</th>
-                          <th class="border-0">Date created</th>
-                          <th class="border-0">Date updated</th>
-                          <th class="border-0 rounded-end">Status</th>
+                          <th class="border-0 rounded-start">{% translate "Chat name" %}</th>
+                          <th class="border-0">{% translate "Chat service" %}</th>
+                          <th class="border-0">{% translate "Messages" %}</th>
+                          <th class="border-0">{% translate "Date created" %}</th>
+                          <th class="border-0">{% translate "Date updated" %}</th>
+                          <th class="border-0 rounded-end">{% translate "Status" %}</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -91,7 +92,7 @@
                   {% else %}
                       <tr>
                           <td colspan="6" class="text-center">
-                              You don't have any chat analyses yet.
+                              {% translate "You don't have any chat analyses yet." %}
                           </td>
                       </tr>
                   {% endif %}

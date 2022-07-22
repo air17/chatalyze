@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
+{% load i18n %}
 
-{% block title %} Chat analysis with {{ result.chat_name }} {% endblock %}
+{% block title %} {% blocktranslate with name=result.chat_name %}Chat analysis with {{ name }}{% endblocktranslate %} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -10,20 +11,20 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Upload updated chat file</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{% translate "Upload updated chat file" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ request.path }}/update" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
           <div class="modal-body">
               {% csrf_token %}
               <div class="mb-3">
-                  <label for="chatFile" class="form-label">{{ result.chat_platform }} exported chat file</label>
+                  <label for="chatFile" class="form-label">{% blocktranslate with service=result.chat_platform %}{{ service }} exported chat file{% endblocktranslate %}</label>
                   <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+            <button type="submit" id="uploadBtn" class="btn btn-primary">{% translate "Upload" %}</button>
           </div>
       </form>
     </div>
@@ -33,20 +34,20 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete analysis</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{% translate "Delete analysis" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Do you really want to delete this analysis?
+        {% translate "Do you really want to delete this analysis?" %}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-gray-700" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-outline-gray-700" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
         <button type="button" class="btn btn-outline-danger" id="delete-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
               <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
             </svg>
-            Delete
+            {% translate "Delete" %}
         </button>
       </div>
     </div>
@@ -65,25 +66,25 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Share link</h5>
+        <h5 class="modal-title">{% translate "Share link" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
           <div id="share-modal-body">
-              <label for="link-input" hidden>Link</label>
+              <label for="link-input" hidden>{% translate "Link" %}</label>
               <input type="url" class="form-control w-75 d-inline" id="link-input" oninput="this.value=window.share_link;this.select()" onclick="this.select();navigator.clipboard.writeText(this.value);" title="Copied to clipboard">
               <button type="button" class="btn" id="share-link-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
                       <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"></path>
                   </svg>
-                  <span class="visually-hidden">Share</span>
+                  <span class="visually-hidden">{% translate "Share" %}</span>
               </button>
               <button type="button" class="btn btn-outline-gray-800" id="update-share-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
                       <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
                       <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
                   </svg>
-                  <span class="visually-hidden">Update link</span>
+                  <span class="visually-hidden">{% translate "Update link" %}</span>
               </button>
           </div>
       </div>
@@ -94,13 +95,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Chat settings</h5>
+        <h5 class="modal-title">{% translate "Chat settings" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ request.path }}/stoplist" method="post">
           <div class="modal-body">
           {% csrf_token %}
-          <div><label for="link-input">Remove users from result:</label></div>
+          <div><label for="link-input">{% translate "Remove users from result:" %}</label></div>
             {% for name in result.custom_stoplist %}
             <div class="form-check">
               <input id="stop-name-{{ forloop.counter }}" type="checkbox" class="form-check-input" name="stoplist" value="{{ name }}" checked>
@@ -114,7 +115,7 @@
             </div>
             {% endfor %}
           </div>
-          <div class="modal-footer"><input type="submit" class="btn btn-primary" id="save-link-btn" value="Save"></div>
+          <div class="modal-footer"><input type="submit" class="btn btn-primary" id="save-link-btn" value="{% translate "Save" %}"></div>
       </form>
     </div>
   </div>
@@ -131,11 +132,11 @@
         </span>
     </div>
     <div class="col col-lg-auto">
-      <p class="text-center">Language: {{ result.get_language_display }}</p>
+      <p class="text-center">{% blocktranslate with lang=result.get_language_display %}Language: {{ lang }}{% endblocktranslate %}</p>
     </div>
     {% if result.get_status_display != "Ready" %}
     <div id="status-info" class="col col-lg-auto">
-      <p class="text-info text-center">Status: {{ result.get_status_display }}</p>
+      <p class="text-info text-center">{% blocktranslate with status=result.get_status_display %}Status: {{ status }}{% endblocktranslate %}</p>
     </div>
     {% endif %}
     <div class="col">
@@ -144,7 +145,7 @@
                 <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
                 <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"></path>
             </svg>
-            Update
+            {% translate "Update" %}
         </button>
     </div>
     <div class="col col-auto">
@@ -152,7 +153,7 @@
             <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor" class="bi">
                 <path d="M568.9 143.5l-150.9-138.2C404.8-6.773 384 3.039 384 21.84V96C241.2 97.63 128 126.1 128 260.6c0 54.3 35.2 108.1 74.08 136.2c12.14 8.781 29.42-2.238 24.94-16.46C186.7 252.2 256 224 384 223.1v74.2c0 18.82 20.84 28.59 34.02 16.51l150.9-138.2C578.4 167.8 578.4 152.2 568.9 143.5zM416 384c-17.67 0-32 14.33-32 32v31.1l-320-.0013V128h32c17.67 0 32-14.32 32-32S113.7 64 96 64H64C28.65 64 0 92.65 0 128v319.1c0 35.34 28.65 64 64 64l320-.0013c35.35 0 64-28.66 64-64V416C448 398.3 433.7 384 416 384z"></path>
             </svg>
-            <span class="visually-hidden">Share</span>
+            <span class="visually-hidden">{% translate "Share" %}</span>
         </button>
         {% if result.get_status_display == "Ready" %}
         <button type="button" class="btn btn-sm btn-outline-gray-800" data-bs-toggle="modal" data-bs-target="#chatSettings">
@@ -171,7 +172,7 @@
     </div>
   {% if result.status == "ERROR" and result.error_text %}
     <div id="error-msg" class="text-center fst-italic">
-        {% if result.word_cloud_pic %}Update error.{% endif %} {{ result.error_text }}
+        {% if result.word_cloud_pic %}{% translate "Update error." %}{% endif %} {{ result.error_text }}
         {% if result.word_cloud_pic %}
             <button id="discard-error" type="button" class="btn-close pt-0" style="font-size: 0.8em;"></button>
         {% endif %}
@@ -265,7 +266,7 @@
         const shareDialog = () => {
           const link = document.getElementById("link-input").value
           navigator.share({
-              title: 'Share this chat',
+              title: `{% translate "Share this chat" %}`,
               url: link
           })
         }

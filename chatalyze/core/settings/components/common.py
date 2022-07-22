@@ -102,6 +102,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
+
 
 # Assets Management
 ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/staticfiles/assets")

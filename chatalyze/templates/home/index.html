@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,18 +56,18 @@
                     </div>
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
                         <li class="nav-item me-2">
-                            <a href="/results" class="nav-link">Dashboard</a>
+                            <a href="/results" class="nav-link">{% translate "Dashboard" %}</a>
                         </li>
                         {% if user.is_superuser %}
                             <li class="nav-item me-2">
-                                <a href="/admin/auth/user/" class="nav-link">Admin</a>
+                                <a href="/admin/auth/user/" class="nav-link">{% translate "Admin" %}</a>
                             </li>
                         {% endif %}
                         <li class="nav-item me-2">
                             {% if user.is_authenticated %}
-                            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                            <a href="{% url 'logout' %}" class="nav-link">{% translate "Logout" %}</a>
                             {% else %}
-                            <a href="{% url 'login' %}" class="nav-link">Sign in</a>
+                            <a href="{% url 'login' %}" class="nav-link">{% translate "Sign in" %}</a>
                             {% endif %}
                         </li>
                     </ul>
@@ -87,20 +88,20 @@
                         </div>
                         <h1 class="fw-bolder">Chatalyze</h1>
                         <h2 class="lead fw-normal text-muted mb-5">
-                            Analyse yor chats in an easy way!
+                            {% translate "Analyse yor chats in an easy way!" %}
                         </h2>
                         <!-- Button Modal -->
                         <div class="d-flex align-items-center justify-content-center mb-5">
                             <a href="/results" class="btn btn-secondary d-inline-flex align-items-center me-4">
                                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v2a1 1 0 102 0V9z" clip-rule="evenodd"></path></svg>
-                                Open Dashboard
+                                {% translate "Open Dashboard" %}
                             </a>
                         </div>
                         {% if request.user.is_superuser %}
                         <div class="d-flex d-md-none align-items-center justify-content-center mb-5">
                             <a href="/admin" class="btn btn-success d-inline-flex align-items-center me-4">
                                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v2a1 1 0 102 0V9z" clip-rule="evenodd"></path></svg>
-                                Admin panel
+                                {% translate "Admin panel" %}
                             </a>
                         </div>
                         {% endif %}
@@ -124,11 +125,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-lg-8">
-                        <h2 class="h1 fw-bold mb-3">Open source</h2>
-                        <p class="lead mb-4">Chatalyze is an open source project under the MIT License.</p>
+                        <h2 class="h1 fw-bold mb-3">{% translate "Open source" %}</h2>
+                        <p class="lead mb-4">{% translate "Chatalyze is an open source project under the MIT License." %}</p>
                         <div class="d-flex align-items-center">
                             <a href="https://github.com/air17/Chatalyze" target="_blank" class="btn btn-gray-800 me-4">
-                                See on Github
+                                {% translate "See on Github" %}
                             </a>
                         </div>
                     </div>
@@ -140,13 +141,16 @@
                 </div>
                 <div class="mt-lg-6 row">
                     <div class="text-center col-12">
-                       <h2 class="h5 text-gray fw-normal mb-4">Available chat platforms:</h2>
+                       <h2 class="h5 text-gray fw-normal mb-4">{% translate "Available chat platforms:" %}</h2>
                        <div>
                             <a class="me-3 card-link" href="" target="_blank">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/WhatsApp_logo-color-vertical.svg/240px-WhatsApp_logo-color-vertical.svg.png" class="image image-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/WhatsApp_logo-color-vertical.svg/240px-WhatsApp_logo-color-vertical.svg.png" class="image image-sm" alt="WhatsApp">
                             </a>
                             <a class="me-3 card-link" href="" target="_blank">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/640px-Telegram_2019_Logo.svg.png" class="image image-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/640px-Telegram_2019_Logo.svg.png" class="image image-sm" alt="Telegram">
+                            </a>
+                            <a class="me-3 card-link" href="" target="_blank">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/2048px-Facebook_Messenger_logo_2020.svg.png" class="image image-sm" alt="Facebook Messenger">
                             </a>
                         </div>
                     </div>

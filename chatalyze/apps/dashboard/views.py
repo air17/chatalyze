@@ -8,8 +8,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
 from django_celery_results.models import TaskResult
+from django.utils.translation import gettext_lazy as _
 
 from . import models, tasks
 from .analysis_utils import get_chat_name_wa, get_chat_statistics
@@ -29,9 +29,9 @@ def analyze(request):
     lang = request.POST.get("lang")
     if file and file.name.endswith((".txt", ".json")):
         if file.size > 1e8:
-            return HttpResponseBadRequest("File is too big")
+            return HttpResponseBadRequest(_("File is too big"))
         if lang not in models.ChatAnalysis.AnalysisLanguage.values:
-            return HttpResponseBadRequest("Choose chat language")
+            return HttpResponseBadRequest(_("Choose chat language"))
         chat_name = get_chat_name_wa(file.name) or "noname"
         analysis = models.ChatAnalysis.objects.create(
             author=request.user,
@@ -44,7 +44,7 @@ def analyze(request):
         analysis.save()
         sleep(1)
     else:
-        return HttpResponseBadRequest("You've uploaded a wrong file")
+        return HttpResponseBadRequest(_("You've uploaded a wrong file"))
 
     return redirect("dashboard:results")
 
@@ -54,9 +54,9 @@ def analysis_update(request, pk):
     """Stores the file and starts its analysis if it is compatible with specified chat_platform"""
     file = request.FILES.get("chatfile")
     if not file or not file.name.endswith((".txt", ".json")):
-        return HttpResponseBadRequest("You've uploaded a wrong file")
+        return HttpResponseBadRequest(_("You've uploaded a wrong file"))
     if file.size > 1e8:
-        return HttpResponseBadRequest("File is too big")
+        return HttpResponseBadRequest(_("File is too big"))
 
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
     if analysis.author != request.user:
@@ -65,7 +65,7 @@ def analysis_update(request, pk):
     if not (analysis.chat_platform in (TELEGRAM, FACEBOOK) and file.name.endswith(".json")) and not (
         analysis.chat_platform == WHATSAPP and file.name.endswith(".txt")
     ):
-        return HttpResponseBadRequest("The uploaded file doesn't match this chat's messenger")
+        return HttpResponseBadRequest(_("The uploaded file doesn't match this chat's messenger"))
 
     analysis.chat_file = file
     analysis.save()
@@ -158,7 +158,7 @@ def check_status(request, pk):
     if is_task_failure(analysis.task_id):
         status_error = models.ChatAnalysis.AnalysisStatus.ERROR
         if analysis.status != status_error:
-            error_text = "Server error. Try again later."
+            error_text = _("Server error. Try again later.")
             models.ChatAnalysis.objects.filter(pk=analysis.pk).update(
                 status=status_error,
                 error_text=error_text,

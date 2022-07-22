@@ -1,3 +1,4 @@
+{% load i18n %}
 <script>
     function fileSizeCheck() {
         const chatFile = document.getElementById("chatFile")
@@ -7,7 +8,7 @@
                 chatFile.value = "";
                 chatFile.insertAdjacentHTML("afterend",
                     `<div class="text-danger small my-2 text-center" id="fileSizeError">
-                       Max. size of the uploaded file should be less than 100MB
+                       {% translate "Max. size of the uploaded file should be less than 100MB" %}
                      </div>`)
             } else {
                 document.getElementById("fileSizeError").remove()
@@ -19,7 +20,7 @@
         button.hidden = true;
         button.insertAdjacentHTML("afterend",
             `<div class="spinner-border text-primary mx-4" role="status">
-               <span class="visually-hidden">Loading...</span>
+               <span class="visually-hidden">{% translate "Loading..." %}</span>
              </div>`)
     }
 </script>

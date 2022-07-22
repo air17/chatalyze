@@ -1,6 +1,7 @@
 {% extends "layouts/base-fullscreen.html" %}
+{% load i18n %}
 
-{% block title %} Sign up {% endblock %}
+{% block title %} {% translate "Sign up" %} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -8,14 +9,14 @@
 {% block content %}
 
     <main>
-        <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+        <section class="vh-lg-100 mt-5 bg-soft d-flex align-items-center">
             <div class="container">
                 <div class="row justify-content-center form-bg-image" data-background-lg="{{ ASSETS_ROOT }}/img/illustrations/signin.svg">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">
-                                    Chatalyze - Sign up
+                                    Chatalyze - {% translate "Sign up" %}
                                 </h1>
                                 <br />
                                 <div>
@@ -29,7 +30,7 @@
                                 {% csrf_token %}
 
                                 <div class="form-group mb-4">
-                                    <label for="email">Username</label>
+                                    <label for="email">{% translate "Username" %}</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
                                             <span class="fas fa-user-circle"></span>
@@ -41,7 +42,7 @@
 
                                 <!-- Form -->
                                 <div class="form-group mb-4">
-                                    <label for="email">Your Email</label>
+                                    <label for="email">{% translate "Your Email" %}</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
                                             <span class="fas fa-envelope"></span>
@@ -55,7 +56,7 @@
 
                                     <!-- Form -->
                                     <div class="form-group mb-4">
-                                        <label for="password">Your Password</label>
+                                        <label for="password">{% translate "Your Password" %}</label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="basic-addon2">
                                                 <span class="fas fa-unlock-alt"></span>
@@ -65,7 +66,7 @@
                                         <span class="text-danger">{{ form.password1.errors }}</span>
                                     </div>
                                     <div class="form-group mb-4">
-                                        <label for="password">Password Confirmation</label>
+                                        <label for="password">{% translate "Password Confirmation" %}</label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="basic-addon2">
                                                 <span class="fas fa-unlock-alt"></span>
@@ -78,15 +79,17 @@
                                     <!-- End of Form -->
                                     <div class="mb-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="remember">
-                                            <label class="form-check-label fw-normal mb-0" for="remember">
-                                                I agree to the <a href="https://github.com/air17/chatalyze/blob/dev/LICENSE.txt" target="_blank" class="fw-bold">terms and conditions</a>
+                                            <input class="form-check-input" type="checkbox" value="" id="agree" required>
+                                            <label class="form-check-label fw-normal mb-0" for="agree">
+                                                {% blocktrans trimmed with link='<a href="https://github.com/air17/chatalyze/blob/dev/LICENSE.txt" target="_blank" class="fw-bold">' endlink='</a>' %}
+                                                I agree to the {{ link }} terms and conditions {{ endlink }}
+                                                {% endblocktrans %}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" name="register" class="btn btn-gray-800">Sign up</button>
+                                    <button type="submit" name="register" class="btn btn-gray-800">{% translate "Sign up" %}</button>
                                 </div>
                             </form>
                             <br />
@@ -108,8 +111,8 @@
 
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
-                                    Already have an account?
-                                    <a href="{% url 'login' %}" class="fw-bold">Sign in</a>
+                                    {% translate "Already have an account?" %}
+                                    <a href="{% url 'login' %}" class="fw-bold">{% translate "Sign in" %}</a>
                                 </span>
                             </div>
                         </div>

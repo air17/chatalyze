@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.utils.translation import gettext_lazy as _
 from .forms import LoginForm, SignUpForm
 
 
@@ -19,9 +20,9 @@ def login_view(request):
                 login(request, user)
                 return redirect("/")
             else:
-                msg = "Invalid credentials"
+                msg = _("Invalid credentials")
         else:
-            msg = "Error validating the form"
+            msg = _("Error validating the form")
 
     return render(request, "accounts/login.html", {"form": form, "msg": msg})
 
@@ -42,7 +43,7 @@ def register_user(request):
             return redirect("/login")
 
         else:
-            msg = "Form is not valid"
+            msg = _("Form is not valid")
     else:
         form = SignUpForm()
 

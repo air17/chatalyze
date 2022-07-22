@@ -1,3 +1,4 @@
+{% load i18n %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2"></script>
@@ -36,7 +37,7 @@
                 },
                 {
                     data: avgLine,
-                    label: "mean",
+                    label: "{% translate "mean" %}",
                     borderColor: 'rgba(0,255,125,0.3)',
                     pointRadius: 0.5,
                 }
@@ -85,7 +86,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'The most active hours'
+                    text: `{% translate "The most active hours" %}`
                 },
             },
         },
@@ -144,7 +145,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Average words per message'
+                    text: `{% translate "Average words per message" %}`
                 }
             },
         },
@@ -168,7 +169,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Messages per day (average)'
+                    text: `{% translate "Messages per day (average)" %}`
                 }
             },
         },
@@ -198,7 +199,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Average response speed (seconds)'
+                    text: `{% translate "Average response speed (seconds)" %}`
                 }
             },
         },
@@ -214,12 +215,12 @@
                 labels: [""],
                 datasets: [
                     {
-                        label: 'Messages',
+                        label: `{% translate "Messages" %}`,
                         data: [{{ stats.media_text_share.text }}],
                         backgroundColor: 'rgb(87,190,255)',
                     },
                     {
-                        label: 'Media',
+                        label: `{% translate "Media" %}`,
                         data: [{{ stats.media_text_share.media }}],
                         backgroundColor: 'rgb(154,255,137)',
                     },

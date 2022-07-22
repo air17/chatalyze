@@ -15,7 +15,7 @@ def analyze_chat_file(analysis_id):
         try:
             with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
                 chat_file = json.load(f)
-        except Exception as e:
+        except json.JSONDecodeError as e:
             explain_error(analysis, e, "File format is wrong")
 
         if chat_file.get("participants"):

@@ -1,6 +1,7 @@
 {% extends "layouts/base-fullscreen.html" %}
+{% load i18n %}
 
-{% block title %} Error 403 {% endblock %}
+{% block title %} {% translate "Error" %} 403 {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -15,13 +16,13 @@
                         <div>
                             <img class="img-fluid w-75" src="{{ ASSETS_ROOT }}/img/illustrations/404.svg" alt="404 not found">
                             <h1 class="mt-5">
-                                Access <span class="fw-bolder text-primary">denied</span>
+                                {% translate "Access denied" %}
                             </h1>
                             <p class="lead my-4">
-                                Please contact support or authenticate
+                                {% translate "Please contact support or authenticate" %}
                             </p>
                             <a class="btn btn-dark animate-hover" href="{% url 'login' %}">
-                               <i class="fas fa-chevron-left me-3 ps-2 animate-left-3"></i>LOGIN</a>
+                               <i class="fas fa-chevron-left me-3 ps-2 animate-left-3"></i>{% translate "Log in" %}</a>
                         </div>
                     </div>
                 </div>
