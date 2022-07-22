@@ -3,7 +3,7 @@ psycopg2-binary==2.9.3
 Pillow==9.2
 python-decouple==3.6
 uuid==1.30
-django-axes==5.35.0
+django-axes==5.36.0
 django-http-referrer-policy==1.1.1
 django_stubs_ext==0.5
 django-split-settings==1.1
@@ -18,6 +18,6 @@ pymorphy2[fast]==0.9.1
 django-health-check==3.16.5
 bcrypt==3.2.2
 pandas==1.4.3
-numpy==1.23
+numpy==1.23.1
 django-model-utils==4.2.0
 ftfy==6.1.1
