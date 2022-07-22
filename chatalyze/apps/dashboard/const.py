@@ -1,5 +1,6 @@
 TELEGRAM = "Telegram"
 WHATSAPP = "WhatsApp"
+FACEBOOK = "Facebook"
 
 _date_formats = (
     "%d.%m.%y",

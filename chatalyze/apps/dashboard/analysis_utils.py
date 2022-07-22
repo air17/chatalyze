@@ -12,10 +12,11 @@ import numpy as np
 from PIL.Image import Image
 from django.core.files.images import ImageFile
 from django.utils import timezone
+from ftfy import ftfy
 from wordcloud import WordCloud
 from pymorphy2 import MorphAnalyzer
 
-from .const import TELEGRAM, WHATSAPP, DATETIME_FORMATS
+from .const import TELEGRAM, WHATSAPP, DATETIME_FORMATS, FACEBOOK
 from .models import ChatAnalysis
 from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en, whatsapp_stoplist_no_media
 
@@ -124,6 +125,35 @@ def analyze_wa(analysis: ChatAnalysis) -> None:
         run_analyses(analysis, msg_list)
 
 
+def analyze_fb(analysis: ChatAnalysis) -> None:
+    """Performs Telegram chat analysis and saves the results
+    Args:
+        analysis: analysis info model
+    """
+    try:
+        with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
+            chat_history = json.load(f)
+
+        chat_name = ftfy(chat_history["title"])
+        msg_list_encoded = chat_history["messages"]
+        msg_list = []
+        for msg in msg_list_encoded:
+            if msg.get("content"):
+                msg["content"] = ftfy(msg.get("content"))
+            if msg.get("sender_name"):
+                msg["sender_name"] = ftfy(msg.get("sender_name"))
+            msg_list.append(msg)
+    except Exception as e:
+        explain_error(analysis, e, "File format is wrong")
+    else:
+        analysis.chat_name = chat_name if chat_name else "noname"
+        analysis.messages_count = len(msg_list)
+        analysis.chat_platform = FACEBOOK
+        analysis.save()
+
+        run_analyses(analysis, msg_list)
+
+
 def run_analyses(analysis: ChatAnalysis, msg_list: list) -> None:
     """Starts analyses for provided messages and saves results to analysis object
     Args:
@@ -160,10 +190,13 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str) -> Ima
     """
     if chat_platform == TELEGRAM:
         msg_list_direct = remove_forwarded(raw_messages)
-        msg_list_txt = get_msg_text_list_tg_wa(msg_list_direct)
+        msg_list_txt = get_msg_text_list(msg_list_direct)
     elif chat_platform == WHATSAPP:
-        msg_list_txt = get_msg_text_list_tg_wa(raw_messages)
+        msg_list_txt = get_msg_text_list(raw_messages)
         msg_list_txt = filter_whatsapp_messages(msg_list_txt)
+    elif chat_platform == FACEBOOK:
+        msg_list_txt = filter_facebook_messages(raw_messages)
+        msg_list_txt = get_msg_text_list(msg_list_txt, text_key="content")
     else:
         raise ValueError("Wrong chat platform")
 
@@ -258,15 +291,29 @@ def remove_forwarded(msg_list: list[dict]) -> list[dict]:
     return filtered_msg_list
 
 
-def get_msg_text_list_tg_wa(msg_list: list[dict]) -> list[str]:
-    """Parses messages text from the list of message dictionaries
+def filter_facebook_messages(msg_list: list[dict]) -> list[dict]:
+    """Removes Fcebook service messages
     Args:
         msg_list: List of Telegram messages
+    Returns filtered list of messages
+    """
+    filtered_msg_list = []
+    for msg in msg_list:
+        if msg.get("type") == "Generic":
+            filtered_msg_list.append(msg)
+    return filtered_msg_list
+
+
+def get_msg_text_list(msg_list: list[dict], text_key: str = "text") -> list[str]:
+    """Parses messages text from the list of message dictionaries
+    Args:
+        msg_list: List of Telegram or WhatsApp messages
+        text_key: Message text key name in the dicts
     Returns list of text messages
     """
     messages = []
     for msg in msg_list:
-        msg_text = msg.get("text")
+        msg_text = msg.get(text_key)
         if msg_text and type(msg_text) is str:
             messages.append(msg_text)
     return messages
@@ -518,6 +565,17 @@ def get_chat_statistics(results_json: str) -> dict:
     return chat_statistics
 
 
+def df_from_fb(msg_list):
+    df = pd.DataFrame(msg_list)
+    df = df.iloc[::-1]
+    df = df[(df["type"] == "Generic")].drop("type", axis=1).reset_index(drop=True)
+    df["media_type"] = np.where(df["content"].isna(), "media", pd.NA)
+    df["timestamp"] = pd.to_datetime(df["timestamp_ms"], unit="ms")
+    df.rename(columns={"sender_name": "from", "content": "text"}, inplace=True)
+    df.insert(0, "id", np.array(range(0, len(df))))
+    return df
+
+
 def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
     """Returns dict of analyses values
     Args:
@@ -528,6 +586,8 @@ def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
         df = df_from_tg(msg_list)
     elif chat_platform == WHATSAPP:
         df = df_from_wa(msg_list)
+    elif chat_platform == FACEBOOK:
+        df = df_from_fb(msg_list)
     else:
         raise ValueError("Unsupported chat platform")
     df = generate_more_data(df)

@@ -13,7 +13,7 @@ from django_celery_results.models import TaskResult
 
 from . import models, tasks
 from .analysis_utils import get_chat_name_wa, get_chat_statistics
-from .const import TELEGRAM, WHATSAPP
+from .const import TELEGRAM, WHATSAPP, FACEBOOK
 
 
 def index(request):
@@ -62,7 +62,7 @@ def analysis_update(request, pk):
     if analysis.author != request.user:
         raise PermissionDenied()
 
-    if not (analysis.chat_platform == TELEGRAM and file.name.endswith(".json")) and not (
+    if not (analysis.chat_platform in (TELEGRAM, FACEBOOK) and file.name.endswith(".json")) and not (
         analysis.chat_platform == WHATSAPP and file.name.endswith(".txt")
     ):
         return HttpResponseBadRequest("The uploaded file doesn't match this chat's messenger")
