@@ -26,3 +26,12 @@ repos:
           language: system
           always_run: true
           pass_filenames: false
+# Migrations
+    - repo: local
+      hooks:
+        - id: pre-commit-django-migrations
+          name: Check django migrations
+          entry: ./chatalyze/manage.py makemigrations --check
+          language: system
+          types: [python]
+          pass_filenames: false
