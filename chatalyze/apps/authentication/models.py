@@ -4,6 +4,14 @@ from django.utils.translation import gettext_noop, gettext_lazy as _
 
 
 class UserProfile(models.Model):
+    """Stores analysis results and chat information
+
+    Attributes:
+        user: Related User model
+        language: User's preferred language
+
+    """
+
     class ProfileLanguage(models.TextChoices):
         """Enumerated string choices."""
 

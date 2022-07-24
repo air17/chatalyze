@@ -63,6 +63,7 @@ def register_user(request):
 
 @login_required
 def settings(request):
+    """Displays and processes profile settings forms"""
     profile = UserProfile.objects.get_or_create(user=request.user)[0]
     profile_data = {
         "username": request.user.username,
@@ -122,6 +123,7 @@ def settings(request):
 
 @login_required
 def delete_profile(request):
+    """Deletes user profile"""
     if request.POST.get("sure"):
         u = User.objects.get(pk=request.user.pk)
         u.delete()
