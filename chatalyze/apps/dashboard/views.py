@@ -8,12 +8,14 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
+from django.utils import translation
 from django_celery_results.models import TaskResult
 from django.utils.translation import gettext_lazy as _
 
 from . import models, tasks
 from .analysis_utils import get_chat_name_wa, get_chat_statistics
 from .const import TELEGRAM, WHATSAPP, FACEBOOK
+from ..authentication.models import UserProfile
 
 
 def index(request):
@@ -84,6 +86,16 @@ def results(request):
     """Displays a list of analysis"""
     analysis = models.ChatAnalysis.objects.filter(author=request.user)
     context = {"results": analysis, "segment": "results"}
+
+    user_lang = translation.get_language()[:2]
+    try:
+        user_lang_label = UserProfile.ProfileLanguage(user_lang).label
+    except ValueError:
+        pass
+    else:
+        if user_lang_label in models.ChatAnalysis.AnalysisLanguage.labels:
+            context["upload_lang"] = user_lang_label
+
     html_template = loader.get_template("home/results.html")
     return HttpResponse(html_template.render(context, request))
 

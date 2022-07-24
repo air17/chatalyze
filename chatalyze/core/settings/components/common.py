@@ -54,7 +54,6 @@ MIDDLEWARE: Tuple[str, ...] = (
     # Django:
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -64,6 +63,8 @@ MIDDLEWARE: Tuple[str, ...] = (
     "axes.middleware.AxesMiddleware",
     # Django HTTP Referrer Policy:
     "django_http_referrer_policy.middleware.ReferrerPolicyMiddleware",
+    # Custom Locale Middleware
+    "core.middleware.CustomLocaleMiddleware",
 )
 
 ROOT_URLCONF = "core.urls"

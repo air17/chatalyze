@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-22 23:36+0300\n"
+"POT-Creation-Date: 2022-07-24 16:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,6 +74,7 @@ msgid "Add your credentials"
 msgstr "Введите ваши учётные данные"
 
 #: .\templates\accounts\login.html:38 .\templates\accounts\register.html:33
+#: .\templates\home\settings.html:48
 msgid "Username"
 msgstr "Имя пользователя"
 
@@ -135,7 +136,7 @@ msgstr "Сообщений в день (в среднем)"
 msgid "Average response speed (seconds)"
 msgstr "Средняя скорость ответа (секунд)"
 
-#: .\templates\home\chart-scripts.html:218 .\templates\home\results.html:61
+#: .\templates\home\chart-scripts.html:218 .\templates\home\results.html:62
 msgid "Messages"
 msgstr "Сообщения"
 
@@ -196,7 +197,7 @@ msgstr "Панель управления"
 msgid "Admin"
 msgstr "Админка"
 
-#: .\templates\home\index.html:68
+#: .\templates\home\index.html:68 .\templates\home\settings.html:108
 msgid "Logout"
 msgstr "Выйти"
 
@@ -242,11 +243,11 @@ msgstr "Загрузите новый файл чата"
 msgid "%(service)s exported chat file"
 msgstr "Файл экспорта чата из %(service)s"
 
-#: .\templates\home\result.html:26 .\templates\home\results.html:45
+#: .\templates\home\result.html:26 .\templates\home\results.html:46
 msgid "Close"
 msgstr "Закрыть"
 
-#: .\templates\home\result.html:27 .\templates\home\results.html:46
+#: .\templates\home\result.html:27 .\templates\home\results.html:47
 msgid "Upload"
 msgstr "Загрузить"
 
@@ -290,7 +291,7 @@ msgstr "Настройки чата"
 msgid "Remove users from result:"
 msgstr "Удалить пользователей из анализа"
 
-#: .\templates\home\result.html:118
+#: .\templates\home\result.html:118 .\templates\home\settings.html:91
 msgid "Save"
 msgstr "Сохранить"
 
@@ -342,37 +343,61 @@ msgstr "Экспортируемый файл чата в Telegram или WhatsA
 msgid "Chat language"
 msgstr "Язык чата"
 
-#: .\templates\home\results.html:39
-msgid "Russian"
-msgstr "Русский"
-
-#: .\templates\home\results.html:40
-msgid "English"
-msgstr "Английский"
-
-#: .\templates\home\results.html:59
+#: .\templates\home\results.html:60
 msgid "Chat name"
 msgstr "Имя чата"
 
-#: .\templates\home\results.html:60
+#: .\templates\home\results.html:61
 msgid "Chat service"
 msgstr "Сервис"
 
-#: .\templates\home\results.html:62
+#: .\templates\home\results.html:63
 msgid "Date created"
 msgstr "Дата создания"
 
-#: .\templates\home\results.html:63
+#: .\templates\home\results.html:64
 msgid "Date updated"
 msgstr "Обновлено"
 
-#: .\templates\home\results.html:64
+#: .\templates\home\results.html:65
 msgid "Status"
 msgstr "Статус"
 
-#: .\templates\home\results.html:95
+#: .\templates\home\results.html:96
 msgid "You don't have any chat analyses yet."
 msgstr "У вас ещё нет анализов чатов."
+
+#: .\templates\home\settings.html:4 .\templates\home\settings.html:40
+msgid "Profile settings"
+msgstr "Настройки профиля"
+
+#: .\templates\home\settings.html:14 .\templates\home\settings.html:107
+msgid "Delete profile"
+msgstr "Удалить профиль"
+
+#: .\templates\home\settings.html:18"
+msgid "Do you really want to delete your profile and all the data?"
+msgstr "Вы действительно хотите удалить ваш профиль и все ваши данные?"
+
+#: .\templates\home\settings.html:29
+msgid "Yes, delete profile"
+msgstr "Да, удалить профиль"
+
+#: .\templates\home\settings.html:54
+msgid "Email"
+msgstr "E-mail"
+
+#: .\templates\home\settings.html:61
+msgid "Language"
+msgstr "Язык"
+
+#: .\templates\home\settings.html:66
+msgid "Save all"
+msgstr "Сохранить"
+
+#: .\templates\home\settings.html:71
+msgid "Change password"
+msgstr "Сменить пароль"
 
 #: .\templates\home\share.html:14
 msgid "Chat name:"

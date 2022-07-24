@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-22 23:36+0300\n"
+"POT-Creation-Date: 2022-07-24 16:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,30 +19,75 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\apps\authentication\forms.py:10 .\apps\authentication\forms.py:17
+#: .\apps\authentication\forms.py:13 .\apps\authentication\forms.py:24
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: .\apps\authentication\forms.py:11 .\apps\authentication\forms.py:19
+#: .\apps\authentication\forms.py:15 .\apps\authentication\forms.py:33
+#: .\apps\authentication\forms.py:73
 msgid "Password"
 msgstr "Пароль"
 
-#: .\apps\authentication\forms.py:18
+#: .\apps\authentication\forms.py:29
 msgid "Email"
 msgstr "E-mail"
 
-#: .\apps\authentication\forms.py:21
+#: .\apps\authentication\forms.py:36
 msgid "Password check"
 msgstr "Повтор пароля"
 
-#: .\apps\authentication\views.py:23
+#: .\apps\authentication\forms.py:45
+msgid "Enter your username"
+msgstr "Введите имя пользователя"
+
+#: .\apps\authentication\forms.py:56
+msgid "A user with such an email already exists"
+msgstr "Пользователь с таким e-mail уже существует"
+
+#: .\apps\authentication\forms.py:62
+msgid "Username already exists"
+msgstr "Имя пользователя уже занято"
+
+#: .\apps\authentication\forms.py:70
+msgid "The two password fields didn't match."
+msgstr "Пароли в этих полях не совпадают."
+
+#: .\apps\authentication\forms.py:78
+msgid "Enter your new password"
+msgstr "Введите ваш новый пароль"
+
+#: .\apps\authentication\forms.py:84
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
+
+#: .\apps\authentication\forms.py:88
+msgid "Repeat your new password"
+msgstr "Повторите ваш новый пароль"
+
+#: .\apps\authentication\models.py:11
+msgid "English"
+msgstr "Английский"
+
+#: .\apps\authentication\models.py:12
+msgid "Russian"
+msgstr "Русский"
+
+#: .\apps\authentication\models.py:26
+msgid "User Profile"
+msgstr "Профиль пользователя"
+
+#: .\apps\authentication\models.py:27
+msgid "User Profiles"
+msgstr "Профили пользователей"
+
+#: .\apps\authentication\views.py:28
 msgid "Invalid credentials"
 msgstr "Недействительные учётные данные"
 
-#: .\apps\authentication\views.py:25
+#: .\apps\authentication\views.py:30
 msgid "Error validating the form"
 msgstr "Ошибка проверки формы"
 
-#: .\apps\authentication\views.py:46
+#: .\apps\authentication\views.py:53
 msgid "Form is not valid"
 msgstr "Форма недействительна"
