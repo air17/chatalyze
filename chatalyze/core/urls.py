@@ -12,7 +12,7 @@ def permission_denied(_):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("apps.authentication.urls")),  # Auth routes - login / register
+    path("", include("apps.authentication.urls")),
     re_path(r"private_files", permission_denied),
     path("", include("apps.dashboard.urls")),
 ]
