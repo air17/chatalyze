@@ -36,8 +36,9 @@
               <div class="mb-3">
                   <label for="lang" class="form-label">{% translate "Chat language" %}</label>
                   <select class="form-select" id="lang" name="lang" required>
-                      <option value="RUS">{% translate "Russian" %}</option>
-                      <option selected value="ENG">{% translate "English" %}</option>
+                      {% for lang in results.model.AnalysisLanguage.choices %}
+                      <option value="{{ lang.0 }}" {% if upload_lang == lang.1 %}selected{% endif %}>{{ lang.1 }}</option>
+                      {% endfor %}
                   </select>
               </div>
           </div>

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from model_utils.fields import UrlsafeTokenField
 
 from apps.utils import RandomFileName
@@ -41,8 +42,8 @@ class ChatAnalysis(models.Model):
     class AnalysisLanguage(models.TextChoices):
         """Enumerated string choices."""
 
-        ENGLISH = "ENG"
-        RUSSIAN = "RUS"
+        ENGLISH = "ENG", _("English")
+        RUSSIAN = "RUS", _("Russian")
 
     class ChatPlatforms(models.TextChoices):
         """Enumerated string choices."""
@@ -99,12 +100,15 @@ class ChatAnalysis(models.Model):
     )
     custom_stoplist = models.JSONField(
         default=list,
+        blank=True,
     )
 
     def __str__(self):
         return f"{self.author} - {self.chat_name}"
 
     class Meta:
+        verbose_name = _("Chat Analysis")
+        verbose_name_plural = _("Chat Analyses")
         ordering = ["-updated"]
         constraints = (
             models.CheckConstraint(
@@ -159,3 +163,7 @@ class ShareLink(models.Model):
 
     def __str__(self):
         return "link - " + str(self.analysis)
+
+    class Meta:
+        verbose_name = _("Shared Link")
+        verbose_name_plural = _("Shared Links")
