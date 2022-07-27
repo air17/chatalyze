@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-24 16:05+0300\n"
+"POT-Creation-Date: 2022-07-27 19:18+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,46 +19,46 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\apps\dashboard\models.py:45
+#: .\apps\dashboard\models.py:46
 msgid "English"
 msgstr "Английский"
 
-#: .\apps\dashboard\models.py:46
+#: .\apps\dashboard\models.py:47
 msgid "Russian"
 msgstr "Русский"
 
-#: .\apps\dashboard\models.py:110
+#: .\apps\dashboard\models.py:115
 msgid "Chat Analysis"
 msgstr "Анализ чата"
 
-#: .\apps\dashboard\models.py:111
+#: .\apps\dashboard\models.py:116
 msgid "Chat Analyses"
 msgstr "Анализы чатов"
 
-#: .\apps\dashboard\models.py:168
+#: .\apps\dashboard\models.py:173
 msgid "Shared Link"
 msgstr "Публичная ссылка"
 
-#: .\apps\dashboard\models.py:169
+#: .\apps\dashboard\models.py:174
 msgid "Shared Links"
 msgstr "Публичные ссылки"
 
-#: .\apps\dashboard\views.py:34 .\apps\dashboard\views.py:61
+#: .\apps\dashboard\views.py:36 .\apps\dashboard\views.py:64
 msgid "File is too big"
 msgstr "Файл слишком большой"
 
-#: .\apps\dashboard\views.py:36
+#: .\apps\dashboard\views.py:38
 msgid "Choose chat language"
 msgstr "Выберите язык чата"
 
-#: .\apps\dashboard\views.py:49 .\apps\dashboard\views.py:59
+#: .\apps\dashboard\views.py:52 .\apps\dashboard\views.py:62
 msgid "You've uploaded a wrong file"
 msgstr "Вы загрузили неправильный файл"
 
-#: .\apps\dashboard\views.py:70
+#: .\apps\dashboard\views.py:73
 msgid "The uploaded file doesn't match this chat's messenger"
 msgstr "Загруженный файл не соответствует платформе этого чата"
 
-#: .\apps\dashboard\views.py:173
+#: .\apps\dashboard\views.py:179
 msgid "Server error. Try again later."
 msgstr "Ошибка сервера. Попробуйте позднее"

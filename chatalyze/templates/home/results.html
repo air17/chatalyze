@@ -83,7 +83,7 @@
                           {% if result.status == "READY" %}
                               text-success
                           {% elif result.status == "PROCESSING" %}
-                              text-warning
+                              text-warning processing-status
                           {% elif result.status == "ERROR" %}
                               text-danger
                           {% endif %}
@@ -111,7 +111,7 @@
     {% include "home/upload-scripts.html" %}
     <script>
         const table = document.getElementById("results-table")
-        const processingElements = table.getElementsByClassName("text-warning")
+        const processingElements = table.getElementsByClassName("processing-status")
         if (processingElements){
             setTimeout(()=>{
                 updateStatus()

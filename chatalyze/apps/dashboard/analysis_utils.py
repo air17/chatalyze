@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 
 from PIL.Image import Image
+from django.core.cache import cache
 from django.core.files.images import ImageFile
 from django.utils import timezone
 from ftfy import ftfy
@@ -24,6 +25,27 @@ from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en, whatsapp_s
 morph = MorphAnalyzer()
 
 
+class ProgressBar:
+    def __init__(self, progress_id: str):
+        self.progress_id = progress_id
+        self._value = 0
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val: int):
+        if self._value != val:
+            self._value = val
+            cache.set(f"task-progress:{self.progress_id}", val, timeout=60 * 60)
+
+    @value.deleter
+    def value(self):
+        del self._value
+        cache.delete(f"task-progress:{self.progress_id}")
+
+
 def explain_error(analysis: ChatAnalysis, e: Optional[BaseException] = None, message: Optional[str] = None) -> None:
     """Saves error message and raises exception
     Args:
@@ -35,6 +57,7 @@ def explain_error(analysis: ChatAnalysis, e: Optional[BaseException] = None, mes
     analysis.status = analysis.AnalysisStatus.ERROR
     analysis.error_text = message if message else "Couldn't process your file"
     analysis.save()
+    cache.delete(f"task-progress:{analysis.progress_id}")
     if e:
         raise Exception from e
     else:
@@ -67,6 +90,7 @@ def analyze_tg(analysis: ChatAnalysis) -> None:
                 analysis = analysis_old
                 analysis.messages_count = len(msg_list)
                 analysis.status = analysis.AnalysisStatus.PROCESSING
+                analysis.progress_id = token_urlsafe(32)
 
         analysis.save()
 
@@ -161,32 +185,37 @@ def run_analyses(analysis: ChatAnalysis, msg_list: list) -> None:
         analysis: analysis info model
         msg_list: list of messages in a format of message service
     """
-
+    progress = ProgressBar(analysis.progress_id)
+    progress.value = 2
     try:
-        results = make_general_analysis(msg_list, analysis.chat_platform)
+        results = make_general_analysis(msg_list, analysis.chat_platform, progress)
     except Exception as e:
         explain_error(analysis, e, "Couldn't make analysis. Some error.")
     else:
         analysis.results = json.dumps(results)
         analysis.save()
+        progress.value = 50
 
     try:
-        wordcloud_pic = make_wordcloud(msg_list, analysis.chat_platform, analysis.language)
+        wordcloud_pic = make_wordcloud(msg_list, analysis.chat_platform, analysis.language, progress)
     except Exception as e:
         explain_error(analysis, e, "Couldn't build a wordcloud of your chat.")
     else:
+        progress.value = 100
         analysis.word_cloud_pic = pic_to_imgfile(wordcloud_pic, "wc.png")
         analysis.status = analysis.AnalysisStatus.READY
         analysis.updated = timezone.now()
         analysis.save()
+        del progress.value
 
 
-def make_wordcloud(raw_messages: list, chat_platform: str, language: str) -> Image:
+def make_wordcloud(raw_messages: list, chat_platform: str, language: str, progress: ProgressBar) -> Image:
     """Produces wordcloud for provided messages
     Args:
         raw_messages: list of messages in a format of message service
         chat_platform: Name of chat platform
         language: Language of messages
+        progress: Task progress object
     Returns a WordCloud in a PIL Image format
     """
     if chat_platform == TELEGRAM:
@@ -205,13 +234,16 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str) -> Ima
 
     words_list = get_words(filtered_msg_list_txt)
 
+    progress.value = 53
     if language == ChatAnalysis.AnalysisLanguage.RUSSIAN:
-        normal_words = get_normalized_words_ru(words_list)
+        normal_words = get_normalized_words_ru(words_list, progress)
+        progress.value = 85
 
         # change the normal form of the word with a more common form
         normal_words = [word if word != "деньга" else "деньги" for word in normal_words]
 
         counted_words = get_word_count(normal_words)
+        progress.value = 90
         wordcloud_pic = get_pic_from_frequencies(counted_words)
     elif language == ChatAnalysis.AnalysisLanguage.ENGLISH:
         wc = WordCloud(
@@ -372,14 +404,20 @@ def get_words(msg_list_txt: list[str]) -> list[str]:
     return clean_text.lower().split()
 
 
-def get_normalized_words_ru(words: list[str]) -> list[str]:
+def get_normalized_words_ru(words: list[str], progress: ProgressBar) -> list[str]:
     """Returns only nouns in russian in a normal form, filtering words in a stop-list
     Args:
         words: list of words in russian
+        progress: task progress tracking object
     """
     normal_words = []
+    progress_total = len(words)
+    progress_current = 0
+    init_percent = progress.value
     for word in words:
+        progress_current += 1
         word_analysis = morph.parse(word)[0]
+        progress.value = init_percent + int(32 * progress_current / progress_total)
         if (
             word_analysis.tag.POS == "NOUN"
             and word not in stopwords_ru
@@ -578,18 +616,19 @@ def df_from_fb(msg_list):
     df = pd.DataFrame(msg_list)
     df = df.iloc[::-1]
     df = df[(df["type"] == "Generic")].drop("type", axis=1).reset_index(drop=True)
-    df["media_type"] = np.where(df["content"].isna(), "media", pd.NA)
+    df["media_type"] = np.where(df["content"].isna(), "media", pd.NA)  # noqa
     df["timestamp"] = pd.to_datetime(df["timestamp_ms"], unit="ms")
     df.rename(columns={"sender_name": "from", "content": "text"}, inplace=True)
     df.insert(0, "id", np.array(range(0, len(df))))
     return df
 
 
-def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
+def make_general_analysis(msg_list: list[dict], chat_platform: str, progress: ProgressBar) -> dict:
     """Returns dict of analyses values
     Args:
         msg_list: List of Telegram messages
         chat_platform: The chat platform name
+        progress: Task progress object
     """
     if chat_platform == TELEGRAM:
         df = df_from_tg(msg_list)
@@ -599,6 +638,7 @@ def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
         df = df_from_fb(msg_list)
     else:
         raise ValueError("Unsupported chat platform")
+    progress.value = 20
     df = generate_more_data(df)
     df_unique_seq = df.drop_duplicates(subset=["seq"]).reset_index(drop=True)
     if chat_platform == TELEGRAM and "forwarded_from" in df:
@@ -607,18 +647,31 @@ def make_general_analysis(msg_list: list[dict], chat_platform: str) -> dict:
         df_no_forwarded = df.query("`text`.str.len() < 230")
     else:
         df_no_forwarded = df
+    progress.value = 35
 
+    daily_year_msg = get_daily_msg_amount(df, 365)
+    top_day = get_top_day(df_unique_seq)
+    top_weekday = get_top_weekday(df_unique_seq)
+    hourly_messages = get_avg_for_each_hour(df)
+    msg_per_user = get_msg_count_per_user(df)
+    progress.value += 5
+    msg_per_day = get_user_msg_per_day(df)
+    progress.value += 5
+    words_per_message = get_words_per_message(df_no_forwarded)
+    media_text_share = get_media_share(df)
+    response_time = get_response_time(df)
+    response_time_hour = get_response_hours(df)
     results = {
-        "daily_year_msg": get_daily_msg_amount(df, 365),
-        "top_day": get_top_day(df_unique_seq),
-        "top_weekday": get_top_weekday(df_unique_seq),
-        "hourly_messages": get_avg_for_each_hour(df),
-        "msg_per_user": get_msg_count_per_user(df),
-        "msg_per_day": get_user_msg_per_day(df),
-        "words_per_message": get_words_per_message(df_no_forwarded),
-        "media_text_share": get_media_share(df),
-        "response_time": get_response_time(df),
-        "response_time_hour": get_response_hours(df),
+        "daily_year_msg": daily_year_msg,
+        "top_day": top_day,
+        "top_weekday": top_weekday,
+        "hourly_messages": hourly_messages,
+        "msg_per_user": msg_per_user,
+        "msg_per_day": msg_per_day,
+        "words_per_message": words_per_message,
+        "media_text_share": media_text_share,
+        "response_time": response_time,
+        "response_time_hour": response_time_hour,
     }
     return results
 

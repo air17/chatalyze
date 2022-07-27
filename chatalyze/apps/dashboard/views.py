@@ -1,10 +1,12 @@
 import json
+from secrets import token_urlsafe
 from time import sleep
 
 from celery.states import FAILURE, REVOKED, RETRY
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
@@ -40,6 +42,7 @@ def analyze(request):
             chat_name=chat_name,
             chat_file=file,
             language=lang,
+            progress_id=token_urlsafe(32),
         )
         task = tasks.analyze_chat_file.delay(analysis_id=analysis.id)
         analysis.task_id = task.id
@@ -48,7 +51,7 @@ def analyze(request):
     else:
         return HttpResponseBadRequest(_("You've uploaded a wrong file"))
 
-    return redirect("dashboard:results")
+    return redirect("dashboard:result", pk=analysis.pk)
 
 
 @login_required(login_url="/login/")
@@ -70,6 +73,8 @@ def analysis_update(request, pk):
         return HttpResponseBadRequest(_("The uploaded file doesn't match this chat's messenger"))
 
     analysis.chat_file = file
+    if not analysis.progress_id:
+        analysis.progress_id = token_urlsafe(32)
     analysis.save()
 
     task = tasks.update_chat_analysis.delay(analysis_id=analysis.id)
@@ -112,6 +117,7 @@ def analysis_result(request, pk):
     available_stoplist = set()
     if analysis.results:
         chat_statistics = get_chat_statistics(analysis.results)
+
         available_stoplist = set(
             chat_statistics["msg_per_user"]["labels"]
             + chat_statistics["msg_per_day"]["labels"]
@@ -290,3 +296,13 @@ def set_stoplist(request, pk):
         analysis.save()
 
     return redirect("dashboard:result", pk=pk)
+
+
+@login_required
+def get_progress(request):
+    token = request.GET.get("token")
+    progress = cache.get(f"task-progress:{token}")
+    if progress is None:
+        return HttpResponseNotFound()
+
+    return JsonResponse({"percent": int(progress)})

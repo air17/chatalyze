@@ -29,6 +29,7 @@ class ChatAnalysis(models.Model):
         word_cloud_pic: WordCloud picture file
         task_id: Last Celery task id for the analysis
         results: Analysis data
+        progress_id: Task progress id to use in cache
 
     """
 
@@ -101,6 +102,10 @@ class ChatAnalysis(models.Model):
     custom_stoplist = models.JSONField(
         default=list,
         blank=True,
+    )
+    progress_id = models.CharField(
+        blank=True,
+        max_length=50,
     )
 
     def __str__(self):

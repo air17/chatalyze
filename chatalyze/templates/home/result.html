@@ -122,6 +122,9 @@
 </div>
 
 <div class="container-fluid">
+    <div class="progress" hidden style="height: 20px;">
+      <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 0"><b>0%</b></div>
+    </div>
   <div class="row justify-content-center my-2">
     <div class="col col-lg-auto">
         <span id="chat-name" class="fw-bolder text-center">{{ result.chat_name }}</span> &nbsp;
@@ -332,4 +335,80 @@
         document.getElementById("update-share-link").addEventListener("click", updateShareLink);
 
     </script>
+    {% if result.status == result.AnalysisStatus.PROCESSING %}
+    <script>
+        function setProgress(p) {
+            const progressBar = document.getElementById("progress")
+            if (p === 0){
+                progressBar.parentElement.hidden = true;
+                return
+            }
+            const perc = `${p}%`;
+            progressBar.parentElement.hidden = false;
+            progressBar.style.width = perc;
+            progressBar.children[0].innerText = perc;
+            if (p >= 50) {
+                progressBar.classList.remove("bg-info");
+                progressBar.classList.add("bg-success");
+                if (p === 100) {
+                    progressBar.classList.remove("progress-bar-striped", "progress-bar-animated");
+                }
+            }
+        }
+        function checkProgress() {
+            const link = `/results/task-progress?token={{ result.progress_id }}`;
+            fetch(link)
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        if (response.status === 404){
+                            fetch(window.location.href + "/check")
+                                // update page if state changed to non processing
+                                .then((response) => {
+                                    if (response.ok) {
+                                        return response.json()
+                                    } else {
+                                        if (response.status === 404) {
+                                            window.location = window.location.origin + "{% url "dashboard:results" %}";
+                                        } else {
+                                            setTimeout(checkProgress, 10000)
+                                        }
+                                    }
+                                }).then((responseJSON) => {
+                                    if (responseJSON) {
+                                        if (responseJSON.status) {
+                                            if (responseJSON.status !== "{{ result.AnalysisStatus.PROCESSING }}") {
+                                                setProgress(100)
+                                                location.reload();
+                                            } else {
+                                                setTimeout(checkProgress, 5000)
+                                            }
+                                        }
+                                    }
+                                }).catch((e) => {console.log(e)});
+                        } else {
+                            setTimeout(checkProgress, 5000)
+                        }
+                    }
+                })
+                .then((responseJSON) => {
+                    if (responseJSON) {
+                        if (responseJSON.percent) {
+                            setProgress(responseJSON.percent)
+
+                            {% if not stats %}
+                            if (responseJSON.percent > 50) {
+                                window.location.reload();
+                            }
+                            {% endif %}
+
+                            setTimeout(checkProgress, 2000)
+                        }
+                    }
+                }).catch((e) => {console.log(e)});
+        }
+        setTimeout(checkProgress, 500)
+    </script>
+    {% endif %}
 {% endblock javascripts %}

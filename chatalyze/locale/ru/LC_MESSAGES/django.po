@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-24 16:05+0300\n"
+"POT-Creation-Date: 2022-07-27 19:18+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,7 +64,7 @@ msgstr ""
 "как вы допьёте кофе."
 
 #: .\templates\accounts\login.html:4 .\templates\accounts\login.html:19
-#: .\templates\accounts\login.html:64 .\templates\accounts\register.html:115
+#: .\templates\accounts\login.html:61 .\templates\accounts\register.html:115
 #: .\templates\home\index.html:70
 msgid "Sign in"
 msgstr "Войти"
@@ -82,15 +82,11 @@ msgstr "Имя пользователя"
 msgid "Your Password"
 msgstr "Ваш пароль"
 
-#: .\templates\accounts\login.html:60
-msgid "Lost password?"
-msgstr "Забыли пароль?"
-
-#: .\templates\accounts\login.html:86
+#: .\templates\accounts\login.html:83
 msgid "Not registered?"
 msgstr "Не зарегистрированы?"
 
-#: .\templates\accounts\login.html:87
+#: .\templates\accounts\login.html:84
 msgid "Create account"
 msgstr "Создать аккаунт"
 
@@ -116,31 +112,31 @@ msgstr "Я согласен с %(link)s условиями и положения
 msgid "Already have an account?"
 msgstr "Уже зарегистрированы?"
 
-#: .\templates\home\chart-scripts.html:40
+#: .\templates\home\chart-scripts.html:42
 msgid "mean"
 msgstr "среднее значение"
 
-#: .\templates\home\chart-scripts.html:89
+#: .\templates\home\chart-scripts.html:91
 msgid "The most active hours"
 msgstr "Самые активные часы"
 
-#: .\templates\home\chart-scripts.html:148
+#: .\templates\home\chart-scripts.html:150
 msgid "Average words per message"
 msgstr "Среднее количество слов в сообщении"
 
-#: .\templates\home\chart-scripts.html:172
+#: .\templates\home\chart-scripts.html:174
 msgid "Messages per day (average)"
 msgstr "Сообщений в день (в среднем)"
 
-#: .\templates\home\chart-scripts.html:202
+#: .\templates\home\chart-scripts.html:204
 msgid "Average response speed (seconds)"
 msgstr "Средняя скорость ответа (секунд)"
 
-#: .\templates\home\chart-scripts.html:218 .\templates\home\results.html:62
+#: .\templates\home\chart-scripts.html:220 .\templates\home\results.html:62
 msgid "Messages"
 msgstr "Сообщения"
 
-#: .\templates\home\chart-scripts.html:223
+#: .\templates\home\chart-scripts.html:225
 msgid "Media"
 msgstr "Медиа"
 
@@ -275,7 +271,7 @@ msgstr "Поделиться ссылкой"
 msgid "Link"
 msgstr "Ссылка"
 
-#: .\templates\home\result.html:80 .\templates\home\result.html:156
+#: .\templates\home\result.html:80 .\templates\home\result.html:159
 msgid "Share"
 msgstr "Поделиться"
 
@@ -295,25 +291,25 @@ msgstr "Удалить пользователей из анализа"
 msgid "Save"
 msgstr "Сохранить"
 
-#: .\templates\home\result.html:135
+#: .\templates\home\result.html:138
 #, python-format
 msgid "Language: %(lang)s"
 msgstr "Язык: %(lang)s"
 
-#: .\templates\home\result.html:139
+#: .\templates\home\result.html:142
 #, python-format
 msgid "Status: %(status)s"
 msgstr "Статус: %(status)s"
 
-#: .\templates\home\result.html:148
+#: .\templates\home\result.html:151
 msgid "Update"
 msgstr "Обновить"
 
-#: .\templates\home\result.html:175
+#: .\templates\home\result.html:178
 msgid "Update error."
 msgstr "Ошибка обновления."
 
-#: .\templates\home\result.html:269
+#: .\templates\home\result.html:272
 msgid "Share this chat"
 msgstr "Поделиться чатом"
 
@@ -375,7 +371,7 @@ msgstr "Настройки профиля"
 msgid "Delete profile"
 msgstr "Удалить профиль"
 
-#: .\templates\home\settings.html:18"
+#: .\templates\home\settings.html:18
 msgid "Do you really want to delete your profile and all the data?"
 msgstr "Вы действительно хотите удалить ваш профиль и все ваши данные?"
 
@@ -404,8 +400,8 @@ msgid "Chat name:"
 msgstr "Имя чата:"
 
 #: .\templates\home\upload-scripts.html:11
-msgid "Max. size of the uploaded file should be less than 100MB"
-msgstr "Макс. размер загружаемого файла должен быть менее 100 МБ"
+msgid "Max. size of the uploaded file shouldn't be more than 100MB"
+msgstr "Макс. размер загружаемого файла не должен превышать 100 МБ"
 
 #: .\templates\home\upload-scripts.html:23
 msgid "Loading..."

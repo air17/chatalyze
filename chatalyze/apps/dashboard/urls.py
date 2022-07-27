@@ -16,4 +16,5 @@ urlpatterns = [
     path("result/<int:pk>/share-chat", views.share_analysis, name="share_analysis"),
     path("share/<str:pk>", views.shared_result, name="shared_result"),
     path("result/<int:pk>/stoplist", views.set_stoplist, name="set_stoplist"),
+    path("results/task-progress", views.get_progress, name="task_progress"),
 ]
