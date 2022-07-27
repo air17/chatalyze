@@ -4,7 +4,8 @@ import re
 import statistics
 from collections import Counter
 from io import BytesIO
-from typing import Optional, Union, Iterable
+from secrets import token_urlsafe
+from typing import Optional, Union, Sequence
 
 import pandas as pd
 import numpy as np
@@ -292,7 +293,7 @@ def remove_forwarded(msg_list: list[dict]) -> list[dict]:
 
 
 def filter_facebook_messages(msg_list: list[dict]) -> list[dict]:
-    """Removes Fcebook service messages
+    """Removes Facebook service messages
     Args:
         msg_list: List of Telegram messages
     Returns filtered list of messages
@@ -498,12 +499,20 @@ def df_from_tg(msg_list: list[dict]) -> pd.DataFrame:
     return df
 
 
-def detect_datetime_format(date_list: Iterable[str]) -> Optional[str]:
+def detect_datetime_format(date_list: Sequence[str]) -> Optional[str]:
     """Guesses datetime format suitable for all dates
     Args:
         date_list: dates list of any iterable type
     Returns datetime format that is common for all dates in the list. If fails to guess format returns None.
     """
+    if len(date_list) > 200:
+        total = len(date_list)
+        new_date_list = [
+            *date_list[:50],
+            *date_list[int(0.5 * total - 25) : int(0.5 * total + 25)],
+            *date_list[-50:],
+        ]
+        date_list = new_date_list
     detected_formats: list[set] = []
     for date in date_list:
         possible_formats = set()
