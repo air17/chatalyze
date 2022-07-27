@@ -47,9 +47,9 @@ services:
   redis:
     restart: always
     container_name: "redis"
-    image: redis:latest
-    command: >
-      --requirepass ${REDIS_PASSWORD}
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - "6379:6379"
   celery:
