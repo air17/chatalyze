@@ -2,13 +2,21 @@ import json
 import os
 from PIL import Image
 import pytest
-from apps.dashboard.analysis_utils import get_msg_dict_wa, make_general_analysis, get_chat_statistics, make_wordcloud
+from apps.dashboard.analysis_utils import (
+    get_msg_dict_wa,
+    make_general_analysis,
+    get_chat_statistics,
+    make_wordcloud,
+    ProgressBar,
+)
 from apps.dashboard.const import WHATSAPP
 from apps.dashboard.models import ChatAnalysis
 
 _dir = os.path.dirname(os.path.realpath(__file__))
 TEST_FILES = _dir + "/test_files"
 WHATSAPP_DATA = pytest.mark.datafiles(TEST_FILES + "/WhatsApp Chat with User.txt")
+
+progress = ProgressBar("test")
 
 
 @WHATSAPP_DATA
@@ -27,7 +35,7 @@ def test_make_general_analysis(datafiles):
     with open(path + "/WhatsApp Chat with User.txt", "r", encoding="UTF8") as f:
         text = f.read()
     msg_list = get_msg_dict_wa(text)
-    results = make_general_analysis(msg_list, WHATSAPP)
+    results = make_general_analysis(msg_list, WHATSAPP, progress)
     assert results["daily_year_msg"]["end_date"] == 1654981200.0
     assert results["top_day"] == "05.06.2022"
     assert results["top_weekday"] == "Sunday"
@@ -46,7 +54,7 @@ def test_get_chat_statistics(datafiles):
     with open(path + "/WhatsApp Chat with User.txt", "r", encoding="UTF8") as f:
         text = f.read()
     msg_list = get_msg_dict_wa(text)
-    results = make_general_analysis(msg_list, WHATSAPP)
+    results = make_general_analysis(msg_list, WHATSAPP, progress)
     results_json = json.dumps(results)
     chat_statistics = get_chat_statistics(results_json)
     assert type(chat_statistics) is dict
@@ -58,5 +66,5 @@ def test_make_wordcloud(datafiles):
     with open(path + "/WhatsApp Chat with User.txt", "r", encoding="UTF8") as f:
         text = f.read()
     msg_list = get_msg_dict_wa(text)
-    result = make_wordcloud(msg_list, WHATSAPP, ChatAnalysis.AnalysisLanguage.ENGLISH)
+    result = make_wordcloud(msg_list, WHATSAPP, ChatAnalysis.AnalysisLanguage.ENGLISH, progress)
     assert type(result) is Image.Image
