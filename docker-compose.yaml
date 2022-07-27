@@ -29,7 +29,7 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq3:5672/
+      - CELERY_BROKER_URL=redis://redis:6379/0
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
     depends_on:
@@ -42,12 +42,14 @@ services:
     volumes:
       - ./data/staticfiles:/www/static
       - ./data/media:/www/media
-  rabbitmq3:
-    container_name: "rabbitmq"
-    image: rabbitmq:3-management-alpine
+  redis:
+    restart: always
+    container_name: "redis"
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "6379:6379"
   celery:
     restart: always
     build:
@@ -65,12 +67,14 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq3:5672/
+      - CELERY_BROKER_URL=redis://redis:6379/0
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_CACHE_URL="redis://redis:6379/1"
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       - db
-      - rabbitmq3
+      - redis
       - web
 
 volumes:
