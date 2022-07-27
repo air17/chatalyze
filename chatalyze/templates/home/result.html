@@ -398,7 +398,7 @@
                             setProgress(responseJSON.percent)
 
                             {% if not stats %}
-                            if (responseJSON.percent > 50) {
+                            if (responseJSON.percent >= 50) {
                                 window.location.reload();
                             }
                             {% endif %}
