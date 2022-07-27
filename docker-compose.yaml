@@ -32,6 +32,8 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_CACHE_URL="redis://redis:6379/1"
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       - db
   nginx:
