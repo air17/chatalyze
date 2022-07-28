@@ -301,6 +301,7 @@ def set_stoplist(request, pk):
 
 @login_required
 def get_progress(request):
+    """Returns running task progress in percents"""
     token = request.GET.get("token")
     progress = cache.get(f"task-progress:{token}")
     if progress is None:

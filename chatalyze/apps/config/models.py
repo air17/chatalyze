@@ -5,8 +5,11 @@ from solo.models import SingletonModel
 
 
 class SiteConfiguration(SingletonModel):
-    """
-    Model for site-wide settings.
+    """Model for site-wide settings.
+
+    Attributes:
+        close_for_maintenance: Defines if site is closed for users
+        max_file_size: Max size of the uploaded chat file
     """
 
     close_for_maintenance = models.BooleanField(
