@@ -25,7 +25,7 @@ This is your chat export file, which you can upload to Chatalyze.
 6. Store your file on your mobile or send it to yourself by email.
 7. Now you can upload the resulting file to Chatalyze.
 
-### Facebook Messenger
+### Facebook
 
 1. Go to https://www.facebook.com/dyi/
 2. In the section "Select options" choose:
