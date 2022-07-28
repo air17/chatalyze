@@ -68,6 +68,8 @@ MIDDLEWARE: Tuple[str, ...] = (
     "django_http_referrer_policy.middleware.ReferrerPolicyMiddleware",
     # Custom Locale Middleware
     "core.middleware.CustomLocaleMiddleware",
+    # Close-for-maintenance Middleware
+    "core.middleware.MaintenanceModeMiddleware",
 )
 
 ROOT_URLCONF = "core.urls"

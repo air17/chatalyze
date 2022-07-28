@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-28 21:31+0300\n"
+"POT-Creation-Date: 2022-07-29 02:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,6 +48,7 @@ msgstr ""
 "на нашей стороне, пожалуйста сообщите нам."
 
 #: .\templates\404.html:22 .\templates\500.html:20
+#: .\templates\maintenance.html:20
 msgid "Back to homepage"
 msgstr "На главную"
 
@@ -431,3 +432,15 @@ msgstr "Chatalyze на Github"
 #: .\templates\layouts\base-fullscreen.html:17 .\templates\layouts\base.html:17
 msgid "Analyse your chats with data science"
 msgstr "Анализируйте ваши чаты с помощью Data Science"
+
+#: .\templates\maintenance.html:4
+msgid "Down for maintenance"
+msgstr "Закрыто на обслуживание"
+
+#: .\templates\maintenance.html:16
+msgid "The site is down for maintenance now."
+msgstr "Сайт закрыт на тех. обслуживание."
+
+#: .\templates\maintenance.html:17
+msgid "Try to open the page again later."
+msgstr "Попробуйте открыть эту страницу позже"
