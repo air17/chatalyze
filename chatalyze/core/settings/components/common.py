@@ -22,6 +22,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 INSTALLED_APPS: Tuple[str, ...] = (
     "apps.authentication",
     "apps.dashboard",
+    "apps.config",
     # Django Cleanup
     "django_cleanup.apps.CleanupConfig",
     # Default django apps:
@@ -44,6 +45,8 @@ INSTALLED_APPS: Tuple[str, ...] = (
     "health_check.storage",
     # Celery:
     "django_celery_results",
+    # Django-Solo:
+    "solo",
 )
 
 
