@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 19:18+0300\n"
+"POT-Creation-Date: 2022-07-28 21:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -132,7 +132,7 @@ msgstr "Сообщений в день (в среднем)"
 msgid "Average response speed (seconds)"
 msgstr "Средняя скорость ответа (секунд)"
 
-#: .\templates\home\chart-scripts.html:220 .\templates\home\results.html:62
+#: .\templates\home\chart-scripts.html:220 .\templates\home\results.html:63
 msgid "Messages"
 msgstr "Сообщения"
 
@@ -234,82 +234,86 @@ msgstr "Анализ чата с %(name)s"
 msgid "Upload updated chat file"
 msgstr "Загрузите новый файл чата"
 
-#: .\templates\home\result.html:21
+#: .\templates\home\result.html:20 .\templates\home\results.html:32
+msgid "How to export my chat?"
+msgstr "Как мне экспортировать чат?"
+
+#: .\templates\home\result.html:22
 #, python-format
 msgid "%(service)s exported chat file"
 msgstr "Файл экспорта чата из %(service)s"
 
-#: .\templates\home\result.html:26 .\templates\home\results.html:46
+#: .\templates\home\result.html:27 .\templates\home\results.html:47
 msgid "Close"
 msgstr "Закрыть"
 
-#: .\templates\home\result.html:27 .\templates\home\results.html:47
+#: .\templates\home\result.html:28 .\templates\home\results.html:48
 msgid "Upload"
 msgstr "Загрузить"
 
-#: .\templates\home\result.html:37
+#: .\templates\home\result.html:38
 msgid "Delete analysis"
 msgstr "Удалить анализ"
 
-#: .\templates\home\result.html:41
+#: .\templates\home\result.html:42
 msgid "Do you really want to delete this analysis?"
 msgstr "Вы действительно хотите удалить этот анализ?"
 
-#: .\templates\home\result.html:44
+#: .\templates\home\result.html:45
 msgid "Cancel"
 msgstr "Отмена"
 
-#: .\templates\home\result.html:50
+#: .\templates\home\result.html:51
 msgid "Delete"
 msgstr "Удалить"
 
-#: .\templates\home\result.html:69
+#: .\templates\home\result.html:70
 msgid "Share link"
 msgstr "Поделиться ссылкой"
 
-#: .\templates\home\result.html:74
+#: .\templates\home\result.html:75
 msgid "Link"
 msgstr "Ссылка"
 
-#: .\templates\home\result.html:80 .\templates\home\result.html:159
+#: .\templates\home\result.html:81 .\templates\home\result.html:160
 msgid "Share"
 msgstr "Поделиться"
 
-#: .\templates\home\result.html:87
+#: .\templates\home\result.html:88
 msgid "Update link"
 msgstr "Обновить ссылку"
 
-#: .\templates\home\result.html:98
+#: .\templates\home\result.html:99
 msgid "Chat settings"
 msgstr "Настройки чата"
 
-#: .\templates\home\result.html:104
+#: .\templates\home\result.html:105
 msgid "Remove users from result:"
 msgstr "Удалить пользователей из анализа"
 
-#: .\templates\home\result.html:118 .\templates\home\settings.html:91
+#: .\templates\home\result.html:119 .\templates\home\settings.html:91
 msgid "Save"
 msgstr "Сохранить"
 
-#: .\templates\home\result.html:138
+#: .\templates\home\result.html:139
 #, python-format
 msgid "Language: %(lang)s"
 msgstr "Язык: %(lang)s"
 
-#: .\templates\home\result.html:142
+#: .\templates\home\result.html:143
 #, python-format
 msgid "Status: %(status)s"
 msgstr "Статус: %(status)s"
 
-#: .\templates\home\result.html:151
+#: .\templates\home\result.html:152
 msgid "Update"
 msgstr "Обновить"
 
-#: .\templates\home\result.html:178
+#: .\templates\home\result.html:179
 msgid "Update error."
 msgstr "Ошибка обновления."
 
-#: .\templates\home\result.html:272
+#: .\templates\home\result.html:273
 msgid "Share this chat"
 msgstr "Поделиться чатом"
 
@@ -331,35 +335,35 @@ msgstr "Новый анализ"
 msgid "Upload your chat files"
 msgstr "Загрузить файлы чата"
 
-#: .\templates\home\results.html:33
-msgid "Telegram or WhatsApp exported chat file"
-msgstr "Экспортируемый файл чата в Telegram или WhatsApp"
+#: .\templates\home\results.html:34
+msgid "Exported chat file"
+msgstr "Экспортированный файл чата"
 
-#: .\templates\home\results.html:37
+#: .\templates\home\results.html:38
 msgid "Chat language"
 msgstr "Язык чата"
 
-#: .\templates\home\results.html:60
+#: .\templates\home\results.html:61
 msgid "Chat name"
 msgstr "Имя чата"
 
-#: .\templates\home\results.html:61
+#: .\templates\home\results.html:62
 msgid "Chat service"
 msgstr "Сервис"
 
-#: .\templates\home\results.html:63
+#: .\templates\home\results.html:64
 msgid "Date created"
 msgstr "Дата создания"
 
-#: .\templates\home\results.html:64
+#: .\templates\home\results.html:65
 msgid "Date updated"
 msgstr "Обновлено"
 
-#: .\templates\home\results.html:65
+#: .\templates\home\results.html:66
 msgid "Status"
 msgstr "Статус"
 
-#: .\templates\home\results.html:96
+#: .\templates\home\results.html:97
 msgid "You don't have any chat analyses yet."
 msgstr "У вас ещё нет анализов чатов."
 

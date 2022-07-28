@@ -17,6 +17,7 @@
       <form action="{{ request.path }}/update" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
           <div class="modal-body">
               {% csrf_token %}
+              <p class="fw-normal small"><a class="link-info" href="https://github.com/air17/chatalyze/blob/dev/how-to-export.md#{{ result.chat_platform }}" target="_blank">{% translate "How to export my chat?" %}</a></p>
               <div class="mb-3">
                   <label for="chatFile" class="form-label">{% blocktranslate with service=result.chat_platform %}{{ service }} exported chat file{% endblocktranslate %}</label>
                   <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>

@@ -13,24 +13,25 @@
           <h2 class="h4">{% translate "Chat analysis results" %}</h2>
           <p class="mb-0">{% translate "Your chat analysis results. You can update existing or add a new chat." %}</p>
       </div>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
         <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
         {% translate "New Chatalyzis" %}
       </button>
   </div>
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{% translate "Upload your chat files" %}</h5>
+            <h5 class="modal-title">{% translate "Upload your chat files" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form action="/analyze" method="post" enctype="multipart/form-data" onsubmit="fileUploadHandler()">
           <div class="modal-body">
               {% csrf_token %}
+              <p class="fw-normal small"><a class="link-info" href="https://github.com/air17/chatalyze/blob/dev/how-to-export.md#how-to-export-chat-file" target="_blank">{% translate "How to export my chat?" %}</a></p>
               <div class="mb-3">
-                  <label for="chatFile" class="form-label">{% translate "Telegram or WhatsApp exported chat file" %}</label>
+                  <label for="chatFile" class="form-label">{% translate "Exported chat file" %}</label>
                   <input class="form-control" type="file" id="chatFile" name="chatfile" onchange="fileSizeCheck()" required>
               </div>
               <div class="mb-3">
