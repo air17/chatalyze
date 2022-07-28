@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-29 02:25+0300\n"
+"POT-Creation-Date: 2022-07-29 02:47+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -404,11 +404,11 @@ msgstr "Сменить пароль"
 msgid "Chat name:"
 msgstr "Имя чата:"
 
-#: .\templates\home\upload-scripts.html:11
-msgid "Max. size of the uploaded file shouldn't be more than 100MB"
-msgstr "Макс. размер загружаемого файла не должен превышать 100 МБ"
+#: .\templates\home\upload-scripts.html:13
+msgid " Max. size of the uploaded file shouldn't be more than %(size)sMB "
+msgstr "Макс. размер загружаемого файла не должен превышать %(size)s МБ"
 
-#: .\templates\home\upload-scripts.html:23
+#: .\templates\home\upload-scripts.html:25
 msgid "Loading..."
 msgstr "Загрузка..."
 

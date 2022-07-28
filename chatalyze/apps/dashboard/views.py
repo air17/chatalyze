@@ -18,6 +18,7 @@ from . import models, tasks
 from .analysis_utils import get_chat_name_wa, get_chat_statistics
 from .const import TELEGRAM, WHATSAPP, FACEBOOK
 from ..authentication.models import UserProfile
+from ..config.models import SiteConfiguration
 
 
 def index(request):
@@ -32,7 +33,7 @@ def analyze(request):
     file = request.FILES["chatfile"]
     lang = request.POST.get("lang")
     if file and file.name.endswith((".txt", ".json")):
-        if file.size > 1e8:
+        if file.size > SiteConfiguration.get_solo().max_file_size * 1e6:
             return HttpResponseBadRequest(_("File is too big"))
         if lang not in models.ChatAnalysis.AnalysisLanguage.values:
             return HttpResponseBadRequest(_("Choose chat language"))
@@ -60,7 +61,7 @@ def analysis_update(request, pk):
     file = request.FILES.get("chatfile")
     if not file or not file.name.endswith((".txt", ".json")):
         return HttpResponseBadRequest(_("You've uploaded a wrong file"))
-    if file.size > 1e8:
+    if file.size > SiteConfiguration.get_solo().max_file_size * 1e6:
         return HttpResponseBadRequest(_("File is too big"))
 
     analysis = get_object_or_404(models.ChatAnalysis, pk=pk)
@@ -116,7 +117,7 @@ def analysis_result(request, pk):
     chat_statistics = None
     available_stoplist = set()
     if analysis.results:
-        chat_statistics = get_chat_statistics(analysis.results)
+        chat_statistics = get_chat_statistics(analysis.results)  # noqa
 
         available_stoplist = set(
             chat_statistics["msg_per_user"]["labels"]

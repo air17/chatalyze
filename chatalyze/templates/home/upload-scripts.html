@@ -1,14 +1,16 @@
 {% load i18n %}
+{% load solo_tags %}
+{% get_solo 'config.SiteConfiguration' as site_config %}
 <script>
     function fileSizeCheck() {
         const chatFile = document.getElementById("chatFile")
         if (chatFile.files.length > 0) {
             const fileSize = chatFile.files.item(0).size;
-            if (fileSize >= 1e+8) {
+            if (fileSize >= {{ site_config.max_file_size }}*1e+6) {
                 chatFile.value = "";
                 chatFile.insertAdjacentHTML("afterend",
                     `<div class="text-danger small my-2 text-center" id="fileSizeError">
-                       {% translate "Max. size of the uploaded file shouldn't be more than 100MB" %}
+                       {% blocktranslate with size=site_config.max_file_size %} Max. size of the uploaded file shouldn't be more than {{ size }}MB {% endblocktranslate %}
                      </div>`)
             } else {
                 document.getElementById("fileSizeError").remove()
