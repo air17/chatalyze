@@ -1,6 +1,4 @@
 from django.middleware.locale import LocaleMiddleware
-from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.translation import activate
 
 from apps.authentication.models import UserProfile
