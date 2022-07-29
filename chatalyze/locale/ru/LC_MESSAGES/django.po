@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-29 02:47+0300\n"
+"POT-Creation-Date: 2022-07-29 17:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,19 +210,24 @@ msgstr "Панель управления"
 msgid "Admin panel"
 msgstr "Админ панель"
 
-#: .\templates\home\index.html:128
+#: .\templates\home\index.html:123
+#, python-format
+msgid "%(n)s chats analyzed with Chatalyze"
+msgstr "%(n)s чатов уже в Chatalyze"
+
+#: .\templates\home\index.html:133
 msgid "Open source"
 msgstr "Открытый исходный код"
 
-#: .\templates\home\index.html:129
+#: .\templates\home\index.html:134
 msgid "Chatalyze is an open source project under the MIT License."
 msgstr "Chatalyze — проект с открытым исходным кодом под лицензией MIT."
 
-#: .\templates\home\index.html:132
+#: .\templates\home\index.html:137
 msgid "See on Github"
 msgstr "Посмотреть на Github"
 
-#: .\templates\home\index.html:144
+#: .\templates\home\index.html:149
 msgid "Available chat platforms:"
 msgstr "Доступные чат-платформы"
 
@@ -405,6 +410,7 @@ msgid "Chat name:"
 msgstr "Имя чата:"
 
 #: .\templates\home\upload-scripts.html:13
+#, python-format
 msgid " Max. size of the uploaded file shouldn't be more than %(size)sMB "
 msgstr "Макс. размер загружаемого файла не должен превышать %(size)s МБ"
 
