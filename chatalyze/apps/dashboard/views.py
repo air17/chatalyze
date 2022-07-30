@@ -6,7 +6,6 @@ from celery.states import FAILURE, REVOKED, RETRY
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.db.models import QuerySet
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
