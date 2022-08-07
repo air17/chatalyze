@@ -21,29 +21,9 @@ from pymorphy2 import MorphAnalyzer
 from .const import TELEGRAM, WHATSAPP, DATETIME_FORMATS, FACEBOOK
 from .models import ChatAnalysis
 from .stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en, whatsapp_stoplist_no_media
+from .utils import ProgressBar
 
 morph = MorphAnalyzer()
-
-
-class ProgressBar:
-    def __init__(self, progress_id: str):
-        self.progress_id = progress_id
-        self._value = 0
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, val: int):
-        if self._value != val:
-            self._value = val
-            cache.set(f"task-progress:{self.progress_id}", val, timeout=60 * 60)
-
-    @value.deleter
-    def value(self):
-        del self._value
-        cache.delete(f"task-progress:{self.progress_id}")
 
 
 def explain_error(analysis: ChatAnalysis, e: Optional[BaseException] = None, message: Optional[str] = None) -> None:

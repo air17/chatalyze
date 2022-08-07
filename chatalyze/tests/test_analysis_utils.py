@@ -7,8 +7,8 @@ from apps.dashboard.analysis_utils import (
     make_general_analysis,
     get_chat_statistics,
     make_wordcloud,
-    ProgressBar,
 )
+from apps.dashboard.utils import ProgressBar
 from apps.dashboard.const import WHATSAPP
 from apps.dashboard.models import ChatAnalysis
 
