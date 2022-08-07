@@ -63,15 +63,6 @@ def analyze_tg(analysis: ChatAnalysis) -> None:
         analysis.telegram_id = chat_id
         analysis.messages_count = len(msg_list)
         analysis.chat_platform = TELEGRAM
-        if chat_id:
-            analysis_old = ChatAnalysis.objects.filter(telegram_id=chat_id).first()
-            if analysis_old:
-                analysis.delete()
-                analysis = analysis_old
-                analysis.messages_count = len(msg_list)
-                analysis.status = analysis.AnalysisStatus.PROCESSING
-                analysis.progress_id = token_urlsafe(32)
-
         analysis.save()
 
         run_analyses(analysis, msg_list)
@@ -90,7 +81,8 @@ def update_tg(analysis: ChatAnalysis) -> None:
             raise ValueError("Chat id doesn't match")
 
         msg_list = chat_history["messages"]
-        if stop_users := analysis.custom_stoplist:
+        stop_users = analysis.custom_stoplist
+        if stop_users:
             msg_list = list(
                 filter(
                     lambda msg: msg.get("from") not in stop_users and msg.get("from_id") not in stop_users, msg_list
