@@ -77,14 +77,14 @@
         </div>
     </div>
   </div>
-    {% elif result.status == "PROCESSING" %}
+    {% elif result.status == result.AnalysisStatus.PROCESSING %}
   <div class="row"><p class="text-center fst-italic">{% translate "The analysis is not ready yet." %}</p></div>
 {% endif %}
 {% if result.word_cloud_pic %}
     <div class="row shadow-lg py-3 my-5 rounded" role="button" style="background-color:black;" data-bs-toggle="modal" data-bs-target="#wordcloudModal">
         <img src="{{ result.word_cloud_pic.url }}" class="img-fluid" id="wordcloud-img" alt="word cloud">
     </div>
-{% elif result.status == "PROCESSING" and stats %}
+{% elif result.status == result.AnalysisStatus.PROCESSING and stats %}
     <div class="row my-2">
         <p class="text-center text-warning">{% translate "The wordcloud is not ready yet." %}</p>
     </div>

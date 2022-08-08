@@ -38,7 +38,7 @@ def test_make_general_analysis(datafiles):
     results = make_general_analysis(msg_list, WHATSAPP, progress)
     assert results["daily_year_msg"]["end_date"] == 1654981200.0
     assert results["top_day"] == "05.06.2022"
-    assert results["top_weekday"] == "Sunday"
+    assert results["top_weekday"] == 6
     assert results["hourly_messages"] == [0.5, 0.25, 0.08, 0.08, 0.17, 0.08, 0.17]
     assert results["msg_per_user"]["User1"] == 9
     assert results["msg_per_day"]["User:)"] == 0.6

@@ -81,11 +81,11 @@
                           <td class="border-0">{{ result.created|date:"d.m.Y" }}</td>
                           <td class="border-0">{{ result.updated|date:"d.m.Y" }}</td>
                           <td class="border-0
-                          {% if result.status == "READY" %}
+                          {% if result.status == result.AnalysisStatus.READY %}
                               text-success
-                          {% elif result.status == "PROCESSING" %}
+                          {% elif result.status == result.AnalysisStatus.PROCESSING %}
                               text-warning processing-status
-                          {% elif result.status == "ERROR" %}
+                          {% elif result.status == result.AnalysisStatus.ERROR %}
                               text-danger
                           {% endif %}
                           ">{{ result.get_status_display }}</td>

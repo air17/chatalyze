@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-29 17:01+0300\n"
+"POT-Creation-Date: 2022-08-08 03:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,46 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\apps\dashboard\analysis_utils.py:586
+msgid "Monday"
+msgstr "Понедельник"
+
+#: .\apps\dashboard\analysis_utils.py:587
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: .\apps\dashboard\analysis_utils.py:588
+msgid "Wednesday"
+msgstr "Среда"
+
+#: .\apps\dashboard\analysis_utils.py:589
+msgid "Thursday"
+msgstr "Четверг"
+
+#: .\apps\dashboard\analysis_utils.py:590
+msgid "Friday"
+msgstr "Пятница"
+
+#: .\apps\dashboard\analysis_utils.py:591
+msgid "Saturday"
+msgstr "Суббота"
+
+#: .\apps\dashboard\analysis_utils.py:592
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: .\apps\dashboard\models.py:39
+msgid "Ready"
+msgstr "Готово"
+
+#: .\apps\dashboard\models.py:40
+msgid "Processing"
+msgstr "Обработка"
+
+#: .\apps\dashboard\models.py:41
+msgid "Error"
+msgstr "Ошибка"
 
 #: .\apps\dashboard\models.py:46
 msgid "English"
@@ -43,22 +83,22 @@ msgstr "Публичная ссылка"
 msgid "Shared Links"
 msgstr "Публичные ссылки"
 
-#: .\apps\dashboard\views.py:39 .\apps\dashboard\views.py:67
+#: .\apps\dashboard\views.py:38 .\apps\dashboard\views.py:66
 msgid "File is too big"
 msgstr "Файл слишком большой"
 
-#: .\apps\dashboard\views.py:41
+#: .\apps\dashboard\views.py:40
 msgid "Choose chat language"
 msgstr "Выберите язык чата"
 
-#: .\apps\dashboard\views.py:55 .\apps\dashboard\views.py:65
+#: .\apps\dashboard\views.py:54 .\apps\dashboard\views.py:64
 msgid "You've uploaded a wrong file"
 msgstr "Вы загрузили неправильный файл"
 
-#: .\apps\dashboard\views.py:76
+#: .\apps\dashboard\views.py:75
 msgid "The uploaded file doesn't match this chat's messenger"
 msgstr "Загруженный файл не соответствует платформе этого чата"
 
-#: .\apps\dashboard\views.py:182
+#: .\apps\dashboard\views.py:181
 msgid "Server error. Try again later."
 msgstr "Ошибка сервера. Попробуйте позднее"

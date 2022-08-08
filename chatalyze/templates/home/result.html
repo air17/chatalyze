@@ -138,7 +138,7 @@
     <div class="col col-lg-auto">
       <p class="text-center">{% blocktranslate with lang=result.get_language_display %}Language: {{ lang }}{% endblocktranslate %}</p>
     </div>
-    {% if result.get_status_display != "Ready" %}
+    {% if result.status != result.AnalysisStatus.READY %}
     <div id="status-info" class="col col-lg-auto">
       <p class="text-info text-center">{% blocktranslate with status=result.get_status_display %}Status: {{ status }}{% endblocktranslate %}</p>
     </div>
@@ -159,7 +159,7 @@
             </svg>
             <span class="visually-hidden">{% translate "Share" %}</span>
         </button>
-        {% if result.get_status_display == "Ready" %}
+        {% if result.status == result.AnalysisStatus.READY %}
         <button type="button" class="btn btn-sm btn-outline-gray-800" data-bs-toggle="modal" data-bs-target="#chatSettings">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
               <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"></path>
@@ -174,7 +174,7 @@
             </svg>
         </button>
     </div>
-  {% if result.status == "ERROR" and result.error_text %}
+  {% if result.status == result.AnalysisStatus.ERROR and result.error_text %}
     <div id="error-msg" class="text-center fst-italic">
         {% if result.word_cloud_pic %}{% translate "Update error." %}{% endif %} {{ result.error_text }}
         {% if result.word_cloud_pic %}

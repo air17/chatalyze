@@ -36,9 +36,9 @@ class ChatAnalysis(models.Model):
     class AnalysisStatus(models.TextChoices):
         """Enumerated string choices."""
 
-        READY = "READY"
-        PROCESSING = "PROCESSING"
-        ERROR = "ERROR"
+        READY = "READY", _("Ready")
+        PROCESSING = "PROCESSING", _("Processing")
+        ERROR = "ERROR", _("Error")
 
     class AnalysisLanguage(models.TextChoices):
         """Enumerated string choices."""

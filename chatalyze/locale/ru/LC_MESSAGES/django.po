@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-29 17:01+0300\n"
+"POT-Creation-Date: 2022-08-08 03:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 "как вы допьёте кофе."
 
 #: .\templates\accounts\login.html:4 .\templates\accounts\login.html:19
-#: .\templates\accounts\login.html:61 .\templates\accounts\register.html:115
+#: .\templates\accounts\login.html:61 .\templates\accounts\register.html:100
 #: .\templates\home\index.html:70
 msgid "Sign in"
 msgstr "Войти"
@@ -83,11 +83,11 @@ msgstr "Имя пользователя"
 msgid "Your Password"
 msgstr "Ваш пароль"
 
-#: .\templates\accounts\login.html:83
+#: .\templates\accounts\login.html:68
 msgid "Not registered?"
 msgstr "Не зарегистрированы?"
 
-#: .\templates\accounts\login.html:84
+#: .\templates\accounts\login.html:69
 msgid "Create account"
 msgstr "Создать аккаунт"
 
@@ -109,7 +109,7 @@ msgstr "Подтверждение пароля"
 msgid "I agree to the %(link)s terms and conditions %(endlink)s"
 msgstr "Я согласен с %(link)s условиями и положениями %(endlink)s"
 
-#: .\templates\accounts\register.html:114
+#: .\templates\accounts\register.html:99
 msgid "Already have an account?"
 msgstr "Уже зарегистрированы?"
 
@@ -328,10 +328,12 @@ msgid "Chat analysis results"
 msgstr "Результаты анализа чатов"
 
 #: .\templates\home\results.html:14
-msgid "Your chat analysis results. You can update existing or add a new chat."
+msgid ""
+"Your chat analysis results. You can check your chat analysis or add a new "
+"chat."
 msgstr ""
-"Результаты анализа ваших чатов. Вы можете обновить существующие или добавить "
-"новые чаты."
+"Результаты анализа ваших чатов. Вы можете посмотреть анализ своего чата или "
+"добавить новый."
 
 #: .\templates\home\results.html:18
 msgid "New Chatalyzis"

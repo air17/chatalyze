@@ -4,7 +4,6 @@ import re
 import statistics
 from collections import Counter
 from io import BytesIO
-from secrets import token_urlsafe
 from typing import Optional, Union, Sequence
 
 import pandas as pd
@@ -14,6 +13,7 @@ from PIL.Image import Image
 from django.core.cache import cache
 from django.core.files.images import ImageFile
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from ftfy import ftfy
 from wordcloud import WordCloud
 from pymorphy2 import MorphAnalyzer
@@ -581,6 +581,17 @@ def get_chat_statistics(results_json: str) -> dict:
         "labels": list(chat_statistics["response_time"].keys()),
         "data": list(chat_statistics["response_time"].values()),
     }
+    if type(chat_statistics["top_weekday"]) is int:
+        days = {
+            0: _("Monday"),
+            1: _("Tuesday"),
+            2: _("Wednesday"),
+            3: _("Thursday"),
+            4: _("Friday"),
+            5: _("Saturday"),
+            6: _("Sunday"),
+        }
+        chat_statistics["top_weekday"] = days[chat_statistics["top_weekday"]]
     return chat_statistics
 
 
@@ -685,7 +696,7 @@ def generate_more_data(df: pd.DataFrame) -> pd.DataFrame:
     df["date"] = df.timestamp.dt.date
     df["from"] = df["from"].astype("category")
     df["word"] = df["text"].apply(lambda text: len(text.split()) if type(text) is str else 0)
-    df["weekday"] = df["timestamp"].dt.day_name()
+    df["weekday"] = df["timestamp"].dt.weekday
     df["diff"] = np.insert(np.diff(df["timestamp"]), 0, 0)
     df["seq"] = get_seq(df["from"])
     df["seq_diff"] = get_seq_difference(df["seq"], df["diff"], "5 hours")
@@ -739,11 +750,11 @@ def get_top_day(df: pd.DataFrame) -> str:
     return sorted_dates.date[0].strftime("%d.%m.%Y")
 
 
-def get_top_weekday(df: pd.DataFrame) -> str:
+def get_top_weekday(df: pd.DataFrame) -> int:
     """Returns name of the weekday with the highest average amount of messages"""
     weekdays = df[["id", "weekday", "seq"]].groupby("weekday").count()
     sorted_weekdays = weekdays.sort_values("id", ascending=False).reset_index()
-    return sorted_weekdays.weekday[0]
+    return int(sorted_weekdays.weekday[0])
 
 
 def get_days_duration(df: pd.DataFrame) -> int:
