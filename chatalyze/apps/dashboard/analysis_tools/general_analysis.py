@@ -74,7 +74,7 @@ def get_msg_dict_wa(text: str) -> list[dict]:
     )
 
     msg_pattern = re.compile(
-        r"(?P<datetime>\d{1,2}[\/|\.]\d{1,2}[\/|\.]\d{2,4},?\s\d{2}[:|\.]\d{2}(?:[:|\.]\d{2})?(?:\s?[APap][Mm])?)\s-\s(?P<sender>\S+|[^:]*):\s(?P<text>.*)"
+        r"\[?(?P<datetime>\d{1,2}[\/|\.]\d{1,2}[\/|\.]\d{2,4},?\s\d{2}[:|\.]\d{2}(?:[:|\.]\d{2})?(?:\s?[APap][Mm])?)\]?\s-?\s?(?P<sender>\S+|[^:]*):\s(?P<text>.*)"
     )
 
     msg_list = []
