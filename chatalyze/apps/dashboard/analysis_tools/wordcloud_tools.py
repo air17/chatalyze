@@ -62,6 +62,19 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str, progre
         )
         word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
         wordcloud_pic = word_cloud.to_image()
+    elif language == ChatAnalysis.AnalysisLanguage.UKRAINIAN:
+        stopwords_ua = get_stopwords_for("ukrainian")
+        wc = WordCloud(
+            max_words=200,
+            width=1920,
+            height=1080,
+            color_func=get_colors_by_size,
+            stopwords=stopwords_ua,
+            collocation_threshold=3,
+            min_word_length=3,
+        )
+        word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
+        wordcloud_pic = word_cloud.to_image()
     else:
         raise ValueError("Wrong language")
 

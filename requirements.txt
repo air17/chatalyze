@@ -24,3 +24,4 @@ ftfy==6.1.1
 redis==4.3.4
 django-redis==5.2.0
 django-solo==2
+PyYAML==6.0

@@ -45,6 +45,7 @@ class ChatAnalysis(models.Model):
 
         ENGLISH = "ENG", _("English")
         RUSSIAN = "RUS", _("Russian")
+        UKRAINIAN = "UKR", _("Ukrainian")
 
     class ChatPlatforms(models.TextChoices):
         """Enumerated string choices."""
@@ -132,6 +133,7 @@ class ChatAnalysis(models.Model):
                     language__in=(
                         "ENG",
                         "RUS",
+                        "UKR",
                     )
                 ),
             ),

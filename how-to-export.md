@@ -5,7 +5,7 @@
 You need a Telegram Desktop to export your chat. The feature is unavailable for mobile or web.
 
 1. Open Telegram Desktop.
-2. Choose the chat you want to export.
+2. Choose the chat you want to export (some group chats cannot be exported if you're not an admin due to their privacy settings).
 3. Click three-dot menu in the top right corner.
 4. Choose "Export chat history".
 5. Uncheck all the checkboxes. Size limit doesn't matter.
