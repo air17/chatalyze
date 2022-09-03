@@ -21,7 +21,7 @@ def analyze_tg(analysis: ChatAnalysis) -> None:
                 chat_history = json.load(f)
         except json.JSONDecodeError:
             with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
-                chat_history = yaml.load(f, yaml.Loader)
+                chat_history = yaml.safe_load(f)
 
         chat_id = str(chat_history["id"])
         chat_name = chat_history["name"]
@@ -49,7 +49,7 @@ def update_tg(analysis: ChatAnalysis) -> None:
                 chat_history = json.load(f)
         except json.JSONDecodeError:
             with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
-                chat_history = yaml.load(f, yaml.Loader)
+                chat_history = yaml.safe_load(f)
 
         if str(chat_history["id"]) != analysis.telegram_id:
             raise ValueError("Chat id doesn't match")

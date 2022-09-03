@@ -22,7 +22,7 @@ def analyze_chat_file(analysis_id):
                 if analysis.chat_file.file.size > 20e6:  # don't process files bigger than 20 MB as it's very slow
                     raise
                 with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
-                    chat_file = yaml.load(f, yaml.Loader)
+                    chat_file = yaml.safe_load(f)
             except Exception:
                 explain_error(analysis, e, "File format is wrong")
 
