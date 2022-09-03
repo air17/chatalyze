@@ -2,9 +2,10 @@ import json
 
 from celery import shared_task
 
-from .analysis_utils import analyze_tg, analyze_wa, update_tg, analyze_fb, explain_error
+from .analysis_tools.main import analyze_tg, analyze_wa, analyze_fb, update_tg
 from .const import TELEGRAM, WHATSAPP, FACEBOOK
 from .models import ChatAnalysis
+from .utils import explain_error
 
 
 @shared_task

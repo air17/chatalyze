@@ -15,8 +15,8 @@ from django_celery_results.models import TaskResult
 from django.utils.translation import gettext_lazy as _
 
 from . import models, tasks
-from .analysis_utils import get_chat_name_wa, get_chat_statistics
 from .const import TELEGRAM, WHATSAPP, FACEBOOK
+from .utils import get_whatsapp_chat_name, load_chat_statistics
 from ..authentication.models import UserProfile
 from ..config.models import SiteConfiguration
 
@@ -38,7 +38,7 @@ def analyze(request):
             return HttpResponseBadRequest(_("File is too big"))
         if lang not in models.ChatAnalysis.AnalysisLanguage.values:
             return HttpResponseBadRequest(_("Choose chat language"))
-        chat_name = get_chat_name_wa(file.name) or "noname"
+        chat_name = get_whatsapp_chat_name(file.name) or "noname"
         analysis = models.ChatAnalysis.objects.create(
             author=request.user,
             chat_name=chat_name,
@@ -118,7 +118,7 @@ def analysis_result(request, pk):
     chat_statistics = None
     available_stoplist = set()
     if analysis.results:
-        chat_statistics = get_chat_statistics(analysis.results)  # noqa
+        chat_statistics = load_chat_statistics(analysis.results)  # noqa
 
         available_stoplist = set(
             chat_statistics["msg_per_user"]["labels"]

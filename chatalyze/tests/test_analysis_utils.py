@@ -2,13 +2,10 @@ import json
 import os
 from PIL import Image
 import pytest
-from apps.dashboard.analysis_utils import (
-    get_msg_dict_wa,
-    make_general_analysis,
-    get_chat_statistics,
-    make_wordcloud,
-)
-from apps.dashboard.utils import ProgressBar
+
+from apps.dashboard.analysis_tools.general_analysis import get_msg_dict_wa, make_general_analysis
+from apps.dashboard.analysis_tools.wordcloud_tools import make_wordcloud
+from apps.dashboard.utils import ProgressBar, load_chat_statistics
 from apps.dashboard.const import WHATSAPP
 from apps.dashboard.models import ChatAnalysis
 
@@ -56,7 +53,7 @@ def test_get_chat_statistics(datafiles):
     msg_list = get_msg_dict_wa(text)
     results = make_general_analysis(msg_list, WHATSAPP, progress)
     results_json = json.dumps(results)
-    chat_statistics = get_chat_statistics(results_json)
+    chat_statistics = load_chat_statistics(results_json)
     assert type(chat_statistics) is dict
 
 
