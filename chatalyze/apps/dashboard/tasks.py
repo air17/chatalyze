@@ -1,4 +1,5 @@
 import json
+import yaml
 
 from celery import shared_task
 
@@ -17,7 +18,13 @@ def analyze_chat_file(analysis_id):
             with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
                 chat_file = json.load(f)
         except json.JSONDecodeError as e:
-            explain_error(analysis, e, "File format is wrong")
+            try:
+                if analysis.chat_file.file.size > 20e6:  # don't process files bigger than 20 MB as it's very slow
+                    raise
+                with open(analysis.chat_file.path, "r", encoding="UTF8") as f:
+                    chat_file = yaml.load(f, yaml.Loader)
+            except Exception:
+                explain_error(analysis, e, "File format is wrong")
 
         if chat_file.get("participants"):
             analyze_fb(analysis)
