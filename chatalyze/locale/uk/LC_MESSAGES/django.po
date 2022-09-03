@@ -5,79 +5,81 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-08 03:22+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2022-09-04 00:48+0300\n"
+"PO-Revision-Date: 2022-09-04 00:54+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: .\templates\403.html:4 .\templates\404.html:4 .\templates\500.html:4
 msgid "Error"
-msgstr "Ошибка"
+msgstr "Помилка"
 
 #: .\templates\403.html:19
 msgid "Access denied"
-msgstr "Доступ запрещён"
+msgstr "Доступ заборонено"
 
 #: .\templates\403.html:22
 msgid "Please contact support or authenticate"
-msgstr "Пожалуйста свяжитесь с поддержкой или войдите"
+msgstr "Зверніться до служби підтримки або пройдіть автентифікацію"
 
 #: .\templates\403.html:25
 msgid "Log in"
-msgstr "Войти"
+msgstr "Увійти"
 
 #: .\templates\404.html:18
 msgid "Page not found"
-msgstr "Страница не найдена"
+msgstr "Сторінку не знайдено"
 
 #: .\templates\404.html:19
 msgid ""
 "Oops! Looks like you followed a bad link. If you think this is a problem "
 "with us, please tell us."
 msgstr ""
-"Упс! Кажется вы перешли по неверной ссылке. Если вы считаете, что проблема "
-"на нашей стороне, пожалуйста сообщите нам."
+"Ой! Схоже, ви перейшли за поганим посиланням. Якщо ви вважаєте, що це "
+"проблема з нашого боку, будь ласка, повідомте нам."
 
 #: .\templates\404.html:22 .\templates\500.html:20
 #: .\templates\maintenance.html:20
 msgid "Back to homepage"
-msgstr "На главную"
+msgstr "Перейти на головну"
 
 #: .\templates\500.html:16
 msgid "Something has gone seriously wrong"
-msgstr "Что-то пошло совсем не так"
+msgstr "Щось пішло зовсім не так"
 
 #: .\templates\500.html:17
 msgid ""
 "It's always time for a coffee break. We should be back by the time you "
 "finish your coffee."
 msgstr ""
-"Всегда есть время для перерыва на кофе. Мы должны вернуться к тому времени, "
-"как вы допьёте кофе."
+"Завжди є час для перерви на каву. Ми маємо повернутися до того моменту, коли "
+"ви допиєте каву."
 
 #: .\templates\accounts\login.html:4 .\templates\accounts\login.html:19
 #: .\templates\accounts\login.html:61 .\templates\accounts\register.html:100
 #: .\templates\home\index.html:70
 msgid "Sign in"
-msgstr "Войти"
+msgstr "Увійти"
 
 #: .\templates\accounts\login.html:28
 msgid "Add your credentials"
-msgstr "Введите ваши учётные данные"
+msgstr "Додайте свої облікові дані"
 
 #: .\templates\accounts\login.html:38 .\templates\accounts\register.html:33
 #: .\templates\home\settings.html:48
 msgid "Username"
-msgstr "Имя пользователя"
+msgstr "Ім'я користувача"
 
 #: .\templates\accounts\login.html:50 .\templates\accounts\register.html:59
 msgid "Your Password"
@@ -85,16 +87,16 @@ msgstr "Ваш пароль"
 
 #: .\templates\accounts\login.html:68
 msgid "Not registered?"
-msgstr "Не зарегистрированы?"
+msgstr "Не зареєстровані?"
 
 #: .\templates\accounts\login.html:69
 msgid "Create account"
-msgstr "Создать аккаунт"
+msgstr "Створити акаунт"
 
 #: .\templates\accounts\register.html:4 .\templates\accounts\register.html:19
 #: .\templates\accounts\register.html:92
 msgid "Sign up"
-msgstr "Зарегистрироваться"
+msgstr "Зареєструватися"
 
 #: .\templates\accounts\register.html:45
 msgid "Your Email"
@@ -102,209 +104,209 @@ msgstr "Ваш e-mail"
 
 #: .\templates\accounts\register.html:69
 msgid "Password Confirmation"
-msgstr "Подтверждение пароля"
+msgstr "Підтвердження паролю"
 
 #: .\templates\accounts\register.html:84
 #, python-format
 msgid "I agree to the %(link)s terms and conditions %(endlink)s"
-msgstr "Я согласен с %(link)s условиями и положениями %(endlink)s"
+msgstr "Я згоден з %(link)s умовами %(endlink)s"
 
 #: .\templates\accounts\register.html:99
 msgid "Already have an account?"
-msgstr "Уже зарегистрированы?"
+msgstr "Вже є аккаунт?"
 
 #: .\templates\home\chart-scripts.html:42
 msgid "mean"
-msgstr "среднее значение"
+msgstr "середнє"
 
 #: .\templates\home\chart-scripts.html:91
 msgid "The most active hours"
-msgstr "Самые активные часы"
+msgstr "Найактивніші години"
 
 #: .\templates\home\chart-scripts.html:150
 msgid "Average words per message"
-msgstr "Среднее количество слов в сообщении"
+msgstr "Середня кількість слів на повідомлення"
 
 #: .\templates\home\chart-scripts.html:174
 msgid "Messages per day (average)"
-msgstr "Сообщений в день (в среднем)"
+msgstr "Повідомлень на день (у середньому)"
 
 #: .\templates\home\chart-scripts.html:204
 msgid "Average response speed (seconds)"
-msgstr "Средняя скорость ответа (секунд)"
+msgstr "Середня швидкість відповіді (секунди)"
 
 #: .\templates\home\chart-scripts.html:220 .\templates\home\results.html:63
 msgid "Messages"
-msgstr "Сообщения"
+msgstr "Повідомлення"
 
 #: .\templates\home\chart-scripts.html:225
 msgid "Media"
-msgstr "Медиа"
+msgstr "Медіафайли"
 
 #: .\templates\home\dashboard.html:11
 msgid "The most active day"
-msgstr "Самый активный день"
+msgstr "Найактивніший день"
 
 #: .\templates\home\dashboard.html:15
 msgid "The most active weekday"
-msgstr "Самый активный день недели"
+msgstr "Найактивніший день тижня"
 
 #: .\templates\home\dashboard.html:19
 msgid "Total messages"
-msgstr "Всего сообщений"
+msgstr "Всього повідомлень"
 
 #: .\templates\home\dashboard.html:25
 msgid "Daily messages for the last year"
-msgstr "Ежедневное количество сообщений за год"
+msgstr "Щоденна кількість повідомлень за рік"
 
 #: .\templates\home\dashboard.html:34
 msgid "Zoom in"
-msgstr "Увеличить"
+msgstr "Збільшити"
 
 #: .\templates\home\dashboard.html:42
 msgid "Zoom out"
-msgstr "Уменьшить"
+msgstr "Зменшити"
 
 #: .\templates\home\dashboard.html:55
 msgid "The fastest response time"
-msgstr "Время самых быстрых ответов"
+msgstr "Час найшвидших відповідей"
 
 #: .\templates\home\dashboard.html:59
 msgid "usually responds faster"
-msgstr "обычно отвечает быстрее"
+msgstr "зазвичай відповідає швидше"
 
 #: .\templates\home\dashboard.html:68
 msgid "Messages per user"
-msgstr "Сообщений на пользователя"
+msgstr "Повідомлень на користувача"
 
 #: .\templates\home\dashboard.html:81
 msgid "The analysis is not ready yet."
-msgstr "Анализ ещё не готов"
+msgstr "Аналіз ще не готовий."
 
 #: .\templates\home\dashboard.html:89
 msgid "The wordcloud is not ready yet."
-msgstr "Облако слов ещё не готово"
+msgstr "Хмара слів ще не готова."
 
 #: .\templates\home\index.html:59 .\templates\home\results.html:4
 #: .\templates\includes\sidebar.html:52
 msgid "Dashboard"
-msgstr "Панель управления"
+msgstr "Панель управління"
 
 #: .\templates\home\index.html:63
 msgid "Admin"
-msgstr "Админка"
+msgstr "Адмінка"
 
 #: .\templates\home\index.html:68 .\templates\home\settings.html:108
 msgid "Logout"
-msgstr "Выйти"
+msgstr "Вийти"
 
 #: .\templates\home\index.html:91
 msgid "Analyse yor chats in an easy way!"
-msgstr "Анализируйте свои чаты легко!"
+msgstr "Аналізуйте свої чати легко!"
 
 #: .\templates\home\index.html:97
 msgid "Open Dashboard"
-msgstr "Панель управления"
+msgstr "Панель управління"
 
 #: .\templates\home\index.html:104 .\templates\includes\sidebar.html:25
 msgid "Admin panel"
-msgstr "Админ панель"
+msgstr "Панель адміністратора"
 
 #: .\templates\home\index.html:123
 #, python-format
 msgid "%(n)s chats analyzed with Chatalyze"
-msgstr "%(n)s чатов уже в Chatalyze"
+msgstr "%(n)s чатів вже в Chatalyze"
 
 #: .\templates\home\index.html:133
 msgid "Open source"
-msgstr "Открытый исходный код"
+msgstr "Відкритий код"
 
 #: .\templates\home\index.html:134
 msgid "Chatalyze is an open source project under the MIT License."
-msgstr "Chatalyze — проект с открытым исходным кодом под лицензией MIT."
+msgstr "Chatalyze є проектом з відкритим кодом під ліцензією MIT."
 
 #: .\templates\home\index.html:137
 msgid "See on Github"
-msgstr "Посмотреть на Github"
+msgstr "Подивитися на Github"
 
 #: .\templates\home\index.html:149
 msgid "Available chat platforms:"
-msgstr "Доступные чат-платформы:"
+msgstr "Доступні чат-платформи:"
 
 #: .\templates\home\result.html:4 .\templates\home\share.html:4
 #, python-format
 msgid "Chat analysis with %(name)s"
-msgstr "Анализ чата с %(name)s"
+msgstr "Аналіз чату з %(name)s"
 
 #: .\templates\home\result.html:14
 msgid "Upload updated chat file"
-msgstr "Загрузите новый файл чата"
+msgstr "Завантажте оновлений файл чату"
 
 #: .\templates\home\result.html:20 .\templates\home\results.html:32
 msgid "How to export my chat?"
-msgstr "Как мне экспортировать чат?"
+msgstr "Як мені експортувати мій чат?"
 
 #: .\templates\home\result.html:22
 #, python-format
 msgid "%(service)s exported chat file"
-msgstr "Файл экспорта чата из %(service)s"
+msgstr "Файл експорту чату з %(service)s"
 
 #: .\templates\home\result.html:27 .\templates\home\results.html:47
 msgid "Close"
-msgstr "Закрыть"
+msgstr "Закрити"
 
 #: .\templates\home\result.html:28 .\templates\home\results.html:48
 msgid "Upload"
-msgstr "Загрузить"
+msgstr "Завантажити"
 
 #: .\templates\home\result.html:38
 msgid "Delete analysis"
-msgstr "Удалить анализ"
+msgstr "Видалити аналіз"
 
 #: .\templates\home\result.html:42
 msgid "Do you really want to delete this analysis?"
-msgstr "Вы действительно хотите удалить этот анализ?"
+msgstr "Ви справді хочете видалити цей аналіз?"
 
 #: .\templates\home\result.html:45
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "Скасувати"
 
 #: .\templates\home\result.html:51
 msgid "Delete"
-msgstr "Удалить"
+msgstr "Видалити"
 
 #: .\templates\home\result.html:70
 msgid "Share link"
-msgstr "Поделиться ссылкой"
+msgstr "Поділитися посиланням"
 
 #: .\templates\home\result.html:75
 msgid "Link"
-msgstr "Ссылка"
+msgstr "Посилання"
 
 #: .\templates\home\result.html:81 .\templates\home\result.html:160
 msgid "Share"
-msgstr "Поделиться"
+msgstr "Поділитися"
 
 #: .\templates\home\result.html:88
 msgid "Update link"
-msgstr "Обновить ссылку"
+msgstr "Оновити посилання"
 
 #: .\templates\home\result.html:99
 msgid "Chat settings"
-msgstr "Настройки чата"
+msgstr "Параметри чату"
 
 #: .\templates\home\result.html:105
 msgid "Remove users from result:"
-msgstr "Удалить пользователей из анализа"
+msgstr "Видалити користувачів з аналізу:"
 
 #: .\templates\home\result.html:119 .\templates\home\settings.html:91
 msgid "Save"
-msgstr "Сохранить"
+msgstr "Зберегти"
 
 #: .\templates\home\result.html:139
 #, python-format
 msgid "Language: %(lang)s"
-msgstr "Язык: %(lang)s"
+msgstr "Мова: %(lang)s"
 
 #: .\templates\home\result.html:143
 #, python-format
@@ -313,59 +315,57 @@ msgstr "Статус: %(status)s"
 
 #: .\templates\home\result.html:152
 msgid "Update"
-msgstr "Обновить"
+msgstr "Оновити"
 
 #: .\templates\home\result.html:179
 msgid "Update error."
-msgstr "Ошибка обновления."
+msgstr "Помилка оновлення."
 
 #: .\templates\home\result.html:273
 msgid "Share this chat"
-msgstr "Поделиться чатом"
+msgstr "Поділитися цим чатом"
 
 #: .\templates\home\results.html:13
 msgid "Chat analysis results"
-msgstr "Результаты анализа чатов"
+msgstr "Результати аналізу чату"
 
 #: .\templates\home\results.html:14
 msgid ""
 "Your chat analysis results. You can check your chat analysis or add a new "
 "chat."
-msgstr ""
-"Результаты анализа ваших чатов. Вы можете посмотреть анализ своего чата или "
-"добавить новый."
+msgstr "Результати аналізу ваших чатів. Ви можете переглянути аналіз свого чату або додати новий."
 
 #: .\templates\home\results.html:18
 msgid "New Chatalyzis"
-msgstr "Новый анализ"
+msgstr "Новий чаталіз"
 
 #: .\templates\home\results.html:26
 msgid "Upload your chat files"
-msgstr "Загрузить файлы чата"
+msgstr "Завантажити файли чату"
 
 #: .\templates\home\results.html:34
 msgid "Exported chat file"
-msgstr "Экспортированный файл чата"
+msgstr "Експортований файл чату"
 
 #: .\templates\home\results.html:38
 msgid "Chat language"
-msgstr "Язык чата"
+msgstr "Мова чату"
 
 #: .\templates\home\results.html:61
 msgid "Chat name"
-msgstr "Имя чата"
+msgstr "Назва чату"
 
 #: .\templates\home\results.html:62
 msgid "Chat service"
-msgstr "Сервис"
+msgstr "Сервіс"
 
 #: .\templates\home\results.html:64
 msgid "Date created"
-msgstr "Дата создания"
+msgstr "Дата створення"
 
 #: .\templates\home\results.html:65
 msgid "Date updated"
-msgstr "Обновлено"
+msgstr "Оновлено"
 
 #: .\templates\home\results.html:66
 msgid "Status"
@@ -373,65 +373,65 @@ msgstr "Статус"
 
 #: .\templates\home\results.html:97
 msgid "You don't have any chat analyses yet."
-msgstr "У вас ещё нет анализов чатов."
+msgstr "У вас ще немає аналізів чатів."
 
 #: .\templates\home\settings.html:4 .\templates\home\settings.html:40
 msgid "Profile settings"
-msgstr "Настройки профиля"
+msgstr "Налаштування профілю"
 
 #: .\templates\home\settings.html:14 .\templates\home\settings.html:107
 msgid "Delete profile"
-msgstr "Удалить профиль"
+msgstr "Видалити профіль"
 
 #: .\templates\home\settings.html:18
 msgid "Do you really want to delete your profile and all the data?"
-msgstr "Вы действительно хотите удалить ваш профиль и все ваши данные?"
+msgstr "Ви справді хочете видалити свій профіль і всі дані?"
 
 #: .\templates\home\settings.html:29
 msgid "Yes, delete profile"
-msgstr "Да, удалить профиль"
+msgstr "Так, видалити профіль"
 
 #: .\templates\home\settings.html:54
 msgid "Email"
-msgstr "E-mail"
+msgstr "Електронна пошта"
 
 #: .\templates\home\settings.html:61
 msgid "Language"
-msgstr "Язык"
+msgstr "Мова"
 
 #: .\templates\home\settings.html:66
 msgid "Save all"
-msgstr "Сохранить"
+msgstr "Зберегти все"
 
 #: .\templates\home\settings.html:71
 msgid "Change password"
-msgstr "Сменить пароль"
+msgstr "Змінити пароль"
 
 #: .\templates\home\share.html:14
 msgid "Chat name:"
-msgstr "Имя чата:"
+msgstr "Назва чату:"
 
 #: .\templates\home\upload-scripts.html:13
 #, python-format
 msgid " Max. size of the uploaded file shouldn't be more than %(size)sMB "
-msgstr "Макс. размер загружаемого файла не должен превышать %(size)s МБ"
+msgstr " Макс. розмір завантаженого файлу не повинен перевищувати %(size)sМБ "
 
 #: .\templates\home\upload-scripts.html:25
 msgid "Loading..."
-msgstr "Загрузка..."
+msgstr "Завантаження..."
 
 #: .\templates\includes\sidebar.html:18
 #, python-format
 msgid "Hi, %(username)s!"
-msgstr "Привет, %(username)s!"
+msgstr "Привіт, %(username)s!"
 
 #: .\templates\includes\sidebar.html:21
 msgid "Sign Out"
-msgstr "Выйти"
+msgstr "Вийти"
 
 #: .\templates\includes\sidebar.html:60
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Налаштування"
 
 #: .\templates\includes\sidebar.html:70
 msgid "Chatalyze on Github"
@@ -439,16 +439,16 @@ msgstr "Chatalyze на Github"
 
 #: .\templates\layouts\base-fullscreen.html:17 .\templates\layouts\base.html:17
 msgid "Analyse your chats with data science"
-msgstr "Анализируйте ваши чаты с помощью Data Science"
+msgstr "Аналізуйте свої чати за допомогою Data Science"
 
 #: .\templates\maintenance.html:4
 msgid "Down for maintenance"
-msgstr "Закрыто на обслуживание"
+msgstr "Закрито на обслуговування"
 
 #: .\templates\maintenance.html:16
 msgid "The site is down for maintenance now."
-msgstr "Сайт закрыт на тех. обслуживание."
+msgstr "Сайт зачинено на технічне обслуговування."
 
 #: .\templates\maintenance.html:17
 msgid "Try to open the page again later."
-msgstr "Попробуйте открыть эту страницу позже"
+msgstr "Спробуйте відкрити сторінку пізніше."
