@@ -8,7 +8,7 @@ from collections import Counter
 from ..utils import ProgressBar
 from ..const import TELEGRAM, WHATSAPP, FACEBOOK
 from ..models import ChatAnalysis
-from ..stopwords import whatsapp_stoplist, stopwords_ru, stopwords_en
+from .stopwords import whatsapp_stoplist, get_stopwords_for
 
 morph = MorphAnalyzer()
 
@@ -50,6 +50,7 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str, progre
         progress.value = 90
         wordcloud_pic = get_pic_from_frequencies(counted_words)
     elif language == ChatAnalysis.AnalysisLanguage.ENGLISH:
+        stopwords_en = get_stopwords_for("english")
         wc = WordCloud(
             max_words=200,
             width=1920,
@@ -188,6 +189,7 @@ def get_normalized_words_ru(words: list[str], progress: ProgressBar) -> list[str
     progress_total = len(words)
     progress_current = 0
     init_percent = progress.value
+    stopwords_ru = get_stopwords_for("russian")
     for word in words:
         progress_current += 1
         word_analysis = morph.parse(word)[0]

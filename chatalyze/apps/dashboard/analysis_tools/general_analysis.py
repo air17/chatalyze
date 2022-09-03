@@ -6,7 +6,7 @@ import pandas as pd
 from typing import Sequence, Optional
 
 from apps.dashboard.const import TELEGRAM, WHATSAPP, FACEBOOK, DATETIME_FORMATS
-from apps.dashboard.stopwords import whatsapp_stoplist_no_media
+from .stopwords import whatsapp_stoplist_except_media
 from apps.dashboard.utils import ProgressBar
 
 
@@ -80,7 +80,7 @@ def get_msg_dict_wa(text: str) -> list[dict]:
     msg_list = []
 
     for line_text in text.splitlines():
-        for phrase in whatsapp_stoplist_no_media:
+        for phrase in whatsapp_stoplist_except_media:
             if phrase in line_text:
                 break
         else:
