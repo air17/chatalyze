@@ -9,6 +9,9 @@ from apps.dashboard.utils import ProgressBar, load_chat_statistics
 from apps.dashboard.const import WHATSAPP
 from apps.dashboard.models import ChatAnalysis
 
+if os.path.isdir("chatalyze"):
+    os.chdir("chatalyze")
+
 _dir = os.path.dirname(os.path.realpath(__file__))
 TEST_FILES = _dir + "/test_files"
 WHATSAPP_DATA = pytest.mark.datafiles(TEST_FILES + "/WhatsApp Chat with User.txt")
