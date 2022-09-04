@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-04 00:48+0300\n"
+"POT-Creation-Date: 2022-09-04 12:32+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,7 @@ msgstr ""
 "11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
 #: .\apps\authentication\forms.py:13 .\apps\authentication\forms.py:22
 msgid "Username"
 msgstr "Ім'я користувача"
@@ -73,11 +74,15 @@ msgstr "англійська"
 msgid "Russian"
 msgstr "російська"
 
-#: .\apps\authentication\models.py:34
+#: .\apps\authentication\models.py:21
+msgid "Ukrainian"
+msgstr "українська"
+
+#: .\apps\authentication\models.py:35
 msgid "User Profile"
 msgstr "Профіль користувача"
 
-#: .\apps\authentication\models.py:35
+#: .\apps\authentication\models.py:36
 msgid "User Profiles"
 msgstr "Профілі користувачів"
 

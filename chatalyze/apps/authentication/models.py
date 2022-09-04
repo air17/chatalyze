@@ -18,6 +18,7 @@ class UserProfile(models.Model):
         _ = ""
         ENGLISH = "en", gettext_noop("English")
         RUSSIAN = "ru", gettext_noop("Russian")
+        UKRAINIAN = "uk", gettext_noop("Ukrainian")
 
     user = models.OneToOneField(
         to=User,
@@ -36,7 +37,7 @@ class UserProfile(models.Model):
         constraints = (
             models.CheckConstraint(
                 name="%(app_label)s_%(class)s_language_valid",
-                check=models.Q(language__in=["", "en", "ru"]),
+                check=models.Q(language__in=["", "en", "ru", "uk"]),
             ),
         )
 
