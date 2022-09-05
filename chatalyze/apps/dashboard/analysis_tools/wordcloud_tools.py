@@ -49,34 +49,27 @@ def make_wordcloud(raw_messages: list, chat_platform: str, language: str, progre
         counted_words = get_word_count(normal_words)
         progress.value = 90
         wordcloud_pic = get_pic_from_frequencies(counted_words)
-    elif language == ChatAnalysis.AnalysisLanguage.ENGLISH:
-        stopwords_en = get_stopwords_for("english")
-        wc = WordCloud(
-            max_words=200,
-            width=1920,
-            height=1080,
-            color_func=get_colors_by_size,
-            stopwords=stopwords_en,
-            collocation_threshold=3,
-            min_word_length=3,
-        )
-        word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
-        wordcloud_pic = word_cloud.to_image()
-    elif language == ChatAnalysis.AnalysisLanguage.UKRAINIAN:
-        stopwords_ua = get_stopwords_for("ukrainian")
-        wc = WordCloud(
-            max_words=200,
-            width=1920,
-            height=1080,
-            color_func=get_colors_by_size,
-            stopwords=stopwords_ua,
-            collocation_threshold=3,
-            min_word_length=3,
-        )
-        word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
-        wordcloud_pic = word_cloud.to_image()
     else:
-        raise ValueError("Wrong language")
+        if language == ChatAnalysis.AnalysisLanguage.ENGLISH:
+            stopwords = get_stopwords_for("english")
+        elif language == ChatAnalysis.AnalysisLanguage.UKRAINIAN:
+            stopwords = get_stopwords_for("ukrainian")
+        elif language == ChatAnalysis.AnalysisLanguage.UKRAINIAN_RUSSIAN:
+            stopwords = get_stopwords_for("ukrainian") + get_stopwords_for("russian")
+        else:
+            raise ValueError("Wrong language")
+
+        wc = WordCloud(
+            max_words=200,
+            width=1920,
+            height=1080,
+            color_func=get_colors_by_size,
+            stopwords=stopwords,
+            collocation_threshold=3,
+            min_word_length=3,
+        )
+        word_cloud = wc.generate(" ".join(filtered_msg_list_txt))
+        wordcloud_pic = word_cloud.to_image()
 
     return wordcloud_pic
 

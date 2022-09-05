@@ -10,7 +10,7 @@ Live demo: https://chatalyze.161e.tk
 
 - Both group and private chats are supported
 - Intuitive user interface
-- Multiple languages supported (currently english and russian)
+- Multiple languages supported (currently english, russian and ukrainian)
 - Multiple platforms support
   - Telegram
   - WhatsApp

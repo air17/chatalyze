@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-03 22:44+0300\n"
+"POT-Creation-Date: 2022-09-06 00:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,19 +43,25 @@ msgstr "Русский"
 msgid "Ukrainian"
 msgstr "Украинский"
 
-#: .\apps\dashboard\models.py:116
+#: .\apps\dashboard\models.py:49
+#, fuzzy
+#| msgid "Ukrainian"
+msgid "Ukrainian+Russian"
+msgstr "Украинский+русский"
+
+#: .\apps\dashboard\models.py:117
 msgid "Chat Analysis"
 msgstr "Анализ чата"
 
-#: .\apps\dashboard\models.py:117
+#: .\apps\dashboard\models.py:118
 msgid "Chat Analyses"
 msgstr "Анализы чатов"
 
-#: .\apps\dashboard\models.py:175
+#: .\apps\dashboard\models.py:177
 msgid "Shared Link"
 msgstr "Публичная ссылка"
 
-#: .\apps\dashboard\models.py:176
+#: .\apps\dashboard\models.py:178
 msgid "Shared Links"
 msgstr "Публичные ссылки"
 
