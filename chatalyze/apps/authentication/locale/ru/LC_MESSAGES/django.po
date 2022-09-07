@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-04 12:32+0300\n"
+"POT-Creation-Date: 2022-09-07 17:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,6 +64,10 @@ msgstr "Подтверждение пароля"
 msgid "Repeat your new password"
 msgstr "Повторите ваш новый пароль"
 
+#: .\apps\authentication\models.py:18
+msgid "Current"
+msgstr "Текущий"
+
 #: .\apps\authentication\models.py:19
 msgid "English"
 msgstr "Английский"
@@ -84,14 +88,14 @@ msgstr "Профиль пользователя"
 msgid "User Profiles"
 msgstr "Профили пользователей"
 
-#: .\apps\authentication\views.py:28
+#: .\apps\authentication\views.py:29
 msgid "Invalid credentials"
 msgstr "Недействительные учётные данные"
 
-#: .\apps\authentication\views.py:30
+#: .\apps\authentication\views.py:31
 msgid "Error validating the form"
 msgstr "Ошибка проверки формы"
 
-#: .\apps\authentication\views.py:53
+#: .\apps\authentication\views.py:54
 msgid "Form is not valid"
 msgstr "Форма недействительна"

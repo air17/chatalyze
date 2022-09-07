@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     class ProfileLanguage(models.TextChoices):
         """Enumerated string choices."""
 
-        _ = ""
+        _ = "", gettext_noop("Current")
         ENGLISH = "en", gettext_noop("English")
         RUSSIAN = "ru", gettext_noop("Russian")
         UKRAINIAN = "uk", gettext_noop("Ukrainian")

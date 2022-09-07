@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-08 03:22+0300\n"
+"POT-Creation-Date: 2022-09-07 17:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,10 +84,14 @@ msgid "Your Password"
 msgstr "Ваш пароль"
 
 #: .\templates\accounts\login.html:68
+msgid "Continue as a guest"
+msgstr "Продолжить как гость"
+
+#: .\templates\accounts\login.html:75
 msgid "Not registered?"
 msgstr "Не зарегистрированы?"
 
-#: .\templates\accounts\login.html:69
+#: .\templates\accounts\login.html:76
 msgid "Create account"
 msgstr "Создать аккаунт"
 

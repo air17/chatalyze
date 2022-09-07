@@ -4,6 +4,7 @@ from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResp
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.utils.translation import gettext_lazy as _
+from secrets import token_hex
 
 from .models import UserProfile
 from .forms import LoginForm, SignUpForm, ProfileForm, ChangePasswordForm
@@ -59,6 +60,29 @@ def register_user(request):
         "accounts/register.html",
         {"form": form, "msg": msg, "success": success},
     )
+
+
+def register_guest(request):
+    """Guest creation view"""
+
+    if not request.user.is_anonymous:
+        return redirect("dashboard:results")
+
+    username = "guest_" + token_hex(8)
+    password = token_hex(32)
+    signup_data = {
+        "username": username,
+        "email": username + "@guest.guest",
+        "password1": password,
+        "password2": password,
+    }
+
+    form = SignUpForm(signup_data)
+    form.is_valid()
+    form.save()
+    user = authenticate(request, username=username, password=password)
+    login(request, user)
+    return redirect("dashboard:results")
 
 
 @login_required
